@@ -1,0 +1,225 @@
+  
+= The Dexter API =
+  
+==== author: Michael Dykman &lt;michael@dykman.org&gt; ====
+
+
+ 
+ == dexter.properties ==
+  
+  _The dexter.properties file is embedded in dexter.jar. It is through this file that implementations are bound into the tools framework._
+  
+  === prefix ===
+  
+  
+
+    {{{ 
+ dexter.prefix=xpl
+       }}}
+
+    the prefix is applied to all dexter-defined attribute names before scanning. it provides a pseudo-namespace to isolate dexter-defined attributes from the the valid attributes of the XML source. It may be redefined at need.
+  
+  === id attributes ===
+  
+  
+
+    {{{ 
+        
+ dexter.node.id=id,ID
+ 
+       }}}
+
+    Some XML operations require that a document has defined id attributes. As this property is typically bestowed the DTD or schema for the XML format at hand, dexter uses this alternate mechanism. Scanning the source document for id attributes as defined in the properties file is the first phase of dexter's transformation process.
+  
+  === editors ===
+  
+  
+
+    {{{ 
+ dexter.editors=ajax
+   }}}
+
+    The second phase of the transformation process is to scan for and execute editors which are defined to be active in this property. It accepts a comma-delimited list of editor names. These names, prefixed with the dexterity prefix, are scanned for and executed as they are found. More detail about editors can be found in later chapters.
+  
+  === descriptors ===
+  
+  
+
+    {{{ 
+      
+ dexter.descriptors=ignore,env,uniq,sub,if,case,each,ccpy,value,attr,target,ghost
+       }}}
+
+    The third phase of the transformation process is to scan for and assemble descriptors which are defined to be active in this property. It accepts a comma-delimited list of descriptor names. These names, prefixed with the dexterity prefix, are scanned for and assembled into an execution tree. The descriptors are evaluated in the same order as they are specified in this property. More detail about descriptors can be found in later chapters. And by later, I mean they aren't written yet.
+  
+  === block descriptors ===
+  
+  
+
+    {{{ 
+ dexter.block=case 
+ dexter.block.case=default
+       }}}
+
+    Block descriptors take some special handling at assembly time. This property directs the dexter engine to treat 'case' as a block descriptor with an (always) optional terminating attribute of 'default'. A block is not required to have a terminating attribute.
+  
+  === Implementation ===
+  
+  
+
+    {{{ 
+        
+ dexter.a.ajax=org.dykman.dexter.didi.AjaxAnchorEditor
+ dexter.a.target=org.dykman.dexter.didi.AjaxCallerDescriptor
+
+ dexter.a.ignore=org.dykman.dexter.dexterity.NullDescriptor 
+ dexter.a.if=org.dykman.dexter.dexterity.TestDescriptor 
+ dexter.a.case=org.dykman.dexter.dexterity.CaseDescriptor
+ dexter.a.env=org.dykman.dexter.dexterity.EnvDescriptor 
+ dexter.a.each=org.dykman.dexter.dexterity.SelectDescriptor 
+ dexter.a.attr=org.dykman.dexter.dexterity.MapAttributeDescriptor 
+ dexter.a.value=org.dykman.dexter.dexterity.MapNodeDescriptor
+ dexter.a.ccpy=org.dykman.dexter.dexterity.CopyNodeDescriptor 
+ dexter.a.sub=org.dykman.dexter.dexterity.SubdocDescriptor 
+ dexter.a.uniq=org.dykman.dexter.dexterity.UniqAttrDescriptor
+ dexter.a.ghost=org.dykman.dexter.dexterity.GhostDescriptor 
+       }}}
+
+    Each attribute is explicitly associated with it's implementing class.
+  
+  === path functions ===
+  
+  
+
+    {{{ 
+        
+ dexterity.path.function.cmp-name=org.dykman.dexter.base.CompareNameFunction 
+ dexterity.path.function.text=org.dykman.dexter.base.TextFunction 
+ dexterity.path.function.istext=org.dykman.dexter.base.IsTextFunction
+ dexterity.path.function.name=org.dykman.dexter.base.NameFunction
+       }}}
+
+    Path functions, invoked in dexter via "@!" are defined with the property key dexterity.path.function.&lt;function-name&gt;.
+ 
+ == Descriptors ==
+  
+  _All Descriptors discussed in this section are defined in the package org.dykman.dexter.descriptor._
+  
+  === Descriptor Methods ===
+  
+  While Descriptors expose several methods, there are 4, the production methods, which are of particular interest to the API developer.
+
+    {{{ 
+      
+  public interface Descriptor
+  {
+    ...
+    public void start();
+    public void attributes();
+    public void children();
+    public void end();
+  }
+   }}}
+
+    When a descriptor is 'run' by the TransformSequencer, each of these 4 methods are called in turn which push instructions back into the sequencer.
+  
+  === Node Descriptor ===
+  
+  Every node in the dexter input document is automatically associated with a NodeDescriptor. The NodeDescriptor describes that node to the TransformSequencer without embellishment.
+  
+  === TransformDescriptor ===
+  
+  All descriptors which the user may specify on an element in a dexter source document are sub-classes of TransformDescriptor. TransformDescriptors are constructed with a reference to an inner Descriptor. Where multiple descriptors are specified on a given element, they are nested with the NodeDescriptor for that element the inner-most.Typically, a TransformDescriptor overrides one or more production methods. It may modify the attributes, replace or simply dispose of the children and/or write instructions into the TransformSequencer.At the lowest level, the TransformSequencer offers a node-level interface which allows a descriptor to directly specify XSLT productions. This interface is currently only used by the highly experimental didi module.
+  
+  === MetaDescriptor ===
+  
+  This is an abstract TransformDescriptor which provides a scoped-data environment during the code generation process. Sub-classes use this facility to maintain the internal data paths or to pass messages to children.
+  
+  === PathDescriptor ===
+  
+  The PathDescriptor is the base class of nearly every Descriptor in the dexterity module. Dexter and XSL have a slightly different concept of the default data axis, the PathDescriptor's primary task is to balance those notions.
+  
+  === BlockDescriptor ===
+  
+  The block descriptor is a special case. It encapsulates an operation which may span multiple contiguous elements. The handler for dexterity's 'case' attribute is the only currently implemented BlockDescriptor.
+  
+  === Examples ===
+  
+  The best reference currently available for the user who wishes to implement custom descriptors is the source for the dexterity descriptors. They are generally small, single function units. I know I need to write more about this. Bug me later.
+ 
+ == Path Functions ==
+  
+  _Here are the implementation details for the user who wishes to extend the power of existing path syntax with user-defined path functions_
+  
+  === The PathFunction Interface ===
+  
+  
+
+    {{{ 
+  public interface PathFunction
+  {
+    public String apply(String path,String arg);
+  }
+          }}}
+
+    A PathFunction is invoked by appending "@!" to a path expression, followed by the name of the function and, optionally, ':' and an argument like so:
+
+    {{{ 
+  
+  &lt;p xplvalue="messages/*@!myfunction:argument" /&gt;
+  
+          }}}
+
+    This expression will first evaluate the dexter path in the current context, and translate it to an XPath expression appropriate to XSL's data context. Dexter then locates the key dexter.path.function.myfunction in the properties taking it's value as the fully-qualified path name of a class implementing the PathFunction interface. An instance of that class is instantiated with the default constructor, and the method 'apply' is invoked.The 'path' parameter will be the translated XPath expression. The 'arg' parameter will be the value to the right of the semi-colon ':', if any. If no argument is provided, 'arg' will be null.If '@' is the first character in the expression, then a path of '.' is implied.The result of the expression must be a string representing a discrete XPath expression.
+
+    {{{ 
+  // from NameFunction 
+  public String apply(String path, String arg)
+  {
+    StringBuffer sb = new StringBuffer();
+    sb.append("local-name(").append(path).append(")");
+    return sb.toString(); 
+  }
+        }}}
+
+    
+ 
+ == Editors ==
+  
+  _Editors logically modify the source document before it is extracted to XML._
+  
+  === Output Domain ===
+  
+  As editors are designed to modify the input document, they typically need to contain domains-specific knowledge of the target XML format. It is not really possible for editors to be XML-agnostic, as is required for membership is the dexterity base module.Editors are created by sub-classing org.dykman.dexter.base.AbstractDocumentEditor.Editors may influence XSL transforms to generate invalid result documents from valid source files. Much care must be taken when implementing editors to make sure that our actions are valid in the context of the output document.The only editor implementations in this release are confined to the experimental didi module which is responsible for all XHTML-specific functions.
+ 
+ == Embedding Dexter ==
+  
+  
+  
+  === The Dexter Object ===
+  
+  
+
+    {{{ 
+  import org.dykman.dexter.Dexter;
+
+  // uses the built in properties in org/dykman/dexter/dexter.properties
+  Dexter dexter = new Dexter("UTF-8");
+  // an alternative allows to user to specify custom properties
+  // Dexter dexter = new Dexter("UTF-8",my-properties);
+
+  dexter.setMediaType("text/html");
+  dexter.setMethod("html");
+  dexter.setIndent(true);
+   }}}
+
+    The Dexter object is created with a specified content-encoding and, optionally, a set of properties. If properties are not specified, the built-in properties will be used. Only the UTF-8 character encoding has been explored so far. The output attributes which are demonstrated in the example are the default values. As in XSL, method may be one of "xml", "html" or "text". MediaType may be any mime-type consistent with your source/result XML type. These settings are passed along directly to the XSL document; they do not influence dexter's behavior.org.w3c.xml.Document objects with a DocType of XSLT are produced by passing org.w3c.xml.Document objects of any DocType to the method generateXSLT(Document source). The result is typed Map&lt;String,Document&gt; which will always contain at least one entry. This method does not create documents on disk. When used at the command line, dexter uses an internal method which invokes a null transform.in order to output it to a stream. If you have a means of providing prettier output, go for it.
+
+    {{{ 
+	Map&lt;String, Document&gt; results = dexter.generateXSLT(inputDocument);
+   }}}
+
+    
+
+    ,, dexter (c) 2007, 2008 Michael Dykman Free for use under version 2.0 of the Artistic License. http://www.opensource.org/licences/artistic-license.php ,,
+  
