@@ -1,0 +1,122 @@
+<html>
+<head>
+<style type="text/css">
+    @import url("style.css");
+</style>
+<title xplvalue="*/title">Document Title</title>
+<meta name="author" content="some guy" xplmeta="dexter.meta"/>
+</head>
+<body>
+<a name="TOP" ></a>
+<div >
+ <center><h1 xplvalue="*/title">Document Title</h1></center>
+ <h5 xplif="*/subtitle" xplvalue="*/subtitle">Sub-Title</h5>
+</div>
+
+<div style="text-align:top">
+<div style="float:right; width:35%" >
+<div style="clear:both; align:left; width:100%;">
+ <span class="author" style="width:100%  align:left;">author: <span xplghost="" xplvalue="*/author">Author Name</span></span>
+</div>
+<br/>
+
+<div style="clear:both;" xpleach="*/references/reference">
+  <div style="padding-left:5px; left-margin:5px;">
+  <a href="#" xplattr="href:url" xplvalue="title">external title</a><br/>
+   <div style="left-margin:5px;" xplvalue="summary">this is a document summary; typically, a short paragraph</div>
+ </div>
+</div>
+
+<div xplignore="" style="clear:both;" >
+  <div style="padding-left:5px; left-margin:5px;">
+  <a href="#" >external title</a><br/>
+   <div style="left-margin:5px;" >this is a document summary; typically, a short paragraph</div>
+ </div>
+</div>
+
+
+</div>
+
+<div style="float:left; width:55%">
+
+<div xplenv="*/overview" style="float:left; clear:both;">
+ <h2 width="100%">Overview</h2>
+ <p><i xpleach="para" xplvalue=".">bla bla bla</i></p>
+</div>
+<div  style="top-margin:15px;">
+<h2>Table of Contents</h2>
+<a name="TOC" ></a>
+<ul>
+<div xpleach="#*/section" style="left-margin:15px;">
+ <a xplattr="href:#{title}" xplvalue="title">Section Title</a><br/>
+</div>
+</ul>
+
+</div>
+</div>
+
+</div>
+<div style="clear:both"></div>
+<div xpleach="*/section" >
+ <a name="tagname" xplattr="name:{title}" ></a>
+
+ <center><h2 xplvalue="title" width="80%">Section Title</h2></center>
+
+ <div width="60%" xplif="overview" xpleach="#overview/para">
+  <p><i xplvalue=".">overview paragraph</i></p>
+  <p xplignore=""><i>another overview paragraph</i></p>
+ </div>
+
+ <div xpleach="#chapter" class="listing">
+  <a xplattr="href:#{../title}-{title}">
+  <![CDATA[> ]]><span xplghost="" xplvalue="title" >Chapter Title</span></a><br/>
+ </div>
+ <a href="#TOC"><![CDATA[<< ]]>Table of Contents</a><br/>
+ <a href="#TOP"><![CDATA[<< ]]>Top</a><br/>
+
+ <div xpleach="chapter" class="section">
+  <a name="tagname" xplattr="name:{../title}-{title}" ></a>
+  <h3 xplvalue="title">chapter title</h3>
+  <div xpleach="#*">
+   <p xplcase="@para" xpleach="#link|@!text">
+    <span xplcase="@!istext" xplghost="" xplvalue=".">
+    ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
+    ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
+    ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
+    ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
+    ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
+    </span>
+    <a xplcase="@link" href="extern" xplattr="href::url" xplvalue=".">links to something</a>
+    <span xplignore="">
+    ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
+    ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
+    ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
+    ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
+    ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
+    </span>
+   </p>
+   <ul xplcase="@code">
+    <pre width="80%" xplvalue="." style="font:fixed; background-color:#f0f0f0">
+    
+     // a code example
+     foo.bar('foobar');
+    </pre>
+   </ul>
+  </div>
+
+  <center>
+  <a href="#" xplattr="href:#{../title}"><span xplghost="" xplvalue="../title">Section Title</span></a>
+  --
+  <a href="#TOC">Table of Contents</a>
+  --
+  <a href="#TOP">Top</a>
+  </center>
+  <br/>
+  <br/>
+ </div>
+ <br/>
+</div>
+<div class="copy"><sub xplvalue="*/copyright">copyright info</sub>
+</div>
+</body>
+</html>
