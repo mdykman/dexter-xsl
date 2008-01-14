@@ -60,7 +60,8 @@ public class NodeDescriptor extends AbstractDescriptor
 
 	public void start()
 	{
-		switch(node.getNodeType())
+		int type = node.getNodeType();
+		switch(type)
 		{
 			case Node.ELEMENT_NODE:
 				sequencer.startNode(node.getNodeName(),node.getNodeType());
@@ -70,26 +71,23 @@ public class NodeDescriptor extends AbstractDescriptor
 			case Node.ENTITY_REFERENCE_NODE:
 			case Node.CDATA_SECTION_NODE:
 			case Node.COMMENT_NODE:
-				sequencer.startNode(node.getNodeValue(),node.getNodeType());
-			break;
-			
 			case Node.DOCUMENT_NODE:
-				sequencer.startNode(node.getNodeName(),node.getNodeType());
-			break;
-			case Node.DOCUMENT_FRAGMENT_NODE:
-				sequencer.startNode(node.getNodeName(),node.getNodeType());
+				sequencer.startNode(node.getNodeValue(),node.getNodeType());
 			break;
 			case Node.DOCUMENT_TYPE_NODE:
 				{
-					sequencer.setDocType((DocumentType)node);
+						sequencer.setDocType((DocumentType)node);
 				}
-				sequencer.startNode(node.getNodeName(),node.getNodeType());
 			break;
 			case Node.PROCESSING_INSTRUCTION_NODE:
-				sequencer.startNode(node.getNodeName(),node.getNodeType());
+				{
+System.out.println("WARNING: discarding processing instruction in the input");					
+				}
 			break;
 			case Node.NOTATION_NODE:
-				sequencer.startNode(node.getNodeName(),node.getNodeType());
+			{
+System.out.println("WARNING: discarding notation node in the input");					
+			}
 			break;
 			default :
 			{

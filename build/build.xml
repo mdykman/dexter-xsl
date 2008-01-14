@@ -1,14 +1,16 @@
-<project default="all">
-	<property name="RELEASENAME" value="dexter-0.1.4-beta" />
+<project default="dexter-jar">
+	<property name="RELEASENAME" value="dexter-0.1.5-beta" />
 	<property name="STAGINGDIR" value="/tmp" />
 	<property name="PACKAGEDIR" value="${STAGINGDIR}/${RELEASENAME}" />
-	<property name ="DOCSDIR" value ="../docs" />
+	<property name="DOCSOURCE" value ="../docs" />
 	
 	<target name="rebuild" depends="clean,all" />
-	<target name="all" depends="dexter-jar,wiki-docs" />
+	<target name="all" depends="dexter-jar,docs" />
+	<target name="docs" depends="dexter-javadoc" />
+
 
 	<target name="clean" description="clean the output files">
-		<delete>
+		<delete failonerror="no">
 			<fileset dir=".">
 				<include name="dexter.jar" />
 			</fileset>
@@ -17,8 +19,44 @@
 			</fileset>
 		</delete>
 	</target>
+<!--
+	<target name="doc-templates">
+		<java dir="${DOCSOURCE}" fork="yes" classname="org.dykman.dexter.Dexter">
+			<classpath>
+				<filelist dir=".">
+					<file name="dexter.jar"/>
+				</filelist>
+			</classpath>
+			<arg file="${DOCSOURCE}/wikster.xml"/>
+			<arg file="${DOCSOURCE}/docster.html"/>
+		</java>
+	</target>
 
-	<target name="package" depends="rebuild,dexter-javadoc">
+	<target name="wiki-docs">
+		<java fork="yes" classname="org.dykman.dexter.Transformer">
+			<classpath>
+				<filelist dir=".">
+					<file name="dexter.jar"/>
+				</filelist>
+			</classpath>
+			<arg file="${DOCSOURCE}/wikster.xml.xsl"/>
+			<arg file="${DOCSOURCE}/index.xml"/>
+			<arg file="${DOCSOURCE}/dexter-api.xml"/>
+			<arg file="${DOCSOURCE}/dexter-user-guide.xml"/>
+		</java>
+
+		<move file="${DOCSOURCE}/index.xml.xslout" 
+			tofile="${DOCSOURCE}/index.xml.wiki"/>
+		<move file="${DOCSOURCE}/dexter-api.xml.xslout" 
+			tofile="${DOCSOURCE}/dexter-api.xml.wiki"/>
+		<move file="${DOCSOURCE}/dexter-user-guide.xml.xslout" 
+			tofile="${DOCSOURCE}/dexter-user-guide.xml.wiki"/>
+
+	</target>
+
+
+ -->
+	<target name="package" depends="rebuild">
 		<delete dir="${PACKAGEDIR}">
 		</delete>
 		<copy todir="${PACKAGEDIR}">
@@ -37,17 +75,16 @@
 		<copy todir="${PACKAGEDIR}/build" file="README.txt" />
 		<copy todir="${PACKAGEDIR}/build" file="CHANGES.txt" />
 
-		<copy todir="${PACKAGEDIR}/docs" file="../docs/index.xml" />
-		<copy todir="${PACKAGEDIR}/docs" file="../docs/dexter-user-guide.xml" />
-		<copy todir="${PACKAGEDIR}/docs" file="../docs/dexter-api.xml" />
-		<copy todir="${PACKAGEDIR}/docs" file="../docs/dexter.meta" />
-		<copy todir="${PACKAGEDIR}/docs" file="../docs/docster.html" />
-		<copy todir="${PACKAGEDIR}/docs" file="../docs/docster.html.xsl" />
-		<copy todir="${PACKAGEDIR}/docs" file="../docs/wikster.xml" />
-		<copy todir="${PACKAGEDIR}/docs" file="../docs/wikster.xml.xsl" />
+		<copy todir="${PACKAGEDIR}/docs" file="${DOCSOURCE}/index.xml" />
+		<copy todir="${PACKAGEDIR}/docs" file="${DOCSOURCE}/dexter-user-guide.xml" />
+		<copy todir="${PACKAGEDIR}/docs" file="${DOCSOURCE}/dexter-api.xml" />
+		<copy todir="${PACKAGEDIR}/docs" file="${DOCSOURCE}/dexter.meta" />
+		<copy todir="${PACKAGEDIR}/docs" file="${DOCSOURCE}/docster.html" />
+		<copy todir="${PACKAGEDIR}/docs" file="${DOCSOURCE}/docster.html.xsl" />
+		<copy todir="${PACKAGEDIR}/docs" file="${DOCSOURCE}/style.css" />
 
 		<copy todir="${PACKAGEDIR}/docs">
-			<fileset dir="${DOCSDIR}">
+			<fileset dir="${DOCSOURCE}">
 				<include name="javadoc/**/*.*" />
 			</fileset>
 		</copy>
@@ -61,7 +98,7 @@
 	</target>
 
 	<target name="dexter-javadoc">
-		<javadoc destdir="${DOCSDIR}/javadoc">
+		<javadoc destdir="${DOCSOURCE}/javadoc">
 			<fileset dir="../src">
 				<include name="**/*.java" />
 			</fileset>
@@ -73,27 +110,6 @@
 		<javac destdir="../bin" srcdir="../src" debug="yes" failonerror="true" target="1.5" />
 	</target>
 
-	<target name="wiki-docs">
-		<java fork="yes" classname="org.dykman.dexter.Transformer">
-			<classpath>
-				<filelist dir=".">
-					<file name="dexter.jar"/>
-				</filelist>
-			</classpath>
-			<arg file="${DOCSDIR}/wikster.xml.xsl"/>
-			<arg file="${DOCSDIR}/index.xml"/>
-			<arg file="${DOCSDIR}/dexter-api.xml"/>
-			<arg file="${DOCSDIR}/dexter-user-guide.xml"/>
-		</java>
-
-		<move file="${DOCSDIR}/index.xml.xslout" 
-			tofile="${DOCSDIR}/index.xml.wiki"/>
-		<move file="${DOCSDIR}/dexter-api.xml.xslout" 
-			tofile="${DOCSDIR}/dexter-api.xml.wiki"/>
-		<move file="${DOCSDIR}/dexter-user-guide.xml.xslout" 
-			tofile="${DOCSDIR}/dexter-user-guide.xml.wiki"/>
-
-	</target>
 		
 	<target name="dexter-jar" depends="compile">
 		<jar destfile="dexter.jar">

@@ -23,6 +23,7 @@ public class DexterEntityResolver implements EntityResolver
 		source.setPublicId(publicId);
 		if(publicId.startsWith("&"))
 		{
+System.out.println("resolving " + publicId);			
 			Reader reader = new StringReader(publicId);
 			source.setCharacterStream(reader);
 		}

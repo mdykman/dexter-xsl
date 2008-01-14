@@ -10,6 +10,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -65,8 +66,11 @@ public class Transformer
 				}
 				for(int i = 1; i < args.length; ++i)
 				{
-					transformer
-						= templates.newTransformer();
+					transformer = templates.newTransformer();
+					
+//					transformer.setEntityResolver(new DexterEntityResolver(encoding));
+					
+					
 					inf = new File(args[i]);
 					in = new FileInputStream(inf);
 					OutputStream out = new FileOutputStream(args[i]
