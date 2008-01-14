@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -34,6 +33,8 @@ import org.dykman.dexter.base.DexterEntityResolver;
 import org.dykman.dexter.base.DocumentEditor;
 import org.dykman.dexter.base.XSLTDocSequencer;
 import org.dykman.dexter.descriptor.Descriptor;
+import org.dykman.dexter.descriptor.NodeDescriptor;
+import org.dykman.dexter.descriptor.TransformDescriptor;
 import org.dykman.dexter.dexterity.DexterityConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -55,7 +56,7 @@ public class Dexter
 
 	String encoding;
 
-	String indent = "yes";
+	String indent = "no";
 
 	String method = "html";
 
@@ -82,20 +83,9 @@ public class Dexter
 	public void setMediaType(String type)
 	{
 		mediaType = type;
-		if (type.equals("text/html"))
-		{
-			method = "html";
-		}
-		else if (type.equals("text/plain"))
-		{
-			method = "text";
-		}
-		else
-		{
-			method = "xml";
-		}
 	}
 
+	// TODO..  thses methods are useless, aren't they?
 	public void setUserData(Object key, Object value)
 	{
 		userData.put(key, value);
@@ -116,27 +106,13 @@ public class Dexter
 
 		// convert dexter attributes
 		scanDocument(document);
-		Descriptor descriptor = Marshall.marshall(document, this);
+		Descriptor descriptor = Dexter.marshall(document, this);
 
 		XSLTDocSequencer sequencer = new XSLTDocSequencer(filename, encoding);
 		sequencer.setProperties(properties);
 		sequencer.setIdNames(idNames);
 		sequencer.runDescriptor(descriptor);
 		return sequencer.getDocuments();
-	}
-	private void addToAllDocs(Map<String, Document> docs)
-	{
-		Iterator<String> it = docs.keySet().iterator();
-		while(it.hasNext())
-		{
-			String k = it.next();
-			if(allDocs.containsKey(k))
-			{
-				throw new DexterException(
-						"duplicate output document name: " + k);
-			}
-			allDocs.put(k, docs.get(k));
-		}
 	}
 	public Map<String, Document> getDocuments()
 	{
@@ -223,9 +199,6 @@ public class Dexter
 			}
 		}
 
-		// built-in text-only element
-		this.descriptors.put(prefix + DexterityConstants.TEXT_CONTAINER,
-		      DexterityConstants.TEXT_CONTAINER_IMPL);
 
 		String seq = p.getProperty("dexter.descriptors");
 		String[] tk = seq.split(",");
@@ -280,18 +253,8 @@ public class Dexter
 		}
 	}
 
-	public Element createDexterTextNode(Document document)
-	{
-		Element element = document
-		      .createElement(DexterityConstants.TEXT_CONTAINER_NODE);
-		element.setAttribute(DexterityConstants.TEXT_CONTAINER, "");
-		return element;
-	}
 
 	/**
-	 * input point for raw doucments, decorated with dexter attributes
-	 * 
-	 * @param element
 	 * @throws Exception
 	 */
 	public void scanDocument() throws Exception
@@ -311,7 +274,7 @@ public class Dexter
 		scanElementForEditors(root); // run the editors
 		// find descriptor attributes, remove them and 
 		// attach the associated objects 
-		scan(document); // find descriptos attributes and associate
+		scan(document); // find descriptor attributes and associate
 		inputDocument = oldDocument;
 	}
 
@@ -375,10 +338,10 @@ public class Dexter
 		}
 	}
 
-	public TransformDecorator createDecorator(Element element, String label,
+	public TransformSpecifier createSpecifier(Element element, String label,
 	      Properties properties) throws Exception
 	{
-		TransformDecorator td = null;
+		TransformSpecifier td = null;
 		String k = descriptors.get(label);
 		Class cl = Class.forName(k);
 		if (blocks.containsKey(label))
@@ -415,20 +378,20 @@ public class Dexter
 				scan(be);
 				blockNode.appendChild(be);
 			}
-			BlockTransformDecorator btd = new BlockTransformDecorator(cl);
+			BlockTransformSpecifier btd = new BlockTransformSpecifier(cl);
 			btd.setArgs(siblings, names, values);
 			td = btd;
 		}
 		else
 		{
 			// System.out.println("processing descrptor ");
-			td = new TransformDecorator(cl);
+			td = new TransformSpecifier(cl);
 			td.setArg(element, label, element.getAttribute(label));
 			element.removeAttribute(label);
 		}
 		td.setDexter(this);
 		td.setProperties(properties);
-		addDecorator(element, td);
+		addSpecifier(element, td);
 		return td;
 	}
 
@@ -440,20 +403,20 @@ public class Dexter
 			String alabel = it.next();
 			if (el.hasAttribute(alabel))
 			{
-				TransformDecorator td = createDecorator(el, alabel, properties);
+				TransformSpecifier td = createSpecifier(el, alabel, properties);
 			}
 		}
 	}
 
-	public static void addDecorator(Element element, TransformDecorator decorator)
+	public static void addSpecifier(Element element, TransformSpecifier specifier)
 	{
-		List list = (List) element.getUserData(DexterityConstants.DEXTER);
+		List list = (List) element.getUserData(DexterityConstants.DEXTER_SPECIFIERS);
 		if (list == null)
 		{
-			list = new ArrayList<TransformDecorator>();
-			element.setUserData(DexterityConstants.DEXTER, list, null);
+			list = new ArrayList<TransformSpecifier>();
+			element.setUserData(DexterityConstants.DEXTER_SPECIFIERS, list, null);
 		}
-		list.add(decorator);
+		list.add(specifier);
 	}
 
 	public void scanNode(Node node) throws Exception
@@ -461,7 +424,6 @@ public class Dexter
 		if (node.getNodeType() == Node.ELEMENT_NODE)
 		{
 			Element el = (Element) node;
-			// System.out.println("scanNode, processing "+ el.getNodeName());
 			scanForDescriptors(el);
 		}
 	}
@@ -513,7 +475,7 @@ public class Dexter
 			{
 				if (child.getNodeType() != Node.TEXT_NODE)
 				{
-					reportInternalError("WWARNING: dropping non-text nodes between siblings",null);
+					reportInternalError("dropping non-text nodes between siblings",null);
 				}
 				else if (child.getNodeValue().trim().length() != 0)
 				{
@@ -587,6 +549,44 @@ public class Dexter
 //		return idNames;
 //	}
 
+	public static Descriptor marshallNode(Node node,Dexter dexter)
+   {
+   	Descriptor descriptor = new NodeDescriptor(node);
+   	List<NodeSpecifier> list = (List<NodeSpecifier>) node
+   	      .getUserData(DexterityConstants.DEXTER_SPECIFIERS);
+   	if (list != null)
+   	{
+   		Iterator<NodeSpecifier> it = list.iterator();
+   		TransformDescriptor td;
+   		while (it.hasNext())
+   		{
+   			NodeSpecifier specifier = it.next();
+   			descriptor = td = specifier.enclose(descriptor);
+   			td.setDexter(dexter);
+   		}
+   	}
+   	return descriptor;
+   }
+
+	public static Descriptor marshall(Node node,Dexter dexter)
+   	{
+   //System.out.println("marshalling " + element.getNodeName());
+   		Descriptor parent = Dexter.marshallNode(node,dexter);
+   		Descriptor c;
+   		NodeList children = node.getChildNodes();
+   		int nc = children.getLength();
+   		for (int i = 0; i < nc; ++i)
+   		{
+   			Node child = children.item(i);
+   			if(child != null &&	child.getParentNode() != null)
+   			{
+   				c = marshall(child,dexter);
+   				parent.appendChild(c);
+   			}
+   		}
+   		return parent;
+   	}
+
 	public static void reportInternalError(String msg, Exception ex)
 	{
 		PrintStream out = System.err;
@@ -605,8 +605,7 @@ public class Dexter
 	public static void main(String[] args)
 	{
 		int argp = 0;
-		
-
+//		System.setProperty("jaxp.debug", "true");
 		try
 		{
 			if (args.length == 0)
@@ -619,29 +618,30 @@ public class Dexter
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			dbf.setValidating(false);
 			DocumentBuilder builder = dbf.newDocumentBuilder();
+//			builder.
 
 			builder.setEntityResolver(new DexterEntityResolver(encoding));
 			Dexter dexter = new Dexter(encoding);
 			dexter.setMediaType("text/html");
-			dexter.setMethod("html");
+			dexter.setMethod("xml");
 			dexter.setIndent(true);
 
 			while(argp < args.length)
 			{
 				String fn = args[argp];
 				Document impl = builder.parse(new FileInputStream(fn));
-				dexter.addToAllDocs(dexter.generateXSLT(fn,impl));
+//				dexter.addToAllDocs(dexter.generateXSLT(fn,impl));
 				
+				Map<String, Document> docs = dexter.generateXSLT(fn,impl);
 				++argp;
-			}
-			Map<String, Document> docs = dexter.getDocuments();
-			Iterator<String> k = docs.keySet().iterator();
-			while(k.hasNext())
-			{
-				String name = k.next();
- 				if(!name.endsWith(".dispose"))
+				Iterator<String> k = docs.keySet().iterator();
+				while(k.hasNext())
 				{
-					dexter.putToDisk(name, docs.get(name));
+					String name = k.next();
+	 				if(!name.endsWith(".dispose"))
+					{
+						dexter.putToDisk(name, docs.get(name));
+					}
 				}
 			}
 		}

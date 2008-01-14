@@ -141,7 +141,7 @@ public abstract class BaseTransformSequencer implements TransformSequencer
 			}
 			else
 			{
-				return new SimplePathFunction(v);
+				return new MacroPathFunction(v);
 			}
 		}
 		catch(Exception e)

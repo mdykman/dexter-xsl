@@ -7,9 +7,6 @@
 
 package org.dykman.dexter.didi;
 
-import java.util.Map;
-import java.util.TreeMap;
-
 import org.dykman.dexter.descriptor.Descriptor;
 import org.dykman.dexter.descriptor.PathDescriptor;
 import org.dykman.dexter.dexterity.DexterityConstants;

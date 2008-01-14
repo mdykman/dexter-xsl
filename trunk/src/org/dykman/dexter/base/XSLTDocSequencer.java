@@ -408,10 +408,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		nodeTypes[nodeLevel++] = (short) type;
 		switch (type)
 		{
-			case Node.DOCUMENT_TYPE_NODE:
-			{
-			}
-				break;
 			case Node.DOCUMENT_NODE:
 			{
 				Document document = createStub("/");
