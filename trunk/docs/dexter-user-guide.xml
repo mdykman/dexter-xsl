@@ -49,7 +49,7 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
     <chapter>
       <title>Running Dexter</title>
 		<para>
-		Dexter requires a minimum Java JRE 1.5. If you don't have an appropriate 
+		Dexter requires a minimum Java JRE 1.6. If you don't have an appropriate 
 		version already installed, one can be downloaded for most platforms at 
 		http://java.sun.com.
 		</para>
@@ -227,7 +227,7 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
         The documentation for dexter resides in XML documents.  It is formatted 
         for human readability through stylesheets.  If you are viewing this in XHTML
         in a standard web browser, this is likely stylesheet 'docster.html.xsl' which was 
-        generated from the dexter source file]]><link url="docster.html">docster.html</link>
+        generated from the dexter source file ]]><link url="docster.html">docster.html</link>
         <![CDATA[.  When docster.html
         is viewed through a standard HTML browser, it looks exactly like what it is:
         a minimal skeleton document, integrating style elements with sample text, just
@@ -235,11 +235,6 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
         find that it has been embellished with 'xpl' attributes which describe the relationship
         between that document and an XML data document. 
       ]]></para>
-      <para>
-      If you are reading this documentation in Wiki format, the wiki-text was prepared by applying
-      the stylesheet 'wikster.xml.xsl' to the XML.  This stylesheet was generated from the dexter 
-      source file <link url="wikster.xml">wikster.xml</link>.
-      </para>
     </chapter>
     <chapter>
       <title>Output Document</title>
@@ -258,7 +253,7 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
 				]]></para>
     </chapter>
     <chapter>
-      <title>Dexter and Paths</title>
+      <title>Paths</title>
       <para><![CDATA[
       Many dexter productions accept data path arguments. Dexter paths are based on a 
       modified data-path notation similar to XPath but, in the authors opinion, not quite
@@ -297,11 +292,26 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
    friend/../:type
       ]]></code>
     </chapter>
+  </section>
+  <section>
+    <title>Dexterity</title>
+    <overview>
+      <para><![CDATA[
+		Here is reference information for the user who wishes to
+		use dexterity to create XSL transforms from existing XML 
+      and XHTML documents. 
+		]]></para>
+      <para><![CDATA[
+		Generally speaking, if your productions are defined exclusively by dexterity descriptors 
+		(excepting 'ccpy'),  a valid design document results in a stylesheet which will render 
+		equally valid result documents. There are exceptions to this, which will be discussed
+		in further detail eventually. 
+	 ]]></para>
+    </overview>
     <chapter>
       <title>Operators</title>
       <para><![CDATA[
-      Many dexterity descriptors accept operators which modify a descriptors behavior.  There are 
-      three operators currently defined, two prefix operators and one post-fix operator.
+      Many dexterity descriptors accept operators which modify a descriptors behavior.
         ]]></para>
       <para><![CDATA[
       The 'imperative' operator '!' is used as a prefix in many descriptor arguments.  Where it occurs,
@@ -312,18 +322,21 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
       The 'child' operator '#' is used as a prefix to 'each', 'sub' and 'if'.  It causes those
       descriptor's actions to be applied to the set of children, rather than to the element itself.
         ]]></para>
+		  <para><![CDATA[The 'raw' operator, '~' is used as a prefix to the value descriptor . It's use
+		  supresses output-escaping during data substitution.]]>
+		  </para>
       <para><![CDATA[
-        The operator '@' is used as a suffix to a path to introduce a path-function expression.  
+        The operator '@' is used as a suffix to a path to introduce a path-macro expression.  
         It is dealt with in detail in the next chapter.
         ]]></para> 
       </chapter>
       <chapter>
         <title>Path Functions</title>
        <para><![CDATA[
-        When the path-function operator '@' appears as the first path element 
+        When the path-macro operator '@' appears as the first path element 
         in an expression 
         (after prefix operators), a path of '.' is implied. 
-        The syntax of a path-function suffix is as follows:
+        The syntax of a path-macro suffix is as follows:
         ]]></para>
       <code><![CDATA[
   '@' '!' <function-name> [ ':' <argument> ]
@@ -391,22 +404,6 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
         whitespace and replacing sequences of whitespace characters by a single space. 
       ]]></para>
     </chapter>
-  </section>
-  <section>
-    <title>Dexterity</title>
-    <overview>
-      <para><![CDATA[
-		Here is reference information for the user who wishes to
-		use dexterity to create XSL transforms from existing XML 
-        and HTML documents. 
-		]]></para>
-      <para><![CDATA[
-			Generally speaking, if your productions are defined exclusively by dexterity descriptors 
-			(excepting 'ccpy'),  a valid design document results in a stylesheet which will render 
-			equally valid result documents. There are exceptions to this, which will be discussed
-			in further detail eventually. 
-	 ]]></para>
-    </overview>
     <chapter>
       <title>env</title>
       <para><![CDATA[
@@ -470,7 +467,7 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
       <title >The Castle</title>
          ...
       <div>
-         Title: <h3 >The Castle</h3>
+         Title: <h3>The Castle</h3>
          Author: <span>Franz Kafka</span>
       </div>
       ]]></code>
@@ -540,7 +537,7 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
 		of each node described in the expression is substituted for the braced expression and the 
 		resulting value is assigned to the named attribute.  The value is 
 		rendered if and only if all data path components can be resolved in the current data context.
-		There currently is no support for whitespace in literal content.
+		Currently there is no support for whitespace in literal content.
 		]]>
       </para>
       <code><![CDATA[
@@ -549,7 +546,7 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
    <!-- clickable TOC -->
    <a href="#" xplattr="href:#{title}" xplvalue="title>click here</a>
    <!-- where the destination might be defined as  -->
-   <a name="disposeme" xplattr="title"><h3 >Chapter Title</h3></a>
+   <a name="disposeme" xplattr="name:title"><h3 >Chapter Title</h3></a>
 	
    <!-- turn image information into an img tag -->
    <!-- given a data document: -->
@@ -748,10 +745,10 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
       </para>
       <para>
         <![CDATA[
-		'sub' requires an id-attribute to be defined, which becomes part of the name of the
+		'sub' requires an id-attribute to be defined, on the element which becomes part of the name of the
 		sub-transformation.  If a 'sub' descriptor is discovered on an element with the id 
 		attribute set to 'messages' in an input document named 'index.html', it will generate
-		an 	sub-transformation document named 'index-messages-xsl'.     
+		an 	sub-transformation document named 'index.html-messages-xsl'.     
 			]]>
       </para>
       <code><![CDATA[
@@ -775,7 +772,7 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
    	'index[.anything]' and invoke it via apply templates.
    	The contents of the current node are discarded.
    	-->
-   <table xplsub="**/messages:index-messages">
+   <table xplsub="**/messages:index.html-messages">
       ...
    </table>
 		]]></code>
@@ -784,13 +781,12 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
       <title>ignore</title>
       <para>
         <![CDATA[
-		'ignore' - accepts an empty argument.  Used to eliminate an element and it's children
-        from  output production.  This is useful when a design document contains a sequence
-		of examples of repeated content.  The user typically will choose one (or more if 
+		'ignore' - accepts an empty argument.  It is used to eliminate an element and it's children
+        from  output production.  This is useful when a design document contains several
+		examples of repeated content.  The user typically will choose one (or more if 
 		'case' is utilized) to describe the output and then apply 'ignore' to the unused
 		elements rather removing them from the source.  This assists us in 
-		maintaining the integrity of the design document, even as we mark it up as 
-		source for XSLT production.
+		maintaining the integrity of the design document through the build process, 
 			]]>
       </para>
       <code><![CDATA[
@@ -838,7 +834,12 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
   <title>Didi</title>
     <overview><para>
     Didi is the module responsible for XHTML functionality.
-    </para></overview>
+    </para>
+	 <para>
+	 It is currently in a very experimental state, Classes and interfaces
+	 in this package should be considered unstable and are subject to change.
+	 </para>
+	 </overview>
     <chapter>
     <title>meta</title>
     <para>
@@ -860,7 +861,7 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
  Rating=General
  Distribution=Global
  Robots=index, follow
- Generator=dexter-0.1.1-alpha (c) 2007,2008 Michael Dykman
+ Generator=dexter-0.1.6-beta (c) 2007,2008 Michael Dykman
  Keywords=XSL,XSLT,XHTML,XML,W3C,DocType,web,development,web-development,\
    tool,code-generation,convert,converter
  Description=Dexter is a tool for simplifying the production of XSL \
@@ -874,8 +875,8 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
     <para>
     data employs a concise syntax to expose JavaScript arrays composed
     of data items and form elements. They are rendered as the value of an 
-    arbitrary attribute specified in the pretties file under the key
-    'dexter.didi.jsparam'.  This value may be eval-uated by JavaScript
+    arbitrary attribute specified in the properties file under the key
+    'dexter.didi.data'.  This value may be eval-uated by JavaScript
     to create anonymous data arrays.  The default is to use the attribute
     'jsdata' to contain the string.
     </para>
@@ -885,23 +886,24 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
     <para>
     This descriptor expects a space-delimited list of data definitions.
     Each definition begins with a name followed by a semi-colon and a value
-    expression.  There are 3 classes of value expression; an example of each 
-    is given below:  
+    expression.  There are 3 classes of value expression: form-reference,
+	 literal and data-path.
+    </para>
+    <para>
+    The following will create an array containing three named items, 'field', 'action' and 'id',
+	 giving an example of each expression class.
     </para>
     <code><![CDATA[
  xpldata="field:$myform.field action:!reload id::id"
     ]]></code>
     <para>
-    This will create an array containing three named items: field, action and id. 
-    </para>
-    <para>
     'field:$myform.field' has a data value expression beginning with a '$'
     operator.  This indicates that this item refers to a specific element 
     of a named form and will construct a JavaScript expression which
-    may be evaluated to determine the fields real-time value.  It is
+    may be evaluated to determine the field's real-time value.  It is
     required that named forms referenced by such expressions are always 
-    anointed by the dexterity 'uniq' descriptor.  If this is not observed, 
-    invalid code may be generated.
+    anointed by the dexterity <link url="#Dexter-uniq">>uniq</link> descriptor.  
+	 If this is not observed, invalid code may be generated.
     </para>
     <code><![CDATA[
  document.forms["myform"].field.value
@@ -919,7 +921,7 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
     translated into a literal value in the data expression.
     </para>
     <para>
-    Once assembled, the 'jsdata' attribute (which is the default name specified
+    Upon transformation, the 'jsdata' attribute (which is the default name specified
     in dexter.properties)  of the current node is assigned a value which may be 
     eval'ed by JavaScript as an anonymous Object expression.
     </para>
@@ -936,11 +938,11 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
     <para>
     The interface to these data items is flexible. You may give your node an 
     'id' attribute so that your JavaScript may readily navigate to it, or
-    pass it to callback functions.  
+    retrieve it via callback functions.  
     </para>
     <code><![CDATA[
   <script>
-    function myfunc(el)
+    function myfunc(exp)
     {
       var exp = el.getAttribute("jsdata");
       var data = eval("new Object( " + exp + ");");
@@ -961,12 +963,9 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
     It should be noted that attributes generated by this descriptor violate
     strict XHTML in that the default attribute name, 'jsdata' is not in the 
     specification.  I'm not sure how this affects the behaviour of dynamic 
-    XHTML validation icons such as the one provided by the W3C. One possible way 
-    around this which legal to the letter, if not the spirit, of the specification
-    is to use the name 'title' instead of 'jsdata'.  As I understand the 
-    specification, it is optionally allowed on every element not so often
-    used.  Alternatively, the user may select a specific element or set of 
-    elements which share a common legal attribute which can be leveraged.  
+    XHTML validation icons such as the one provided by the W3C.   Alternatively, 
+	 the user may limit the use of this descriptor to a specific element or set of 
+    elements which share a common legal attribute which is not otherwise in use.
     </para>
     </chapter>
   </section>
