@@ -48,6 +48,10 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
 			<title>Dexter</title>
 
 			<para>
+			The latest version of the dexter package can be found at
+			<link url ="http://dexter-xsl.googlecode.com">Dexter Project Page</link>.
+			</para>
+			<para>
 			Dexter can generate XSL stylesheets from any well-formed XML source.  
 			Dexter-defined attributes can be added to specify transformation rules in a 
 			design document, such as an XHTML example layout.  The result is used as input
