@@ -1,9 +1,12 @@
 <project default="dexter-jar">
-	<property name="RELEASENAME" value="dexter-0.1.5-beta" />
-	<property name="STAGINGDIR" value="/tmp" />
+
+	<property  file="build.properties" />
+
+	<property name="RELEASENAME" value="dexter-${dexter.version}" />
+	<property name="STAGINGDIR" value="${build.staging}" />
 	<property name="PACKAGEDIR" value="${STAGINGDIR}/${RELEASENAME}" />
 	<property name="DOCSOURCE" value ="../docs" />
-	
+
 	<target name="rebuild" depends="clean,all" />
 	<target name="all" depends="dexter-jar,docs" />
 	<target name="docs" depends="dexter-javadoc" />
@@ -19,43 +22,7 @@
 			</fileset>
 		</delete>
 	</target>
-<!--
-	<target name="doc-templates">
-		<java dir="${DOCSOURCE}" fork="yes" classname="org.dykman.dexter.Dexter">
-			<classpath>
-				<filelist dir=".">
-					<file name="dexter.jar"/>
-				</filelist>
-			</classpath>
-			<arg file="${DOCSOURCE}/wikster.xml"/>
-			<arg file="${DOCSOURCE}/docster.html"/>
-		</java>
-	</target>
 
-	<target name="wiki-docs">
-		<java fork="yes" classname="org.dykman.dexter.Transformer">
-			<classpath>
-				<filelist dir=".">
-					<file name="dexter.jar"/>
-				</filelist>
-			</classpath>
-			<arg file="${DOCSOURCE}/wikster.xml.xsl"/>
-			<arg file="${DOCSOURCE}/index.xml"/>
-			<arg file="${DOCSOURCE}/dexter-api.xml"/>
-			<arg file="${DOCSOURCE}/dexter-user-guide.xml"/>
-		</java>
-
-		<move file="${DOCSOURCE}/index.xml.xslout" 
-			tofile="${DOCSOURCE}/index.xml.wiki"/>
-		<move file="${DOCSOURCE}/dexter-api.xml.xslout" 
-			tofile="${DOCSOURCE}/dexter-api.xml.wiki"/>
-		<move file="${DOCSOURCE}/dexter-user-guide.xml.xslout" 
-			tofile="${DOCSOURCE}/dexter-user-guide.xml.wiki"/>
-
-	</target>
-
-
- -->
 	<target name="package" depends="rebuild">
 		<delete dir="${PACKAGEDIR}">
 		</delete>
@@ -71,6 +38,7 @@
 
 		<copy todir="${PACKAGEDIR}/build" file="dexter.jar" />
 		<copy todir="${PACKAGEDIR}/build" file="build.xml" />
+		<copy todir="${PACKAGEDIR}/build" file="build.properties" />
 		<copy todir="${PACKAGEDIR}/build" file="LICENSE.txt" />
 		<copy todir="${PACKAGEDIR}/build" file="README.txt" />
 		<copy todir="${PACKAGEDIR}/build" file="CHANGES.txt" />
@@ -107,7 +75,7 @@
 
 	<target name="compile">
 		<mkdir dir="../bin"/>
-		<javac destdir="../bin" srcdir="../src" debug="yes" failonerror="true" target="1.5" />
+		<javac destdir="../bin" srcdir="../src" debug="yes" failonerror="true" />
 	</target>
 
 		

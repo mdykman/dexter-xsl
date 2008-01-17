@@ -48,6 +48,12 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
 			<title>Dexter</title>
 
 			<para>
+			Dexter can generate XSL stylesheets from any well-formed XML source.  
+			Dexter-defined attributes can be added to specify transformation rules in a 
+			design document, such as an XHTML example layout.  The result is used as input
+			to dexter which will produce one or more .xsl files.  
+			</para>
+			<para>
 				<![CDATA[
 			  Dexter allows users to define extended attributes which 
 			can be associated with descriptors and editors. These attributes can be
@@ -61,6 +67,9 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
 			changes we effect while preparing the design document as source for dexter are 
 			effectively transparent to all but dexter.
 			]]>
+			</para>
+			<para>
+			Refer to <link url="docster.html">docster.html</link> and view it's source for an example.
 			</para>
 			<para>
 			For information about using dexter as a tool to generate XSL stylesheets
