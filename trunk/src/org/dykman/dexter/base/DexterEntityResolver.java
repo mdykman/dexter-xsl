@@ -18,17 +18,19 @@ public class DexterEntityResolver implements EntityResolver
 	public InputSource resolveEntity(String publicId, String systemId)
 	      throws SAXException, IOException
 	{
-		InputSource source = new InputSource(systemId);
+		InputSource source = new InputSource(publicId);
 		source.setEncoding(encoding);
 		source.setPublicId(publicId);
 		if(publicId.startsWith("&"))
 		{
-System.out.println("resolving " + publicId);			
+System.out.println("     resolving " + publicId);			
 			Reader reader = new StringReader(publicId);
 			source.setCharacterStream(reader);
 		}
 		else
 		{
+System.out.println("     resolving " + publicId + " with blank");
+
 			Reader reader = new StringReader("");
 			source.setCharacterStream(reader);
 		}

@@ -55,7 +55,11 @@ public class NodeDescriptor extends AbstractDescriptor
 
 	public void end()
 	{
-		sequencer.endNode();
+		int type = node.getNodeType();
+		if(type != Node.DOCUMENT_TYPE_NODE)
+		{
+			sequencer.endNode();
+		}
 	}
 
 	public void start()
@@ -67,13 +71,16 @@ public class NodeDescriptor extends AbstractDescriptor
 				sequencer.startNode(node.getNodeName(),node.getNodeType());
 			break;
 			case Node.TEXT_NODE:
-			case Node.ENTITY_NODE:
-			case Node.ENTITY_REFERENCE_NODE:
 			case Node.CDATA_SECTION_NODE:
 			case Node.COMMENT_NODE:
 			case Node.DOCUMENT_NODE:
 				sequencer.startNode(node.getNodeValue(),node.getNodeType());
 			break;
+			case Node.ENTITY_NODE:
+			case Node.ENTITY_REFERENCE_NODE:
+				sequencer.startNode(node.getNodeName(),node.getNodeType());
+			break;
+			
 			case Node.DOCUMENT_TYPE_NODE:
 				{
 						sequencer.setDocType((DocumentType)node);

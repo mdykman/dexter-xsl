@@ -38,7 +38,6 @@ import org.dykman.dexter.descriptor.TransformDescriptor;
 import org.dykman.dexter.dexterity.DexterityConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -104,7 +103,6 @@ public class Dexter
 		document = clone;
 		document.normalize();
 
-		// convert dexter attributes
 		scanDocument(document);
 		Descriptor descriptor = Dexter.marshall(document, this);
 
@@ -114,6 +112,7 @@ public class Dexter
 		sequencer.runDescriptor(descriptor);
 		return sequencer.getDocuments();
 	}
+
 	public Map<String, Document> getDocuments()
 	{
 		return allDocs;
@@ -614,24 +613,24 @@ public class Dexter
 				System.exit(1);
 			}
 			String encoding = "UTF-8";
-			
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			dbf.setValidating(false);
-			DocumentBuilder builder = dbf.newDocumentBuilder();
-//			builder.
 
-			builder.setEntityResolver(new DexterEntityResolver(encoding));
 			Dexter dexter = new Dexter(encoding);
 			dexter.setMediaType("text/html");
 			dexter.setMethod("xml");
 			dexter.setIndent(true);
 
+			
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			dbf.setExpandEntityReferences(false);
+			dbf.setValidating(false);
+			
+			DocumentBuilder builder = dbf.newDocumentBuilder();
+			builder.setEntityResolver(new DexterEntityResolver(encoding));
+
 			while(argp < args.length)
 			{
 				String fn = args[argp];
 				Document impl = builder.parse(new FileInputStream(fn));
-//				dexter.addToAllDocs(dexter.generateXSLT(fn,impl));
-				
 				Map<String, Document> docs = dexter.generateXSLT(fn,impl);
 				++argp;
 				Iterator<String> k = docs.keySet().iterator();
