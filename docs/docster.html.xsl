@@ -16,40 +16,36 @@
 <xsl:value-of select="*/title"/>
 </xsl:element>
 <xsl:element name="meta">
-<xsl:attribute name="content">Dexter is a tool for simplifying the production of XSL stylesheets.</xsl:attribute>
-<xsl:attribute name="name">Description</xsl:attribute>
-</xsl:element>
-<xsl:element name="meta">
-<xsl:attribute name="content">XSL,XSLT,XHTML,XML,W3C,DocType,web,development,web-development,tool,code-generation,convert,converter</xsl:attribute>
-<xsl:attribute name="name">Keywords</xsl:attribute>
+<xsl:attribute name="content">Global</xsl:attribute>
+<xsl:attribute name="name">Distribution</xsl:attribute>
 </xsl:element>
 <xsl:element name="meta">
 <xsl:attribute name="content">Michael Dykman &lt;michael@dykman.org&gt;</xsl:attribute>
 <xsl:attribute name="name">Author</xsl:attribute>
 </xsl:element>
 <xsl:element name="meta">
-<xsl:attribute name="content">General</xsl:attribute>
-<xsl:attribute name="name">Rating</xsl:attribute>
-</xsl:element>
-<xsl:element name="meta">
-<xsl:attribute name="content">January 03, 2008</xsl:attribute>
-<xsl:attribute name="name">Date</xsl:attribute>
-</xsl:element>
-<xsl:element name="meta">
-<xsl:attribute name="content">Global</xsl:attribute>
-<xsl:attribute name="name">Distribution</xsl:attribute>
-</xsl:element>
-<xsl:element name="meta">
 <xsl:attribute name="content">2007,2008 Michael Dykman</xsl:attribute>
 <xsl:attribute name="name">Copyright</xsl:attribute>
 </xsl:element>
 <xsl:element name="meta">
-<xsl:attribute name="content">index, follow</xsl:attribute>
-<xsl:attribute name="name">Robots</xsl:attribute>
+<xsl:attribute name="content">General</xsl:attribute>
+<xsl:attribute name="name">Rating</xsl:attribute>
 </xsl:element>
 <xsl:element name="meta">
-<xsl:attribute name="content">dexter-0.1.1-alpha (c) 2007,2008 Michael Dykman</xsl:attribute>
+<xsl:attribute name="content">XSL,XSLT,XHTML,XML,W3C,DocType,web,development,web-development,tool,code-generation,convert,converter</xsl:attribute>
+<xsl:attribute name="name">Keywords</xsl:attribute>
+</xsl:element>
+<xsl:element name="meta">
+<xsl:attribute name="content">Dexter is a tool for simplifying the production of XSL stylesheets.</xsl:attribute>
+<xsl:attribute name="name">Description</xsl:attribute>
+</xsl:element>
+<xsl:element name="meta">
+<xsl:attribute name="content">dexter-0.1.6-beta (c) 2007,2008 Michael Dykman</xsl:attribute>
 <xsl:attribute name="name">Generator</xsl:attribute>
+</xsl:element>
+<xsl:element name="meta">
+<xsl:attribute name="content">index, follow</xsl:attribute>
+<xsl:attribute name="name">Robots</xsl:attribute>
 </xsl:element>
 </xsl:element>
 <xsl:element name="body">
