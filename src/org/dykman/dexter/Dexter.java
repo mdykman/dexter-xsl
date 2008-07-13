@@ -523,9 +523,10 @@ public class Dexter
 		try
 		{
 
-			document.normalizeDocument();
+//			document.normalizeDocument();
 
 			Transformer tranformer = factory.newTransformer();
+//			tranformer.
 			tranformer.setOutputProperty("indent", indent);
 			tranformer.setOutputProperty("method", method);
 			tranformer.setOutputProperty("media-type", mediaType);
