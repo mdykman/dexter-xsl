@@ -7,22 +7,18 @@
 package org.dykman.dexter.base;
 
 import java.io.Writer;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import java.util.Stack;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
-
 
 import org.dykman.dexter.Dexter;
 import org.dykman.dexter.DexterException;
@@ -32,10 +28,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import org.w3c.dom.EntityReference;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 public class XSLTDocSequencer extends BaseTransformSequencer
@@ -57,8 +51,10 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 
 	private TransformerFactory factory = TransformerFactory.newInstance();
-	private DocumentBuilder builder = DocumentBuilderFactory.newInstance()
-	      .newDocumentBuilder();
+//	private DocumentBuilder builder = DocumentBuilderFactory.newInstance()
+//	      .newDocumentBuilder();
+
+	private DocumentBuilder builder;
 
 	private Map<String, Document> finished = new HashMap<String, Document>();
 
@@ -93,6 +89,10 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		this.filename = name;
 	}
 
+	public void setDocumentBuilder(DocumentBuilder builder)
+	{
+		this.builder = builder;
+	}
 	public void setIdNames(List ids)
 	{
 		idNames = ids;
@@ -102,12 +102,10 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 	public void startIterator(String path)
 	{
-//System.out.println("ITERATOR " + path);		
 		StringBuffer sb = new StringBuffer();
 		String[] pp = path.split("[|]");
 		for(int i = 0; i < pp.length; ++i)
 		{
-//System.out.println("     " + pp[i] +             " - " + translateXSLPath(pp[i]));			
 			sb.append(translateXSLPath(pp[i]));
 			
 			if(i+1 < pp.length) sb.append("|");
@@ -134,7 +132,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		Element element = currentDocument.createElement("xsl:attribute");
 		element.setAttribute("name", name);
 
-//System.out.print("mapAttribute: " + name + " : ");		
 		
 		if (def != null || path.length > 1)
 		{
@@ -142,12 +139,10 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			boolean first = true;
 			if (path.length == 1)
 			{
-//System.out.print("?" + path[0] + "?");
 				attrTest.append(translateXSLPath(path[0]));
 			}
 			else for (int i = 0; i < path.length; ++i)
 			{
-//System.out.print("!" + path[i] + "!");
 				if (i % 2 != 0)
 				{
 					String p = path[i] = translateXSLPath(path[i]);
@@ -162,7 +157,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 					attrTest.append(p);
 				}
 			}
-//System.out.println();
 
 			Element choose = currentDocument.createElement("xsl:choose");
 			Element when = currentDocument.createElement("xsl:when");
@@ -334,7 +328,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			// attributes may be handled by specific conditions, 
 			// where required
 			
-			// if non-elements are to bne alowed as context nodes
+			// if non-elements are to be allowed as context nodes
 //			element = currentDocument.createElement("xsl:when");
 //			element.setAttribute("test", "not(self::text() or self::attribute())");
 		}
@@ -342,7 +336,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		pushNode(element);
 	}
 
-	// public void endCase(String[] tests)
+
 
 	public void endCase()
 	{
@@ -424,22 +418,23 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			break;
 			case Node.TEXT_NODE:
 			{
-				Text text = currentDocument.createTextNode(name);
-				currentNode.appendChild(text);
+				currentNode.appendChild(textContainer(name));
 			}
 			break;
 			case Node.CDATA_SECTION_NODE:
 			{
-				CDATASection cd = currentDocument.createCDATASection(name);
-				currentNode.appendChild(cd);
+				currentNode.appendChild(textContainer(name));
 			}
 			break;
 			case Node.ENTITY_NODE:
 				// TODO: this is screwed up for this case, I am sure...
 			case Node.ENTITY_REFERENCE_NODE:
 			{
-				EntityReference en = currentDocument.createEntityReference(name);
-				currentNode.appendChild(en);
+				Element el = currentDocument.createElement("xsl:text");
+				el.setAttribute("disable-output-escaping", "yes");
+				el.appendChild(currentDocument.createTextNode('&' + name + ';'));
+
+				currentNode.appendChild(el);
 			}
 			break;
 
@@ -477,6 +472,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	{
 	
 		Document document = builder.newDocument();
+	
 //		builder.
 
 		Element style = document.createElement("xsl:stylesheet");

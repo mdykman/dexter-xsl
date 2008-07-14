@@ -96,7 +96,9 @@ public class Dexter
 	}
 	Map<String, Document> allDocs = new HashMap<String, Document>();
 	
-	public Map<String, Document> generateXSLT(String filename,Document document) throws Exception
+	public Map<String, Document> generateXSLT(
+			DocumentBuilder builder,String filename,Document document) 
+			throws Exception
 	{
 		this.filename = filename;
 		Document clone = (Document)document.cloneNode(true);
@@ -107,6 +109,7 @@ public class Dexter
 		Descriptor descriptor = Dexter.marshall(document, this);
 
 		XSLTDocSequencer sequencer = new XSLTDocSequencer(filename, encoding);
+		sequencer.setDocumentBuilder(builder);
 		sequencer.setProperties(properties);
 		sequencer.setIdNames(idNames);
 		sequencer.runDescriptor(descriptor);
@@ -493,7 +496,6 @@ public class Dexter
 		{
 			parent.removeChild(drop[i]);
 		}
-		// System.out.println("found of group of siblings: " + c);
 		return Arrays.copyOfRange(related, 0, c);
 	}
 
@@ -531,6 +533,7 @@ public class Dexter
 			tranformer.setOutputProperty("method", method);
 			tranformer.setOutputProperty("media-type", mediaType);
 			tranformer.setOutputProperty("encoding", encoding);
+//			tranformer.
 
 			// Writer writer = null;
 			Result result = new javax.xml.transform.stream.StreamResult(writer);
@@ -605,7 +608,6 @@ public class Dexter
 	public static void main(String[] args)
 	{
 		int argp = 0;
-//		System.setProperty("jaxp.debug", "true");
 		try
 		{
 			if (args.length == 0)
@@ -624,17 +626,20 @@ public class Dexter
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			dbf.setExpandEntityReferences(false);
 			dbf.setValidating(false);
-			
+			dbf.setCoalescing(false);
+			dbf.setIgnoringElementContentWhitespace(false);
 			DocumentBuilder builder = dbf.newDocumentBuilder();
 			builder.setEntityResolver(new DexterEntityResolver(encoding));
 
 			while(argp < args.length)
 			{
+				builder.setEntityResolver(new DexterEntityResolver(encoding));
 				String fn = args[argp];
 				Document impl = builder.parse(new FileInputStream(fn));
-				Map<String, Document> docs = dexter.generateXSLT(fn,impl);
+				Map<String, Document> docs = dexter.generateXSLT(builder,fn,impl);
 				++argp;
 				Iterator<String> k = docs.keySet().iterator();
+				builder.setEntityResolver(null);
 				while(k.hasNext())
 				{
 					String name = k.next();
