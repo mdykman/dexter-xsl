@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -24,10 +25,12 @@ import org.dykman.dexter.Dexter;
 import org.dykman.dexter.DexterException;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
+import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
@@ -40,22 +43,12 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		   " Free for use under version 2.0 of the Artistic License.  ",
 		   " http://www.opensource.org/licences/artistic-license.php  ",  
 		 };
+
 	private String indent = "yes";
-
 	private String method = "html";
-
 	private String mediaType = "text/html";
-
-//	private static Set<File> outputFile = new HashSet<File>();
-
-
-
 	private TransformerFactory factory = TransformerFactory.newInstance();
-//	private DocumentBuilder builder = DocumentBuilderFactory.newInstance()
-//	      .newDocumentBuilder();
-
 	private DocumentBuilder builder;
-
 	private Map<String, Document> finished = new HashMap<String, Document>();
 
 	private Map<String, Map<String, DocumentFragment>> valMap = new HashMap<String, Map<String, DocumentFragment>>();
@@ -82,12 +75,13 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	private String filename;
 	private String encoding;
 
-
+	
 	public XSLTDocSequencer(String name, String encoding) throws Exception
 	{
 		this.encoding = encoding;
 		this.filename = name;
 	}
+	
 
 	public void setDocumentBuilder(DocumentBuilder builder)
 	{
@@ -390,6 +384,18 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	public void setDocType(DocumentType dt)
 	{
 		// this should always return the current output element
+		DocumentType inner = (DocumentType)dt.cloneNode(true);
+//		inner.`
+
+		if(inner != null)
+		{
+System.out.println("the doc has an inner doc type");		
+		}
+		else
+		{
+System.out.println("the doc has NO inner doc type");		
+
+		}
 		Element element = (Element)currentStylesheet.getFirstChild();
 		element.setAttribute("doctype-public",dt.getPublicId());
 		if(dt.getSystemId() != null)
@@ -430,11 +436,14 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 				// TODO: this is screwed up for this case, I am sure...
 			case Node.ENTITY_REFERENCE_NODE:
 			{
-				Element el = currentDocument.createElement("xsl:text");
-				el.setAttribute("disable-output-escaping", "yes");
-				el.appendChild(currentDocument.createTextNode('&' + name + ';'));
+//				builder.get
+//				currentNode.get
+				currentNode.appendChild(translateEntityReference(name));
 
-				currentNode.appendChild(el);
+//				Element el = currentDocument.createElement("xsl:text");
+//				el.setAttribute("disable-output-escaping", "yes");
+//				el.appendChild(currentDocument.createTextNode('&' + name + ';'));
+//				currentNode.el);
 			}
 			break;
 
@@ -453,6 +462,29 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		}
 	}
 
+	protected String lookupEnitityReference(String ref)
+	{
+		String key = "dexter.entities." + ref;
+		String val = properties.getProperty(key);
+		if(val == null)
+		{
+			throw new DexterException("unrecognized entity reference used: " + ref);
+		}
+		return val.trim();
+	}
+	protected Node translateEntityReference(String ref)
+	{
+//		currentDocument.
+		Node en = currentDocument.createEntityReference("nbsp");
+//		Node en = currentDocument.createEntityReference(lookupEnitityReference(ref));
+		Element el = currentDocument.createElement("xsl:text");
+		el.setAttribute("disable-output-escaping", "yes");
+		el.appendChild(currentDocument.createEntityReference(ref));
+//		el.setNodeValue(lookupEnitityReference(ref));
+//		el.setTextContent(lookupEnitityReference(ref));
+		el.appendChild(en);
+		return el;
+	}
 	public void endNode()
 	{
 		short type = nodeTypes[--nodeLevel];
@@ -470,15 +502,22 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 	protected Document createStub(String match)
 	{
-	
-		Document document = builder.newDocument();
-	
-//		builder.
+		DOMImplementation domImpl = builder.getDOMImplementation();
+		DocumentType docType = domImpl.createDocumentType("stylesheet", "foo [ ]", "http://foo.com/sdfsf");
 
-		Element style = document.createElement("xsl:stylesheet");
+		NamedNodeMap nn = docType.getEntities();
+		
+//		nn.setNamedItem(docType);
+		
+		Document document = domImpl.createDocument(
+				"http://www.w3.org/1999/XSL/Transform", "xsl:stylesheet", docType);
+
+		Element style = document.getDocumentElement();
 		style.setAttribute("version", "1.0");
-		style.setAttribute("xmlns:xsl", "http://www.w3.org/1999/XSL/Transform");
-		document.appendChild(style);
+//		Element style = document.createElement("xsl:stylesheet");
+//		style.setAttribute("version", "1.0");
+//		style.setAttribute("xmlns:xsl", "http://www.w3.org/1999/XSL/Transform");
+//		document.appendChild(style);
 
 		pushStylesheet(style);
 		pushNode(style);
@@ -513,7 +552,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 	private void tagTemplate(Element element)
 	{
-
 		blockComment(element, TAG);
 	}
 
@@ -708,9 +746,12 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		try
 		{
 
-			document.normalizeDocument();
-
+//			document.normalizeDocument();
+System.out.println("writing");
 			Transformer tranformer = factory.newTransformer();
+//			OutputKeys.
+			tranformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "http://www.gfoo.com/dfgdf");
+			tranformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "something");
 			tranformer.setOutputProperty("indent", indent);
 			tranformer.setOutputProperty("method", method);
 			tranformer.setOutputProperty("media-type", mediaType);
