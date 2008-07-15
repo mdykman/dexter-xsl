@@ -67,6 +67,7 @@ public class Dexter
 	protected Map<Object, Object> userData = new HashMap<Object, Object>();
 
 	protected PropertyResolver baseResolver; 
+	protected PropertyResolver entityResolver; 
 
 	protected Map<String,PropertyResolver> modulesMap 
 		= new LinkedHashMap<String, PropertyResolver>();
@@ -106,9 +107,9 @@ public class Dexter
 		return modulesMap;
 	}
 	
-	public String getProperty(String key)
+	public String getEntity(String key)
 	{
-		return baseResolver.getProperty(key);
+		return entityResolver.getProperty(key);
 	}
 
 /**
@@ -119,6 +120,7 @@ public class Dexter
 	{
 		try
 		{
+			entityResolver = new DexterPropertyResolver("dexter.entities",properties,null);
 			baseResolver = new DexterPropertyResolver("dexter",properties,null);
 			modulesMap.put("dexter", baseResolver);
 			// set the search path for modules
