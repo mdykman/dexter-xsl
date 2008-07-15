@@ -1,33 +1,37 @@
-<html>
+<html  xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:dx="http://www.dykman.org/dexter/dexterity.xsd"
+  xmlns:dd="http://www.dykman.org/dexter/didi.xsd"
+  >
 <head>
 <style type="text/css">
     @import url("style.css");
 </style>
-<title xplvalue="*/title">Document Title</title>
-<meta name="author" content="some guy" xplmeta="dexter.meta"/>
+<title dx:value="*/title">Document Title</title>
+<meta name="author" content="some guy" dd:meta="dexter.meta"/>
 </head>
 <body>
-<a name="TOP" ></a>
-<div >
- <center><h1 xplvalue="*/title">Document Title</h1></center>
- <h5 xplif="*/subtitle" xplvalue="*/subtitle">Sub-Title</h5>
+<div class="foo">
+<span>
+<a name="TOP" ></a></span>
+<div>
+ <h1 dx:value="*/title">Document Title</h1>
+ <h5 dx:if="*/subtitle" dx:value="*/subtitle">Sub-Title</h5>
 </div>
 
-<div style="text-align:top">
 <div style="float:right; width:35%" >
 <div style="clear:both; align:left; width:100%;">
- <span class="author" style="width:100%  align:left;">author: <span xplghost="" xplvalue="*/author">Author Name</span></span>
+ <span class="author" style="width:100%  align:left;">author: <span dx:ghost="" dx:value="*/author">Author Name</span></span>
 </div>
 <br/>
 
-<div style="clear:both;" xpleach="*/references/reference">
+<div style="clear:both;" dx:each="*/references/reference">
   <div style="padding-left:5px; left-margin:5px;">
-  <a href="#" xplattr="href:url" xplvalue="title">external title</a><br/>
-   <div style="left-margin:5px;" xplvalue="summary">this is a document summary; typically, a short paragraph</div>
+  <a href="#" dx:attr="href:url" dx:value="title">external title</a><br/>
+   <div style="left-margin:5px;" dx:value="summary">this is a document summary; typically, a short paragraph</div>
  </div>
 </div>
 
-<div xplignore="" style="clear:both;" >
+<div dx:ignore="" style="clear:both;" >
   <div style="padding-left:5px; left-margin:5px;">
   <a href="#" >external title</a><br/>
    <div style="left-margin:5px;" >this is a document summary; typically, a short paragraph</div>
@@ -39,55 +43,55 @@
 
 <div style="float:left; width:55%">
 
-<div xplenv="*/overview" style="float:left; clear:both;">
+<div dx:env="*/overview" style="float:left; clear:both;">
  <h2 width="100%">Overview</h2>
- <p><i xpleach="para" xplvalue=".">bla bla bla</i></p>
-</div>
-<div  style="top-margin:15px;">
-<h2>Table of Contents</h2>
-<a name="TOC" ></a>
-<ul>
-<div xpleach="#*/section" style="left-margin:15px;">
- <a xplattr="href:#{title}" xplvalue="title">Section Title</a><br/>
-</div>
-</ul>
-
-</div>
+ <p><i dx:each="para" dx:value=".">bla bla bla</i></p>
 </div>
 
+<div  dx:if="*/section@!morethan:1" style="top-margin:15px;">
+   <h2>Table of Contents</h2>
+   <a name="TOC" ></a>
+      <div dx:each="#*/section" style="left-margin:30px;">
+         <a dx:attr="href:#{title}" dx:value="title">Section Title</a><br/>
+      </div>
 </div>
-<div style="clear:both"></div>
-<div xpleach="*/section" >
- <a name="tagname" xplattr="name:{title}" ></a>
 
- <center><h2 xplvalue="title" width="80%">Section Title</h2></center>
 
- <div width="60%" xplif="overview" xpleach="#overview/para">
-  <p><i xplvalue=".">overview paragraph</i></p>
-  <p xplignore=""><i>another overview paragraph</i></p>
+</div>
+
+</div>
+
+<div style="clear:both">
+<div dx:each="*/section">
+ <a name="tagname" dx:attr="name:{title}" ></a>
+
+ <h2 dx:value="title" width="80%">Section Title</h2>
+
+ <div width="60%" dx:if="overview" dx:each="#overview/para">
+  <p><i dx:value=".">overview paragraph</i></p>
+  <p dx:ignore=""><i>another overview paragraph</i></p>
  </div>
 
- <div xpleach="#chapter" class="listing">
-  <a xplattr="href:#{../title}-{title}">
-  <![CDATA[> ]]><span xplghost="" xplvalue="title" >Chapter Title</span></a><br/>
+ <div dx:each="#chapter" class="listing">
+  <a dx:attr="href:#{../title}-{title}">&gt; <span dx:ghost="" dx:value="title" >Chapter Title</span></a><br/>
  </div>
- <a href="#TOC"><![CDATA[<< ]]>Table of Contents</a><br/>
- <a href="#TOP"><![CDATA[<< ]]>Top</a><br/>
+ <a href="#TOC">&lt;&lt; Table of Contents</a><br/>
+ <a href="#TOP">&lt;&lt; Top</a><br/>
 
- <div xpleach="chapter" class="section">
-  <a name="tagname" xplattr="name:{../title}-{title}" ></a>
-  <h3 xplvalue="title">chapter title</h3>
-  <div xpleach="#*">
-   <p xplcase="@para" xpleach="#link|@!text">
-    <span xplcase="@!istext" xplghost="" xplvalue=".">
+ <div dx:each="chapter" class="section">
+  <a name="tagname" dx:attr="name:{../title}-{title}" ></a>
+  <h3 dx:value="title">chapter title</h3>
+  <div dx:each="#*">
+   <p dx:case="@para" dx:each="#link|@!text">
+    <span dx:case="@!istext" dx:ghost="" dx:value=".">
     ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
     ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
     ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
     ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
     ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
     </span>
-    <a xplcase="@link" href="extern" xplattr="href::url" xplvalue=".">links to something</a>
-    <span xplignore="">
+    <a dx:case="@link" href="extern" dx:attr="href::url" dx:value=".">links to something</a>
+    <span dx:ignore="">
     ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
     ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
     ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
@@ -95,28 +99,25 @@
     ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
     </span>
    </p>
-   <ul xplcase="@code">
-    <pre width="80%" xplvalue="." style="font:fixed; background-color:#f0f0f0">
+   <div dx:case="@code">
+    <pre dx:value="." style="width:80%;">
     
      // a code example
      foo.bar('foobar');
     </pre>
-   </ul>
+   </div>
   </div>
 
-  <center>
-  <a href="#" xplattr="href:#{../title}"><span xplghost="" xplvalue="../title">Section Title</span></a>
-  --
-  <a href="#TOC">Table of Contents</a>
-  --
-  <a href="#TOP">Top</a>
-  </center>
+<div style="text-align:center">
+  <a href="#" dx:attr="href:#{../title}"><span dx:ghost="" dx:value="../title">Section Title</span></a>
+ -- <span dx:if="*/section@!morethan:1" ><a href="#TOC">Table of Contents</a>-- </span><a href="#TOP">Top</a>
+</div>
   <br/>
   <br/>
  </div>
  <br/>
 </div>
-<div class="copy"><sub xplvalue="*/copyright">copyright info</sub>
-</div>
+<div class="copy"><sub dx:value="*/copyright">copyright info</sub>
+</div></div>
 </body>
 </html>

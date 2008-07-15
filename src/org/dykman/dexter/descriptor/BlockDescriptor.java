@@ -6,8 +6,8 @@
 
 package org.dykman.dexter.descriptor;
 
-import java.util.Properties;
 
+import org.dykman.dexter.base.PropertyResolver;
 import org.w3c.dom.Element;
 
 public abstract class BlockDescriptor extends MetaDescriptor
@@ -16,13 +16,13 @@ public abstract class BlockDescriptor extends MetaDescriptor
 	protected String[] names;
 	protected String[] values;
 	protected Descriptor[] descriptors;
-	protected Properties properties = null;
+	protected PropertyResolver properties = null;
 	
 	public BlockDescriptor()
 	{
 		super(null);
 	}
-	public void setProperties(Properties properties)
+	public void setPropertyResolver(PropertyResolver properties)
    {
    	this.properties = properties;
    }

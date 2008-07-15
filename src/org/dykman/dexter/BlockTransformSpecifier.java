@@ -15,6 +15,7 @@ import org.w3c.dom.Element;
 
 public class BlockTransformSpecifier extends TransformSpecifier
 {
+	protected String namespace;
 	protected Element[] block;
 	protected String[] names;
 	protected String[] values;
@@ -29,8 +30,9 @@ public class BlockTransformSpecifier extends TransformSpecifier
 		super((Class<TransformDescriptor>)klass);
 	}
 	
-	public void setArgs(Element[]block,String[]names,String[]values)
+	public void setArgs(String namespace, Element[]block,String[]names,String[]values)
 	{
+		this.namespace = namespace;
 		this.block = block;
 		this.names = names;
 		this.values = values;
@@ -47,7 +49,7 @@ public class BlockTransformSpecifier extends TransformSpecifier
 			{
 				cd[i] = Dexter.marshall(block[i],dexter);
 			}
-			td.setProperties(properties);
+			td.setPropertyResolver(properties);
 			td.setArgs(block, cd,names,values);
 			return td;
 		}

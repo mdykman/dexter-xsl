@@ -25,7 +25,7 @@ public class MetaTagEditor extends AbstractDocumentEditor
 	{
 	}
 
-	public void edit(String name, String value)
+	public void edit(String namespace, String name, String value)
 	{
 		try
 		{

@@ -12,12 +12,12 @@ public class AjaxTargetEditor extends AjaxEditor
 {
 	static int counter = 1;
 
-	public void edit(String name, String value)
+	public void edit(String namespace, String name, String value)
 	{
 		Element element = document.getElementById(value);
 		
 		String aparams = (String)element.getUserData(PARAMS);
-		String a = prefix + "anchorparams";
+		String a = namespace + ':'  +  "anchorparams";
 		element.setAttribute(a, aparams);
 	}
 

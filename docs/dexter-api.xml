@@ -38,16 +38,27 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
   </references>
 
   <section>
-    <title>dexter.properties</title>
+    <title>Properties</title>
     <overview><para>
-	 The dexter.properties file is embedded in dexter.jar. It is through
-	 this file that implementations are bound into the tools framework.
+	 Dexter maintains properties at two levels.  General properties are
+	 maintained in dexter.properties. Each module maintains a private set
+	 of properties in a seperate file. 
+	 The default dexter.properties file is embedded in dexter.jar. 
+	 When used at the command line, any property may be over-ridden 
+	 be over-ridden via --define key=value
 	 </para></overview>
     <chapter>
-      <title>prefix</title>
-      <code>
- dexter.prefix=xpl
-      </code>
+      <title>dexter.properties</title>
+		<code><![CDATA[
+ # attribute names to be treated as id attributes.
+ dexter.node.id=id,ID
+
+ # list the modules to be bootstrapped
+ dexter.module=dexterity,didi
+
+ # define the search path for external <modules>.properties files.
+ dexter.module.path=
+		]]></code>
       <para>
       the prefix is applied to all dexter-defined attribute names 
       before scanning. it provides a pseudo-namespace to isolate 
@@ -112,8 +123,7 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
 
     <chapter>
       <title>Implementation</title>
-      <code>
-        <![CDATA[
+      <code><![CDATA[
  dexter.a.ajax=org.dykman.dexter.didi.AjaxAnchorEditor
  dexter.a.target=org.dykman.dexter.didi.AjaxCallerDescriptor
 
@@ -131,178 +141,49 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
       ]]></code>
       <para>Each attribute is explicitly associated with it's implementing class.</para>
     </chapter>
-
-    <chapter>
-      <title>path macros</title>
-      <code><![CDATA[
- dexterity.path.function.cmp-name=org.dykman.dexter.base.CompareNameFunction 
- dexterity.path.function.text=org.dykman.dexter.base.TextFunction 
- dexterity.path.function.istext=org.dykman.dexter.base.IsTextFunction
- dexterity.path.function.name=org.dykman.dexter.base.NameFunction
-      ]]></code>
-      <para><![CDATA[Path functions, invoked in dexter via "@!" are defined
-   with the property key dexterity.path.function.<function-name>.
-   ]]></para>
-    </chapter>
   </section>
   <section>
     <title>Descriptors</title>
     <overview><para>
     All Descriptors discussed in this section are defined in the package org.dykman.dexter.descriptor.
     </para></overview>
-      
     <chapter>
-      <title>Descriptor Methods</title>
-      <para>
-      While Descriptors expose several methods, there are 4, the production methods,  
-      which are of particular interest to the API developer.  
-      </para>
-      <code><![CDATA[
-  public interface Descriptor
-  {
-    ...
-    public void start();
-    public void attributes();
-    public void children();
-    public void end();
-  }
-  ]]></code>
-      <para>
-      When a descriptor is 'run' by the TransformSequencer, each of these 4 methods are called in turn which
-      push instructions back into the sequencer.
-      </para>
-     </chapter>
-     <chapter>
-      <title>Node Descriptor</title>
-      <para>
-      Every node in the dexter input document is automatically associated with a NodeDescriptor.  The NodeDescriptor
-      describes that node to the TransformSequencer without embellishment.
-      </para>
-     </chapter>
-     <chapter>
-        <title>TransformDescriptor</title>
-        <para>
-    All descriptors which the user may specify on an element in a dexter source document are sub-classes of TransformDescriptor. 
-	 TransformDescriptors are constructed with a reference to an inner Descriptor.
-  Where multiple descriptors are specified on a given element, they are nested  with the NodeDescriptor for that element the inner-most.  
-        </para>
-        <para>
-  Typically, a TransformDescriptor overrides one or more production methods. It may modify the attributes, replace 
-  or simply dispose of the children and/or write instructions into the TransformSequencer.  
-  </para>
-  <para>At the lowest level, the
-  TransformSequencer offers a node-level interface which allows a descriptor to directly specify XSLT productions.
-  This interface is currently only used by the highly experimental didi module. 
-        </para>
-      </chapter>
-      <chapter>
-        <title>MetaDescriptor</title>
-        <para>
-    This is an abstract TransformDescriptor which provides a scoped-data environment during the code generation
-    process.  Sub-classes use this facility to maintain the internal data paths or to pass messages to children.
-        </para>
-      </chapter>
-      <chapter>
-        <title>PathDescriptor</title>
-        <para>
-  The PathDescriptor is the base class of nearly every Descriptor in the dexterity module. Dexter and XSL have
-  a slightly different concept of the default data axis, the PathDescriptor's primary task is to balance those
-  notions. 
-        </para>
-      </chapter>
-      <chapter>
-         <title>BlockDescriptor</title>
-         <para>
-  The block descriptor is a special case. It encapsulates an operation which may span multiple contiguous elements.
-  The handler for dexterity's 'case' attribute is the only currently implemented BlockDescriptor.
-         </para>
-       </chapter>
-       <chapter>
-         <title>Examples</title>
-         <para>
-  The best reference currently available for the user who wishes to implement custom descriptors is the source for the dexterity 
-  descriptors.  They are generally small, single function units.  I know I need to write more about this.
-  Bug me later.
-         </para>
-       </chapter>
-     </section>
-     <section>
-       <title>Path Macros</title>
-         <overview><para>Here are the implementation details for the user who wishes
-     to extend the power of existing path syntax with user-defined path 
-     macros.
-         </para></overview>
-       <chapter>
-       <title>Path Macro Parameters</title>
-         <para>
-  A PathFunction is invoked by appending "@!" to a path expression, followed 
-  by the name of the function and, optionally, ':' followed by an argument like so:  
-         </para>
-         <code><![CDATA[
-  <p xplvalue="messages/*@!myfunction:argument" />
-  ]]></code>
-       <para>
-      This expression will first evaluate the dexter path in the current context, 
-      and translate it to an XPath expression appropriate to XSL's data context.
-       It is important to note that, when a path macro is specified in an expression 
-       without an explicit path component, the default path of '.' is explicitly set
-       before the path macro is invoked.  If no argument is specified via ':', the value of
-       arg will be null. If ':' is specified in the expression but there are no trailing 
-       characters, then 'arg' will be set to the empty string.
-       </para>
-         <para>
-  The 'path' parameter will be the translated XPath expression. 
-  The 'arg' parameter will be the value to the right of the 
-  semi-colon ':', if any.  If no argument is provided, 'arg' will 
-  be null. If the semi-colon is present but followed by no trailing characters.
-  'arg' will be assigned the empty string  
-         </para>
-         <para>
-   The result of the expression must be a string representing a
-   discrete XPath expression. 
-         </para>
-         <code><![CDATA[
-  // from NameFunction 
-  public String apply(String path, String arg)
-  {
-    StringBuffer sb = new StringBuffer();
-    sb.append("local-name(").append(path).append(")");
-    return sb.toString(); 
-  }
-       ]]></code>
-       </chapter>
-       <chapter>
-       
          <title>Simple Path Macros</title>
          <para><![CDATA[
-     All of the path macros implemented in dexter's default configuration are 
-     simple path macros. They are created by defining a property keyed by 
-     dexter.macro.def.<funcname> with a simple format string for a value.
+     All of the path macros in dexter's default configuration are 
+     simple path macros implemented via the built-in 
+	  org.dykman.dexter.base.SimplePathMacro. They are defined through
+	  a property keyed by dexter.macro.def.<funcname> with a simple format 
+	  string for a value.
      Two variables are pre-defined in the format string, $path and $arg.  
-     The rest is interpreted as literal text. 
+     The rest is interpreted as literal text and passed through to the XSL document. 
+	  Not all path macros require an argument.
          ]]></para>
          <code><![CDATA[
-#simple path macros
-dexterity.macro.def.cmp-name=local-name($path)="$arg"
-dexterity.macro.def.text=$path/text()
-dexterity.macro.def.istext=$path/self::text()
-dexterity.macro.def.name=local-name($path)
-dexterity.macro.def.trim=normalize-space($path)
-dexterity.macro.def.count=count($path)
-dexterity.macro.def.pos=position()
+ #simple path macros
+ dexterity.macro.def.cmp-name=local-name($path)="$arg"
+ dexterity.macro.def.eq=string($path)="$arg"
+ dexterity.macro.def.name=local-name($path)
+ dexterity.macro.def.text=$path/text()
+ dexterity.macro.def.istext=$path/self::text()
+ dexterity.macro.def.trim=normalize-space($path)
+ dexterity.macro.def.count=count($path)
+ dexterity.macro.def.pos=$path/position()
+ dexterity.macro.def.contains=contains($path,"$arg")
+ dexterity.macro.def.starts-with=starts-with($path,"$arg")
          ]]></code>
+       </chapter>
+       <chapter>
          <title>The PathFunction Interface</title>
          <para><![CDATA[
-         Should the simple path macro fail to provide the level of control your expression
-         requires, it is a trivial task to implement the interface directly. A property keyed by 
-          dexter.macro.def.<funcname> may then be specified with the fully qualified class
-          name of the implementation.   
+   Should the simple path macro fail to provide the level of control your expression
+   requires, it is a trivial task to implement the interface directly. A property keyed by 
+   dexter.macro.class.<funcname> may then be specified with the fully qualified class
+    name of the implementation.   The example shown is not enabled by default since the
+	 SimplePathMacro assumed all my use cases.
          ]]></para>
          <code><![CDATA[
-  public interface PathFunction
-  {
-    public String apply(String path,String arg);
-  }
+ dexterity.macro.class.sample=org.dykman.dexter.base.NameFunction
          ]]></code>
        </chapter>
   </section>

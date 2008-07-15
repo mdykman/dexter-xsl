@@ -20,3 +20,16 @@ January 08, 2008 - dexter-xsl-0.1.3-beta
  * rehashed path functions and renamed them to path macros
  * finally fixed build.xml to include style.css in the package
  
+
+  January 14, 2008 - dexter-xsl-0.1.5-beta 
+ * continued reorganizing code
+ * introduces the SimplePathMacro
+ * ported build-in path macro to simple path macros
+ * documentation updates
+ 
+  January 18, 2008 - dexter-xsl-0.1.6-beta 
+ * documentation updates
+
+  January 18, XXXX - dexter-xsl-0.1.7-beta 
+ * documentation updates
+  

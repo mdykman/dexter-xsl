@@ -9,6 +9,7 @@ package org.dykman.dexter.descriptor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dykman.dexter.base.PropertyResolver;
 import org.dykman.dexter.base.TransformSequencer;
 
 
@@ -17,11 +18,16 @@ public abstract class AbstractDescriptor implements Descriptor
 {
 	protected List<Descriptor> children;
 	protected TransformSequencer sequencer;
-	
+	protected PropertyResolver propertyResolver = null;
+
 	public AbstractDescriptor()
 	{
 		children = new ArrayList<Descriptor>();
 	}
+	public void setPropertyResolver(PropertyResolver propertyResolver)
+   {
+   	this.propertyResolver = propertyResolver;
+   }
 	public Descriptor[] getChildDescriptors()
 	{
 		return children.toArray(new Descriptor[children.size()]);

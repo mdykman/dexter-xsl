@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+  targetNamespace="http://dexter.dykman.org/dexter/dexterity-1.0" 
+  elementFormDefault="qualified">
+  
+  <attribute name="env" type="normalizedString"/>  
+
+  <attribute name="value" type="normalizedString"/>  
+  
+  <attribute name="ccpy" type="normalizedString"/>  
+  
+  <attribute name="attr" type="normalizedString"/>  
+
+  <attribute name="if" type="normalizedString"/>  
+      
+  <attribute name="case" type="normalizedString"/>  
+
+  <attribute name="default" type="normalizedString"/>  
+
+  <attribute name="each" type="normalizedString"/>  
+
+  <attribute name="ignore" type="normalizedString"/>  
+  
+  <attribute name="uniq" type="normalizedString"/>  
+
+  <attribute name="sub" type="normalizedString"/>  
+
+  <attribute name="ghost" type="normalizedString"/>  
+
+</schema>

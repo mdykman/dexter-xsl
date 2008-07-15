@@ -26,6 +26,6 @@ public interface NodeSpecifier
 	 * @param name the nmae of the attribute
 	 * @param value the value of the attribute 
 	 */
-	public void setArg(Element node, String name, String value);
+	public void setArg(String ns,Element node, String name, String value);
 }
 //list:Decorator
