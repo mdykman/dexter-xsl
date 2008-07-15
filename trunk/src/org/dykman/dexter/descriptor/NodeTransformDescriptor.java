@@ -11,8 +11,9 @@ import org.w3c.dom.Element;
 public class NodeTransformDescriptor extends MetaDescriptor
 {
 	protected Element element;
-	protected String value;
+	protected String namespace;
 	protected String name;
+	protected String value;
 	
 	public NodeTransformDescriptor(Descriptor descriptor)
 	{
@@ -20,10 +21,22 @@ public class NodeTransformDescriptor extends MetaDescriptor
 	}
 	public final void setArgs(Element node, String name,String value)
 	{
+		if(name.indexOf(':') != - 1)
+		{
+			String[] bb  = name.split("[:]");
+			namespace = bb[0];
+			this.name = bb[1];
+		}
+		else
+		{
+			namespace = null;
+			this.name = name;
+		}
+		
 		this.element = node;
-		this.name = name;
 		this.value = normalizeWhitespace(value);
 		
+		// TODO.. tihs is pretty archaic..  does this really do anything anymore???
 		onScan();
 	}
 	

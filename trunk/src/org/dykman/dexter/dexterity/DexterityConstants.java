@@ -8,8 +8,6 @@ package org.dykman.dexter.dexterity;
 
 public abstract class DexterityConstants
 {
-	public static final String DEXTER = "DEXTER-VARS";
-	public static final String PREFIX = "dexter.prefix";
 	public static final String BLOCK = "DEXTER-BLOCK-NODE";
 	public static final String ITER_CONTEXT = "ITERATOR_CONTEXT";
 	public static final String PATH = "DEXTERITY_PATH";

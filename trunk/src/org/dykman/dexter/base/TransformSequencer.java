@@ -13,10 +13,8 @@ import org.w3c.dom.Node;
 
 public interface TransformSequencer
 {
-//	public void scriptContext(boolean use);
 	public void setDocType(DocumentType dt);
 
-//	public void script(String script); 
 	public void runDescriptor(Descriptor descriptor);
 	public Node getCurrentNode();
 	public Node getIdentityValueTemplate(String key, String value);
@@ -27,10 +25,7 @@ public interface TransformSequencer
 	public void startNode(String name, int type);
 	public void endNode();
 
-	public void mapAttribute(
-			String name,String[] path, String def);
-//	public void mapAttribute(String name,String path, 
-//			String prefix, String postfix, String def);
+	public void mapAttribute(String name,String[] path, String def);
 	public void mapNode(String path, String def,boolean disableEscaping);
 	public void copyChildren(String path, String def);
 	

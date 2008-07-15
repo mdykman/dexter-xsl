@@ -11,7 +11,7 @@ import java.io.InputStream;
 
 import org.dykman.dexter.NodeNavigator;
 import org.dykman.dexter.base.AbstractDocumentEditor;
-import org.dykman.dexter.dexterity.DexteritySyntaxException;
+import org.dykman.dexter.DexteritySyntaxException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

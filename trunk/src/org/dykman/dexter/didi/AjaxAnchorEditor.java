@@ -6,13 +6,13 @@
 
 package org.dykman.dexter.didi;
 
-import org.dykman.dexter.dexterity.DexteritySyntaxException;
+import org.dykman.dexter.DexteritySyntaxException;
 
 
 public class AjaxAnchorEditor extends AjaxEditor
 {
 
-	public void edit(String name, String value)
+	public void edit(String namespace, String name, String value)
 	{
 		if (!element.hasAttribute("id"))
 		{

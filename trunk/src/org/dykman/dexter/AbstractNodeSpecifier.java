@@ -13,10 +13,13 @@ import org.w3c.dom.Node;
 public abstract class AbstractNodeSpecifier implements NodeSpecifier
 {
 	protected String value;
+	protected String namespace;
 	protected String name;
 	protected Element node;
-	public void setArg(Element node, String name,String value)
+	
+	public void setArg(String namespace,Element node, String name,String value)
 	{
+		this.namespace = namespace;
 		this.node = node;
 		this.name = name;
 		this.value = value;

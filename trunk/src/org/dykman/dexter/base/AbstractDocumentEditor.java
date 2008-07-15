@@ -6,28 +6,27 @@
 
 package org.dykman.dexter.base;
 
-import java.util.Properties;
 
 import org.dykman.dexter.Dexter;
-import org.dykman.dexter.dexterity.DexterityConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public abstract class AbstractDocumentEditor implements DocumentEditor
 {
-	protected Properties properties;
+	protected PropertyResolver properties;
 	protected Document document;
 	protected Element element;
 	protected Dexter dexter;
-	protected String prefix;
+	protected String namespace;
+	protected String name;
+	protected String value;
 	
 	public AbstractDocumentEditor()
 	{
 	}
-	public void setProperties(Properties properties)
+	public void setPropertyResolver(PropertyResolver properties)
 	{
 		this.properties = properties;
-		prefix = properties.getProperty(DexterityConstants.PREFIX);
 	}
 	protected String getDexterAttribute(Element element,String key)
 	{
@@ -36,7 +35,16 @@ public abstract class AbstractDocumentEditor implements DocumentEditor
 	protected String getDexterAttribute(Element element,String key, boolean erase)
 	{
 		String result = null;
-		String k = prefix + key; 
+		String k;
+		if(namespace != null)
+		{
+			k = namespace + ':' + key; 
+		}
+		else
+		{
+			k = key;
+		}
+		
 		if(element.hasAttribute(k))
 		{
 			result = element.getAttribute(k);

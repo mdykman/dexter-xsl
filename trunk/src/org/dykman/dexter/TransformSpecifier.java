@@ -7,8 +7,8 @@
 package org.dykman.dexter;
 
 import java.lang.reflect.Constructor;
-import java.util.Properties;
 
+import org.dykman.dexter.base.PropertyResolver;
 import org.dykman.dexter.descriptor.Descriptor;
 import org.dykman.dexter.descriptor.NodeTransformDescriptor;
 import org.dykman.dexter.descriptor.TransformDescriptor;
@@ -17,7 +17,7 @@ public class TransformSpecifier extends AbstractNodeSpecifier
 {
 	protected Class<TransformDescriptor> klass;
 	protected Dexter dexter;
-	protected Properties properties = null;
+	protected PropertyResolver properties = null;
 
 	public TransformSpecifier(String fqn)
 		throws Exception
@@ -49,9 +49,9 @@ public class TransformSpecifier extends AbstractNodeSpecifier
 				= klass
 			      .getConstructor(parameterTypes);
 			NodeTransformDescriptor td = (NodeTransformDescriptor) cc.newInstance(new Object[] {descriptor});
-			td.setProperties(properties);
+			td.setPropertyResolver(properties);
 			td.setArgs(node, name, value);
-			td.setDexter(dexter);
+//			td.setDexter(dexter);
 			return td;
 		}
 		catch (Exception e)
@@ -59,7 +59,7 @@ public class TransformSpecifier extends AbstractNodeSpecifier
 			throw new DexterException("error instantiating descriptor",e);
 		}
 	}
-	public void setProperties(Properties properties)
+	public void setPropertyResolver(PropertyResolver properties)
    {
    	this.properties = properties;
    }

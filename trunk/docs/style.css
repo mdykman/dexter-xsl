@@ -4,7 +4,7 @@ body {
   margin: 8px;
   padding: 2px;
   font-size: 10pt;
-  font-family: "Lucida Grande", "Lucida Sans Unicode", "Luxi Sans", Arial,  arial, Helvetica, helvetica, sans-serif;
+  font-family: Verdana, Tahoma, "Microsoft Sans Serif", "Lucida Sans Unicode", "Lucida Grande" "Bitstream Vera Sans","Luxi Sans", Arial,  arial, Helvetica, helvetica, sans-serif;
 }
 
 a {
@@ -52,6 +52,7 @@ h2 {
   font-weight: bold;
   clear: both;
   font-size: 135%;
+  text-align: center;
   color: #17457c;
 }
 
@@ -123,9 +124,9 @@ pre {
   color: black;
   width: 640px;
   background: #f5f5f5;
-  border: 1pt dashed #3f7fbb;
-  font-size: 8pt;
-  font-family: monospace;
+  border: 1pt dashed #202020;
+  font-size: 10pt;
+  font-family: Georgia, "Courier New", Courier, courier, monospace;
   white-space: pre;
   margin: 1.33em 0px;
   margin-left: 40px;
@@ -171,17 +172,6 @@ pre.debug {
   color: black;
   background: #d2ddf6;
   border: solid 2px black;
-  font-family: monospace;
-  white-space: pre;
-  margin: 1.33em 0px;
-  margin-left: 40px;
-  margin-right: 40px;
-  padding: 1.33em;
-}
-
-pre.text {
-  color: black;
-  background: #d2ddf6;
   font-family: monospace;
   white-space: pre;
   margin: 1.33em 0px;

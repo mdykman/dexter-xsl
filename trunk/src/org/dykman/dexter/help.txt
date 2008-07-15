@@ -1,0 +1,16 @@
+** Dexter-0.2.0-alpha 
+** copyright (c)2007,2008 Michael Dykman
+Usage:
+ java -cp lib/gnu-getopts.jar -jar build/dexter.jar [OPTIONS] file ...
+ 
+Possible options are listed below.  Long and short options are identical.
+ 
+ -v, --version              * print version and copyright information.
+ -t, --mime-type=STRING     * specify the media-type in the XSLT output element.
+ -m, --method=xml|hmtl|text * specify the method in the XSLT output element. 
+ -i, --indent=yes|no        * specifiy the indent attribute in the output element
+ -p, --properties=filename  * override the built-in properties
+ -e, --encoding=STRING      * specify the encoding used throughout the production
+ -d, --define=key=value     * explicitly override a single property; may be specified multiple times
+ -o, --directory=PATH       * specify an output directory
+ -h, --help                 * print this screen and exit

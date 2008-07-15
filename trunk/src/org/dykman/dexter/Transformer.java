@@ -25,7 +25,7 @@ public class Transformer
 		{
 			if(args.length == 0)
 			{
-				System.err.println("please specify a transofmr");
+				System.err.println("please specify a transformer");
 				System.exit(1);
 			}
 			InputStream in = new FileInputStream(args[0]);
@@ -62,7 +62,7 @@ public class Transformer
 				
 				if(type == null || type.length() == 0)
 				{
-					type= "xslout";
+					type= "xplout";
 				}
 				for(int i = 1; i < args.length; ++i)
 				{

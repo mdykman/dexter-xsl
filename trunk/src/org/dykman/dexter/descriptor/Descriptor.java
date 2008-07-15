@@ -6,6 +6,7 @@
 
 package org.dykman.dexter.descriptor;
 
+import org.dykman.dexter.base.PropertyResolver;
 import org.dykman.dexter.base.TransformSequencer;
 
 public interface Descriptor
@@ -14,6 +15,7 @@ public interface Descriptor
 
 	public Descriptor[] getChildDescriptors();
 	public void appendChild(Descriptor child);
+	public void setPropertyResolver(PropertyResolver properties);
 
 	public void start();
 	public void attributes();

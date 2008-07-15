@@ -6,10 +6,13 @@
 
 package org.dykman.dexter;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -17,6 +20,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -31,6 +36,7 @@ import javax.xml.transform.TransformerFactory;
 
 import org.dykman.dexter.base.DexterEntityResolver;
 import org.dykman.dexter.base.DocumentEditor;
+import org.dykman.dexter.base.PropertyResolver;
 import org.dykman.dexter.base.XSLTDocSequencer;
 import org.dykman.dexter.descriptor.Descriptor;
 import org.dykman.dexter.descriptor.NodeDescriptor;
@@ -45,190 +51,313 @@ public class Dexter
 {
 	static Set<File> outputFile = new HashSet<File>();
 
-	boolean useScriptContext = true;
-
 	protected Document inputDocument;
+	public static String DEXTER_VERSION = "dexter-0.2.0-alpha"; 
+	public static String DEXTER_COPYRIGHT = "copyright (c) 2007,2008 Michael Dykman"; 
 
-	protected Properties properties;
+	private String propertyPath;
+	private String filename;
 
-	String filename;
+	private String encoding;
+	private String indent = "no";
+	private String method = "html";
+	private String mediaType = "text/html";
 
-	String encoding;
-
-	String indent = "no";
-
-	String method = "html";
-
-	String mediaType = "text/html";
-
+//	private String prefix;
 	protected Map<Object, Object> userData = new HashMap<Object, Object>();
 
-	public void setIndent(boolean b)
-	{
-		if (b)
-		{
-			indent = "yes";
-		}
-		else
-		{
-			indent = "no";
-		}
-	}
+	protected PropertyResolver baseResolver; 
 
-	public void setMethod(String method)
-	{
-		this.method = method;
-	}
-	public void setMediaType(String type)
-	{
-		mediaType = type;
-	}
+	protected Map<String,PropertyResolver> modulesMap 
+		= new LinkedHashMap<String, PropertyResolver>();
 
-	public void setUserData(Object key, Object value)
-	{
-		userData.put(key, value);
-	}
-
-	public Object getUserData(Object key)
-	{
-		return userData.get(key);
-	}
-	Map<String, Document> allDocs = new HashMap<String, Document>();
-	
-	public Map<String, Document> generateXSLT(
-			DocumentBuilder builder,String filename,Document document) 
-			throws Exception
-	{
-		this.filename = filename;
-		Document clone = (Document)document.cloneNode(true);
-		document = clone;
-		document.normalize();
-
-		scanDocument(document);
-		Descriptor descriptor = Dexter.marshall(document, this);
-
-		XSLTDocSequencer sequencer = new XSLTDocSequencer(filename, encoding);
-		sequencer.setDocumentBuilder(builder);
-		sequencer.setProperties(properties);
-		sequencer.setIdNames(idNames);
-		sequencer.runDescriptor(descriptor);
-		return sequencer.getDocuments();
-	}
-//	http://www.w3.org/TR/REC-html40/HTMLlat1.ent
-//	http://www.w3.org/TR/REC-html40/HTMLsymbol.ent
-//  http://www.w3.org/TR/REC-html40/HTMLspecial.ent	
-	public Map<String, Document> getDocuments()
-	{
-		return allDocs;
-	}
 	protected List<String> idNames = new ArrayList<String>();
-
 	private Map<String, String> descriptors = new HashMap<String, String>();
-
 	private Map<String, String> editors = new HashMap<String, String>();
-
 	private Map<String, String> blocks = new HashMap<String, String>();
 
+	/**
+	 * construct a Dexter object with default encoding and properties
+	 */
+	public Dexter()
+	{
+		this("UTF-8",null);
+	}
+	/**
+	 * construct a Dexter object with specified encoding and default properties
+	 */
 	public Dexter(String encoding)
 	{
-		this(encoding, loadBuiltInProperties(Dexter.class));
+		this(encoding, null);
 	}
 
+	/**
+	 * construct a Dexter object with specified encoding and properties
+	 */
 	public Dexter(String encoding, Properties properties)
 	{
-		this.properties = properties;
 		this.encoding = encoding;
-		init(properties);
-
+		initializeProperties(properties == null ? loadBuiltInProperties() : properties);
+		init();
 	}
 
-	private static Properties loadBuiltInProperties(Class k)
+	public Map<String,PropertyResolver> getModules()
 	{
-		Properties p = new Properties();
+		return modulesMap;
+	}
+	
+	public String getProperty(String key)
+	{
+		return baseResolver.getProperty(key);
+	}
+
+/**
+ * create a property resolver for each defined module
+ * @param properties
+ */
+	private void initializeProperties(Properties properties)
+	{
 		try
 		{
-			p.load(k.getResourceAsStream(DexterityConstants.SCAN_CFG));
-			p.load(
-					Dexter.class.getResourceAsStream("HTMLlat1-ent.properties"));
-			p.load(
-					Dexter.class.getResourceAsStream("HTMLspecial-ent.properties"));
-			p.load(
-					Dexter.class.getResourceAsStream("HTMLsymbol-ent.properties"));
+			baseResolver = new DexterPropertyResolver("dexter",properties,null);
+			modulesMap.put("dexter", baseResolver);
+			// set the search path for modules
+			propertyPath = baseResolver.getProperty("module.path");
 			
-
+			String ml = baseResolver.getProperty("module");
+			if(ml != null)
+			{
+				String[] mods = ml.split("[,]");
+				for(int i = 0; i < mods.length; ++i)
+				{
+					String fn = mods[i] + ".properties";
+					Properties p = searchProperties(fn);
+					if(p == null)
+					{
+						throw new DexterException("unable to find properties for module " + mods[i]);
+					}
+					else
+					{
+						PropertyResolver pr = defineModule(mods[i],p);
+						String ns = pr.getProperty("namespace");
+						baseResolver.setProperty(mods[i], ns);
+					}
+				}
+			}
 		}
-		catch (IOException e)
+		catch(IOException e)
 		{
-			throw new DexterException("unable to load "
-			      + DexterityConstants.SCAN_CFG);
+			throw new DexterException(e);
 		}
-
-		return p;
+  }
+/**
+ * this searches the module path for a properties file
+ * the value of dexter.module.path is treated as c
+ * conventional files path: each element is searched in
+ * order.  If no matching properties file is found on the
+ * module.path, the classpath is searched under 
+ *  /org/dykman/dexter/modules/ for a matching file.
+ *  It is through the latter mechanism that the built-in
+ *  modules 'dexterity' and 'did' are defined.
+ * @param name the name of a proerties file
+ * @return the properties object, if found
+ * @throws IOException
+ */	
+  private Properties searchProperties(String name)
+		throws IOException
+	{
+		Properties result = null;
+		InputStream in = null;
+		
+		if(propertyPath != null)
+		{
+			String[] pp = propertyPath.split("[" + File.pathSeparatorChar + "]");
+			for(int i = 0; i < pp.length; ++i)
+			{
+				File f = new File(pp[i],name);
+				if(f.exists() && f.canRead())
+				{
+					in = new FileInputStream(f);
+					break;
+				}
+			}
+		}
+		if(in == null)
+		{
+			String cp;
+			cp = "/modules/" + name;
+			in = getClass().getResourceAsStream(cp);
+			if(in == null)
+			{
+				cp = "/org/dykman/dexter/modules/" + name;
+				in = getClass().getResourceAsStream(cp);
+			}
+		}
+		if(in != null)
+		{
+			result = new Properties();
+			result.load(in);
+			in.close();
+		}
+		return result;
 	}
 
 	public void init()
 	{
-		Properties p = new Properties();
-		try
-		{
-			p.load(getClass().getResourceAsStream(DexterityConstants.SCAN_CFG));
-		}
-		catch (IOException e)
-		{
-			throw new DexterException("unable to load "
-			      + DexterityConstants.SCAN_CFG);
-		}
-		init(p);
-	}
-
-	public void init(Properties p) // throws Exception
-	{
-		properties.putAll(p);
-
-		String v = p.getProperty("dexter.node.id");
+		
+// attrbiute names to be blessed as ids
+		String v = baseResolver.getProperty("node.id");
 		String[] b = v.split(",");
 		for (int i = 0; i < b.length; ++i)
 		{
 			idNames.add(b[i]);
 		}
 
-		String prefix = p.getProperty(DexterityConstants.PREFIX);
-		v = p.getProperty("dexter.block");
-		if (v != null)
+		// initialize modules
+		Iterator<String> it = modulesMap.keySet().iterator();
+		while(it.hasNext())
 		{
-			String[] blks = v.split(",");
-			for (int i = 0; i < blks.length; ++i)
+			String module = it.next();
+			PropertyResolver resolver = modulesMap.get(module);
+			String ns = resolver.getProperty("namespace");
+			String seq = resolver.getProperty("descriptors");
+
+			if(seq != null)
 			{
-				String t = "dexter.block" + "." + blks[i];
-				v = p.getProperty(t);
-				if (v != null)
+				String[] tk = seq.split(",");
+				for (int i = 0; i < tk.length; ++i)
 				{
-					v = prefix + v;
+//System.out.println("      descriptor " + tk[i]);			
+					String key = "a." + tk[i];
+					String klassName = resolver.getProperty(key);
+					this.descriptors.put(ns + ':' + tk[i], klassName);
+//System.out.println(ns + ':' + tk[i] + "->" + klassName);			
 				}
-				blocks.put(prefix + blks[i], v);
+			}
+			v = resolver.getProperty("block");
+			if (v != null)
+			{
+				String[] blks = v.split(",");
+				for (int i = 0; i < blks.length; ++i)
+				{
+					String t = "block." + blks[i];
+					v = resolver.getProperty(t);
+					if (v != null)
+					{
+						v = ns + ':' + v;
+					}
+					blocks.put(ns + ':' + blks[i], v);
+				}
+			}
+			v = resolver.getProperty("editors");
+			if(v!= null)
+			{
+				String[] tk = v.split(",");
+				for (int i = 0; i < tk.length; ++i)
+				{
+					String key = "a." + tk[i];
+					String klassName = resolver.getProperty(key);
+					this.editors.put(ns + ':' + tk[i], klassName);
+				}
 			}
 		}
+	}
 
 
-		String seq = p.getProperty("dexter.descriptors");
-		String[] tk = seq.split(",");
-		for (int i = 0; i < tk.length; ++i)
+	public void setIndent(boolean b)
+	{
+		if(b)	{ indent = "yes"; }
+		else { indent = "no"; }
+	}
+
+	public void setMethod(String method)
+	{
+		this.method = method;
+	}
+	
+	public void setMediaType(String type)
+	{
+		mediaType = type;
+	}
+
+	/**
+	 * NOTE - if the module has a namespace defined, as is recommended,
+	 * the PropertyResolver will be double keyed: by module name and by namespace
+	 */
+	public PropertyResolver defineModule(String name,Properties properties)
+	{
+		PropertyResolver pr = new DexterPropertyResolver(name,properties,baseResolver);
+		String ns = pr.getProperty("namespace");
+		modulesMap.put(ns, pr);
+		return pr;
+	}
+	
+	private String[] parseNs(String name)
+	{
+		String[] result = new String[] { null, name };
+		if(name.indexOf(":") != -1)
 		{
-			String key = "dexter.a." + tk[i];
-			String klassName = p.getProperty(key);
-			String tag = prefix + tk[i];
-			// System.out.println("loading attr " + tag);
-			this.descriptors.put(tag, klassName);
+			result = name.split("[:]",2);
 		}
-		v = p.getProperty("dexter.editors");
-		tk = v.split(",");
-		for (int i = 0; i < tk.length; ++i)
+		return result;
+	}
+	
+//	public Object getUserData(Object key)
+//	{
+//		return userData.get(key);
+//	}
+//	Map<String, Document> allDocs = new HashMap<String, Document>();
+	
+	public Map<String, Document> generateXSLT(String filename,Document document) throws Exception
+	{
+		this.filename = filename;
+		Document clone = (Document)document.cloneNode(true);
+		document = clone;
+		document.normalize();
+		
+		// search for each modules names space
+		Element docel = document.getDocumentElement();
+		Iterator<String> it = modulesMap.keySet().iterator();
+		while(it.hasNext())
 		{
-			String key = "dexter.a." + tk[i];
-			String klassName = p.getProperty(key);
-			String tag = prefix + tk[i];
-			this.editors.put(tag, klassName);
+			String mod = it.next();
+			String ns = modulesMap.get(mod).getProperty("namespace");
+			String nsspec = "xmlns:" + ns;
+			if(docel.hasAttribute(nsspec))
+			{
+				docel.removeAttribute(nsspec);
+			}
 		}
+		// strip the namespace specifier from the template document
+		// so it is not propigated to the output
+		
+
+		// convert dexter attributes
+		scanDocument(document);
+		Descriptor descriptor = marshall(document, this);
+
+		XSLTDocSequencer sequencer = new XSLTDocSequencer(this,filename, encoding);
+		sequencer.setIdNames(idNames);
+		sequencer.runDescriptor(descriptor);
+		return sequencer.getDocuments();
+	}
+
+	private static Properties loadBuiltInProperties()
+	{
+		Properties p = new Properties();
+		try
+		{
+			p.load(Dexter.class.getResourceAsStream(DexterityConstants.SCAN_CFG));
+			p.load(Dexter.class.getResourceAsStream("HTMLlat1-ent.properties"));
+			p.load(Dexter.class.getResourceAsStream("HTMLspecial-ent.properties"));
+			p.load(Dexter.class.getResourceAsStream("HTMLsymbol-ent.properties"));		
+		}
+		catch (IOException e)
+		{
+			throw new DexterException("unable to load properties: " + e.getMessage(),e);
+		}
+
+		return p;
 	}
 
 	public boolean isIdName(String name)
@@ -264,9 +393,6 @@ public class Dexter
 	}
 
 
-	/**
-	 * @throws Exception
-	 */
 	public void scanDocument() throws Exception
 	{
 		scanDocument(inputDocument);
@@ -281,16 +407,16 @@ public class Dexter
 		
 		// find editor attributes, remove them, and
 		// run the associated objects on the document
-		scanElementForEditors(root); // run the editors
+		executeEditors(root); // run the editors
 		// find descriptor attributes, remove them and 
 		// attach the associated objects 
-		scan(document); // find descriptor attributes and associate
+		compileDescriptors(document); // find descriptor attributes and associate
 		inputDocument = oldDocument;
 	}
 
-	public void scan(Node node) throws Exception
+	public void compileDescriptors(Node node) throws Exception
 	{
-		scanNode(node);
+		compileNode(node);
 		NodeList children = node.getChildNodes();
 		if (children != null)
 		{
@@ -307,15 +433,14 @@ public class Dexter
 				}
 				else
 				{
-					scan(child);
+					compileDescriptors(child);
 				}
 			}
 		}
 	}
 
-	protected void scanElementForEditors(Element element) throws Exception
+	protected void executeEditors(Element element) throws Exception
 	{
-		// System.out.println("scanElementForEditors");
 		scanForEditors(element);
 		NodeList children = element.getChildNodes();
 		for (int i = 0; i < children.getLength(); ++i)
@@ -323,10 +448,9 @@ public class Dexter
 			Node n = children.item(i);
 			if (n.getNodeType() == Node.ELEMENT_NODE)
 			{
-				scanElementForEditors((Element) n);
+				executeEditors((Element) n);
 			}
 		}
-		// Element top = inputDocument.getDocumentElement();
 	}
 
 	protected void scanForEditors(Element el) throws Exception
@@ -337,29 +461,37 @@ public class Dexter
 			String alabel = it.next();
 			if (el.hasAttribute(alabel))
 			{
+				String vv = el.getAttribute(alabel);
+				String[] bb = parseNs(alabel);
+				String namespace = bb[0];
+
+//System.out.println("trying to load editor				
 				Class klass = Class.forName(editors.get(alabel));
 				DocumentEditor editor = (DocumentEditor) klass.newInstance();
-				editor.setProperties(properties);
+				editor.setPropertyResolver(modulesMap.get(namespace));
 				editor.setDexter(this);
 				editor.setReference(el.getOwnerDocument(), el);
-				editor.edit(alabel, el.getAttribute(alabel));
+				editor.edit(namespace,alabel, vv);
 				el.removeAttribute(alabel);
 			}
 		}
 	}
 
-	public TransformSpecifier createSpecifier(Element element, String label,
-	      Properties properties) throws Exception
+	public TransformSpecifier createSpecifier(Element element, String label) throws Exception
 	{
 		TransformSpecifier td = null;
 		String k = descriptors.get(label);
 		Class cl = Class.forName(k);
+		String []bb = parseNs(label);
+		String namespace = bb[0];
+		String localname = bb[1];
+
 		if (blocks.containsKey(label))
 		{
-			// System.out.println("processing block ");
+			String end = blocks.get(label);
+
 			Node parent = element.getParentNode();
 
-			String end = blocks.get(label);
 			Element[] siblings = findContiguousSiblings(element, label, end, false);
 
 			Element blockNode = inputDocument
@@ -375,36 +507,44 @@ public class Dexter
 				Element be = siblings[i];
 				if (be.hasAttribute(label))
 				{
-					names[i] = label;
+					names[i] = localName(label);
 					values[i] = be.getAttribute(label);
 					be.removeAttribute(label);
 				}
 				else if (end != null && be.hasAttribute(end))
 				{
-					names[i] = end;
+					names[i] = localName(end);
 					values[i] = be.getAttribute(end);
 					be.removeAttribute(end);
 				}
-				scan(be);
+				compileDescriptors(be);
 				blockNode.appendChild(be);
 			}
 			BlockTransformSpecifier btd = new BlockTransformSpecifier(cl);
-			btd.setArgs(siblings, names, values);
+			btd.setArgs(namespace,siblings, names, values);
 			td = btd;
 		}
 		else
 		{
-			// System.out.println("processing descrptor ");
 			td = new TransformSpecifier(cl);
-			td.setArg(element, label, element.getAttribute(label));
+			td.setArg(namespace,element, label, element.getAttribute(label));
 			element.removeAttribute(label);
 		}
 		td.setDexter(this);
-		td.setProperties(properties);
+		td.setPropertyResolver(modulesMap.get(namespace));
 		addSpecifier(element, td);
 		return td;
 	}
-
+	private String localName(String name)
+	{
+		String result = name;
+		if(name.indexOf(':')!= -1)
+		{
+			String[] bb = name.split("[:]");
+			result = bb[1];
+		}
+		return result;
+	}
 	protected void scanForDescriptors(Element el) throws Exception
 	{
 		Iterator<String> it = descriptors.keySet().iterator();
@@ -413,7 +553,7 @@ public class Dexter
 			String alabel = it.next();
 			if (el.hasAttribute(alabel))
 			{
-				TransformSpecifier td = createSpecifier(el, alabel, properties);
+				TransformSpecifier td = createSpecifier(el, alabel);
 			}
 		}
 	}
@@ -423,13 +563,13 @@ public class Dexter
 		List list = (List) element.getUserData(DexterityConstants.DEXTER_SPECIFIERS);
 		if (list == null)
 		{
-			list = new ArrayList<TransformSpecifier>();
+			list = new LinkedList<TransformSpecifier>();
 			element.setUserData(DexterityConstants.DEXTER_SPECIFIERS, list, null);
 		}
-		list.add(specifier);
+		list.add(0,specifier);
 	}
 
-	public void scanNode(Node node) throws Exception
+	public void compileNode(Node node) throws Exception
 	{
 		if (node.getNodeType() == Node.ELEMENT_NODE)
 		{
@@ -533,21 +673,15 @@ public class Dexter
 		try
 		{
 
-//		document.getDoctype().
+			document.normalizeDocument();
 
 			Transformer tranformer = factory.newTransformer();
-//			tranformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "");
-//			tranformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "[\n" + 
-//					"	<!ENTITY nbsp \"&#160;\" >\n" + 
-//					"]");
-
 			tranformer.setOutputProperty("indent", indent);
 			tranformer.setOutputProperty("method", method);
 			tranformer.setOutputProperty("media-type", mediaType);
 			tranformer.setOutputProperty("encoding", encoding);
-//			tranformer.
 
-// Writer writer = null;
+			// Writer writer = null;
 			Result result = new javax.xml.transform.stream.StreamResult(writer);
 
 			Source source = new javax.xml.transform.dom.DOMSource(document);
@@ -559,10 +693,6 @@ public class Dexter
 			
 		}
 	}
-//	public List<String> getIdNames()
-//	{
-//		return idNames;
-//	}
 
 	public static Descriptor marshallNode(Node node,Dexter dexter)
    {
@@ -577,30 +707,28 @@ public class Dexter
    		{
    			NodeSpecifier specifier = it.next();
    			descriptor = td = specifier.enclose(descriptor);
-   			td.setDexter(dexter);
    		}
    	}
    	return descriptor;
    }
 
 	public static Descriptor marshall(Node node,Dexter dexter)
-   	{
-   //System.out.println("marshalling " + element.getNodeName());
-   		Descriptor parent = Dexter.marshallNode(node,dexter);
-   		Descriptor c;
-   		NodeList children = node.getChildNodes();
-   		int nc = children.getLength();
-   		for (int i = 0; i < nc; ++i)
-   		{
-   			Node child = children.item(i);
-   			if(child != null &&	child.getParentNode() != null)
-   			{
-   				c = marshall(child,dexter);
-   				parent.appendChild(c);
-   			}
-   		}
-   		return parent;
-   	}
+	{
+		Descriptor parent = Dexter.marshallNode(node,dexter);
+		Descriptor c;
+		NodeList children = node.getChildNodes();
+		int nc = children.getLength();
+		for (int i = 0; i < nc; ++i)
+		{
+			Node child = children.item(i);
+			if(child != null &&	child.getParentNode() != null)
+			{
+				c = marshall(child,dexter);
+				parent.appendChild(c);
+			}
+		}
+		return parent;
+	}
 
 	public static void reportInternalError(String msg, Exception ex)
 	{
@@ -608,6 +736,7 @@ public class Dexter
 		out.println("!!!! An internal error has occured: `" + msg + "' !!!!");
 		out.println("    please send an error report to michael@dykman.org with the word ");
 		out.println("    'DEXTER-INTERNAL' in the subject line including the following information: ");
+		out.println("       * the dexter version number");
 		out.println("       * the source file which triggered the error");
 		out.println("       * the version the JRE (output of '$ java -version')");
 		out.println("       * the full contents of this message ");
@@ -628,30 +757,27 @@ public class Dexter
 				System.exit(1);
 			}
 			String encoding = "UTF-8";
+			
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			dbf.setValidating(false);
+			DocumentBuilder builder = dbf.newDocumentBuilder();
+//			builder.
 
+			builder.setEntityResolver(new DexterEntityResolver(encoding));
 			Dexter dexter = new Dexter(encoding);
 			dexter.setMediaType("text/html");
 			dexter.setMethod("xml");
 			dexter.setIndent(true);
 
-			
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			dbf.setExpandEntityReferences(false);
-			dbf.setValidating(false);
-			dbf.setCoalescing(false);
-			dbf.setIgnoringElementContentWhitespace(false);
-			DocumentBuilder builder = dbf.newDocumentBuilder();
-			builder.setEntityResolver(new DexterEntityResolver(encoding));
-
 			while(argp < args.length)
 			{
-				builder.setEntityResolver(new DexterEntityResolver(encoding));
 				String fn = args[argp];
 				Document impl = builder.parse(new FileInputStream(fn));
-				Map<String, Document> docs = dexter.generateXSLT(builder,fn,impl);
+//				dexter.addToAllDocs(dexter.generateXSLT(fn,impl));
+				
+				Map<String, Document> docs = dexter.generateXSLT(fn,impl);
 				++argp;
 				Iterator<String> k = docs.keySet().iterator();
-				builder.setEntityResolver(null);
 				while(k.hasNext())
 				{
 					String name = k.next();
@@ -673,5 +799,22 @@ public class Dexter
 			e.printStackTrace();
 		}
 	}
-	
+	protected static void showHelpFile()
+	{
+		try
+		{
+			
+			InputStream in = Dexter.class.getResourceAsStream("help.txt");
+			BufferedReader read = new BufferedReader(new InputStreamReader(in));
+			String  line;
+			while((line = read.readLine())!= null)
+			{
+				System.out.println(line);
+			}
+		}
+		catch(IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
 }

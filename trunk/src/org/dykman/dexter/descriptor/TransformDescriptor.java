@@ -6,9 +6,7 @@
 
 package org.dykman.dexter.descriptor;
 
-import java.util.Properties;
 
-import org.dykman.dexter.Dexter;
 import org.dykman.dexter.base.TransformSequencer;
 
 
@@ -16,8 +14,7 @@ public abstract class TransformDescriptor extends AbstractDescriptor
 {
 	protected TransformSequencer sequencer = null;
 	protected Descriptor inner;
-	protected Properties properties = null;
-	protected Dexter dexter;
+//	protected Dexter dexter;
 
 	protected boolean applyToChildren = false;
 
@@ -25,10 +22,6 @@ public abstract class TransformDescriptor extends AbstractDescriptor
 	{
 		this.inner = descriptor;
 	}
-	public void setProperties(Properties properties)
-   {
-   	this.properties = properties;
-   }
 	public void onScan()
 	{
 	}
@@ -95,9 +88,5 @@ public abstract class TransformDescriptor extends AbstractDescriptor
 			inner.setTransformSequencer(sequencer);
 		this.sequencer=sequencer;
 	}
-	public void setDexter(Dexter dexter)
-   {
-   	this.dexter = dexter;
-   }
 
 }

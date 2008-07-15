@@ -7,6 +7,7 @@
 
 package org.dykman.dexter.didi;
 
+import org.dykman.dexter.DexterException;
 import org.dykman.dexter.descriptor.Descriptor;
 import org.dykman.dexter.descriptor.PathDescriptor;
 import org.dykman.dexter.dexterity.DexterityConstants;
@@ -30,7 +31,11 @@ public class JSParamDescriptor extends PathDescriptor
 	public void attributes()
 	{
 		String targetAttr 
-			= properties.getProperty("dexter.didi.data");
+			= propertyResolver.getProperty("data");
+		if(targetAttr == null)
+		{
+			throw new DexterException("no data key found");
+		}
 		if(element.hasAttribute(targetAttr))
 		{
 			element.removeAttribute(targetAttr);

@@ -7,18 +7,31 @@
 package org.dykman.dexter.base;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 
+import org.dykman.dexter.Dexter;
 import org.dykman.dexter.DexterException;
+import org.dykman.dexter.DexteritySyntaxException;
 import org.dykman.dexter.descriptor.Descriptor;
-import org.dykman.dexter.dexterity.DexteritySyntaxException;
 
 public abstract class BaseTransformSequencer implements TransformSequencer
 {
 	protected Map<String, String> metaData = new HashMap<String, String>();
-
-	protected Properties properties;
+	protected Map<String,PathFunction> pathFunctions
+		= new HashMap<String,PathFunction>();
+	
+	Dexter dexter;
+	
+	public BaseTransformSequencer(Dexter dexter)
+	{
+		this.dexter = dexter;
+	}
+	public void definePathFunction(String name, PathFunction function)
+	{
+		this.pathFunctions.put(name, function);
+	}
+	
 	public void setMeta(String key, String value)
 	{
 		if (value == null)
@@ -31,10 +44,6 @@ public abstract class BaseTransformSequencer implements TransformSequencer
 		}
 	}
 
-	public void setProperties(Properties p)
-	{
-		properties = p;
-	}
 	public String getMeta(String key)
 	{
 		return metaData.get(key);
@@ -42,7 +51,6 @@ public abstract class BaseTransformSequencer implements TransformSequencer
 
 	public final void runDescriptor(Descriptor descriptor)
 	{
-		// System.out.println(descriptor.getClass());
 		descriptor.setTransformSequencer(this);
 		descriptor.start();
 		descriptor.attributes();
@@ -99,7 +107,6 @@ public abstract class BaseTransformSequencer implements TransformSequencer
 			{
 				boolean st = true;
 				String t = tests[i];
-//System.out.println("desconstructing " + t);				
 
 				if(t.startsWith("!"))
 				{
@@ -118,12 +125,10 @@ public abstract class BaseTransformSequencer implements TransformSequencer
 				{
 					buffer.append(" and ");
 				}
-
 			}
 		}
 		else
 		{
-			// NULL test???
 			throw new DexteritySyntaxException("null test!?");
 		}
 		return buffer.toString().trim();
@@ -133,37 +138,29 @@ public abstract class BaseTransformSequencer implements TransformSequencer
 	{
 		try
 		{
-			String v = properties.getProperty(
-					"dexterity.macro.def." + func);
-			if(v == null)
+			Map<String,PropertyResolver> modules = dexter.getModules();
+			Iterator<String> it = modules.keySet().iterator();
+			String exp = null;
+			while(exp == null && it.hasNext())
 			{
-				return createClassPathFunction(func);
+				String mod = it.next();
+				PropertyResolver pp = modules.get(mod);
+				exp = pp.getProperty("macro." + func);
+			}
+			if(exp == null)
+			{
+				throw new DexteritySyntaxException("no macro defined for " + func);
 			}
 			else
 			{
-				return new MacroPathFunction(v);
+				return new MacroPathFunction(exp);
 			}
 		}
 		catch(Exception e)
 		{
-			throw new DexterException("unable to instantiate path function", e);
+			throw new DexterException("unable to instantiate path function " + func, e);
 		}
 	}
-	private PathFunction createClassPathFunction(String func)
-	{
-		try
-		{
-			String v = properties.getProperty(
-					"dexterity.macro.class." + func);
-			Class klass = Class.forName(v);
-			return (PathFunction)klass.newInstance();
-		}
-		catch(Exception e)
-		{
-			throw new DexterException("unable to instantiate path function", e);
-		}
-	}
-	
 	
 	public String translateXSLPath(String p)
 	{
@@ -189,14 +186,12 @@ public abstract class BaseTransformSequencer implements TransformSequencer
 				{
 					arg = bits[1];
 				}
-				
 			}
 			else
 			{
 				tf = createPathFunction("cmp-name");
 				arg = name;
 			}
-//System.out.println(tf.getClass().getName()+": " + xslPath + "." + (arg == null ? "<null>" : arg));
 			if(xslPath.length() == 0)
 			{
 				xslPath = ".";
@@ -213,24 +208,17 @@ public abstract class BaseTransformSequencer implements TransformSequencer
 	
 	private String rawXSLPath(String p)
 	{
-		
-		// System.out.print("translatexslpath: in = " + p + " " );
 		StringBuffer buffer = new StringBuffer();
 		String[] el = p.split("/");
 		for (int i = 0; i < el.length; ++i)
 		{
 			String t = el[i];
-			if (t.length() == 0)
-			{
-				// buffer.append("/");
-			}
 			if (t.equals("**"))
 			{
 				buffer.append("./");
 			}
 			else
 			{
-				// int n;
 				if (t.indexOf(":") != -1)
 				{
 					String[] bb = t.split(":", 2);
@@ -258,9 +246,6 @@ public abstract class BaseTransformSequencer implements TransformSequencer
 				buffer.append("/");
 			}
 		}
-		// System.out.println("out = " + buffer.toString().trim());
 		return buffer.toString().trim();
 	}
-	
-	
 }
