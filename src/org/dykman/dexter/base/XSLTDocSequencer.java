@@ -29,7 +29,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
-import org.w3c.dom.EntityReference;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
@@ -435,8 +434,8 @@ System.out.println("DOCUMENT_TYPE_NODE seen");
 //				
 System.out.println("name = " + name);				
 				Node n = translateEntityReference(name);
-				EntityReference en = currentDocument.createEntityReference(name);
-				currentNode.appendChild(en);
+//				EntityReference en = currentDocument.createEntityReference(name);
+				currentNode.appendChild(n);
 			}
 			break;
 
@@ -456,8 +455,7 @@ System.out.println("name = " + name);
 	}
 	protected String lookupEnitityReference(String ref)
 	{
-		String key = "dexter.entities." + ref;
-		String val = dexter.getProperty(key);
+		String val = dexter.getEntity(ref);
 		if(val == null)
 		{
 			throw new DexterException("unrecognized entity reference used: " + ref);
@@ -470,10 +468,11 @@ System.out.println("name = " + name);
 		Node en = currentDocument.createEntityReference("nbsp");
 //		Node en = currentDocument.createEntityReference(lookupEnitityReference(ref));
 		Element el = currentDocument.createElement("xsl:text");
-		el.setAttribute("disable-output-escaping", "yes");
+		el.setAttribute("disable-output-escaping", "no");
 		el.appendChild(currentDocument.createEntityReference(ref));
 //		el.setNodeValue(lookupEnitityReference(ref));
-//		el.setTextContent(lookupEnitityReference(ref));
+		el.setTextContent(lookupEnitityReference(ref));
+//		el.
 		el.appendChild(en);
 		return el;
 	}
