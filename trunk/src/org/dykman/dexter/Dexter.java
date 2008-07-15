@@ -84,7 +84,6 @@ public class Dexter
 		mediaType = type;
 	}
 
-	// TODO..  thses methods are useless, aren't they?
 	public void setUserData(Object key, Object value)
 	{
 		userData.put(key, value);
@@ -115,7 +114,9 @@ public class Dexter
 		sequencer.runDescriptor(descriptor);
 		return sequencer.getDocuments();
 	}
-
+//	http://www.w3.org/TR/REC-html40/HTMLlat1.ent
+//	http://www.w3.org/TR/REC-html40/HTMLsymbol.ent
+//  http://www.w3.org/TR/REC-html40/HTMLspecial.ent	
 	public Map<String, Document> getDocuments()
 	{
 		return allDocs;
@@ -147,6 +148,14 @@ public class Dexter
 		try
 		{
 			p.load(k.getResourceAsStream(DexterityConstants.SCAN_CFG));
+			p.load(
+					Dexter.class.getResourceAsStream("HTMLlat1-ent.properties"));
+			p.load(
+					Dexter.class.getResourceAsStream("HTMLspecial-ent.properties"));
+			p.load(
+					Dexter.class.getResourceAsStream("HTMLsymbol-ent.properties"));
+			
+
 		}
 		catch (IOException e)
 		{
@@ -180,7 +189,6 @@ public class Dexter
 		String[] b = v.split(",");
 		for (int i = 0; i < b.length; ++i)
 		{
-//			System.out.println("adding id attribute " + b[i]);
 			idNames.add(b[i]);
 		}
 
@@ -525,17 +533,21 @@ public class Dexter
 		try
 		{
 
-//			document.normalizeDocument();
+//		document.getDoctype().
 
 			Transformer tranformer = factory.newTransformer();
-//			tranformer.
+//			tranformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "");
+//			tranformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "[\n" + 
+//					"	<!ENTITY nbsp \"&#160;\" >\n" + 
+//					"]");
+
 			tranformer.setOutputProperty("indent", indent);
 			tranformer.setOutputProperty("method", method);
 			tranformer.setOutputProperty("media-type", mediaType);
 			tranformer.setOutputProperty("encoding", encoding);
 //			tranformer.
 
-			// Writer writer = null;
+// Writer writer = null;
 			Result result = new javax.xml.transform.stream.StreamResult(writer);
 
 			Source source = new javax.xml.transform.dom.DOMSource(document);
