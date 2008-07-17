@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+  targetNamespace="http://dexter.dykman.org/dexter/didi-1.0" 
+  elementFormDefault="qualified">
+  <attribute name="meta" type="string"/>  
+  <attribute name="data" type="string"/>  
+</schema>
