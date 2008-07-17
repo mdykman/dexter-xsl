@@ -9,12 +9,10 @@ package org.dykman.dexter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,14 +25,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-
-import org.dykman.dexter.base.DexterEntityResolver;
 import org.dykman.dexter.base.DocumentEditor;
 import org.dykman.dexter.base.PropertyResolver;
 import org.dykman.dexter.base.XSLTDocSequencer;
@@ -52,7 +42,7 @@ public class Dexter
 	static Set<File> outputFile = new HashSet<File>();
 
 	protected Document inputDocument;
-	public static String DEXTER_VERSION = "dexter-0.2.0-alpha"; 
+	public static String DEXTER_VERSION = "dexter-0.2.1-alpha"; 
 	public static String DEXTER_COPYRIGHT = "copyright (c) 2007,2008 Michael Dykman"; 
 
 	private String propertyPath;
@@ -649,6 +639,7 @@ public class Dexter
 		return Arrays.copyOfRange(related, 0, c);
 	}
 
+	/*
 	private void putToDisk(String name, Document doc) throws Exception
 	{
 		File f  = new File(name);
@@ -669,7 +660,6 @@ public class Dexter
 	}
 
 	private TransformerFactory factory = TransformerFactory.newInstance();
-
 	protected void write(Document document, Writer writer, String encoding)
 	{
 		try
@@ -695,7 +685,7 @@ public class Dexter
 			
 		}
 	}
-
+*/
 	public static Descriptor marshallNode(Node node,Dexter dexter)
    {
    	Descriptor descriptor = new NodeDescriptor(node);
@@ -748,6 +738,7 @@ public class Dexter
 		}
 		out.println("!!!! end of message !!!!");
 	}
+	/*
 	public static void main(String[] args)
 	{
 		int argp = 0;
@@ -801,6 +792,7 @@ public class Dexter
 			e.printStackTrace();
 		}
 	}
+	*/
 	protected static void showHelpFile()
 	{
 		try

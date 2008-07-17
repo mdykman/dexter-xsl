@@ -38,13 +38,14 @@ public class Main
 
 	private static Set<File> outputFile = new HashSet<File>();
 	private static TransformerFactory transformerFactory = TransformerFactory.newInstance();
-	
+	private static boolean preserveEntities = true;
+	private static boolean fullEntities = false;
 
 	public static void main(String[] args)
 	{
 		
 		int argp = 0;
-		LongOpt[] opts = new LongOpt[9];
+		LongOpt[] opts = new LongOpt[10];
 		opts[0] = new LongOpt("mime-type",LongOpt.REQUIRED_ARGUMENT,null,'t');
 		opts[1] = new LongOpt("method",LongOpt.REQUIRED_ARGUMENT,null,'m');
 		opts[2] = new LongOpt("properties",LongOpt.REQUIRED_ARGUMENT,null,'p');
@@ -54,13 +55,18 @@ public class Main
 		opts[6] = new LongOpt("indent",LongOpt.REQUIRED_ARGUMENT,null,'i');
 		opts[7] = new LongOpt("define",LongOpt.REQUIRED_ARGUMENT,null,'d');
 		opts[8] = new LongOpt("version",LongOpt.NO_ARGUMENT,null,'v');
+		opts[9] = new LongOpt("resolve-entities",LongOpt.NO_ARGUMENT,null,'r');
 		
-		Getopt go = new Getopt("dexter",args,"m::o::p::e::i::t::d::hv",opts,false);
+		Getopt go = new Getopt("dexter",args,"m::o::p::e::i::t::d::hvr",opts,false);
 		int s;
 		while((s = go.getopt()) != -1)
 		{
 			switch(s)
 			{
+				case 'r':
+					preserveEntities = false;
+				break;
+				
 				case 'v' :
 					System.out.println(Dexter.DEXTER_VERSION);
 					System.out.println(Dexter.DEXTER_COPYRIGHT);
@@ -132,8 +138,7 @@ public class Main
 				Dexter.showHelpFile();
 				System.exit(1);
 			}
-			
-//			Schema schema = 
+
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			dbf.setValidating(false);
 			dbf.setExpandEntityReferences(false);
@@ -233,10 +238,16 @@ public class Main
 		}
 
 		HackWriter writer = new HackWriter(new FileWriter(f));
-		Map<String,String> entities = 
-			(Map<String,String>)doc.getUserData("entity-map");
-
-		writer.setEntities(entities);
+		writer.setPreserveEntities(preserveEntities);
+		Map<String,String> entities;
+		if(fullEntities)
+		{
+			
+		}
+		else
+		{
+			writer.setEntities((Map<String,String>)doc.getUserData("entity-map"));
+		}
 		
 		write(doc, writer, encoding);
 		writer.close();
@@ -263,135 +274,6 @@ public class Main
 			throw new DexterException("error while rendering document: " 
 					+ e.getMessage(),e);
 			
-		}
-	}
-	static class HackWriter extends Writer
-	{
-		Writer inner;
-		Map<String, String> entities = null;
-		boolean started = false;
-		boolean preserveEntities = true;
-		boolean ampersandPending = false;
-		
-		HackWriter(Writer inner)
-		{
-			this.inner = inner;
-		}
-		public void setEntities(Map<String, String> entities)
-		{
-			this.entities = entities;
-		}
-		public void close()
-			throws IOException
-		{
-			inner.close();
-		}
-		public void flush()
-			throws IOException
-		{
-			inner.flush();
-		}
-		public void writeDocType()
-			throws IOException
-		{
-			StringBuffer buffer = new StringBuffer();
-			if(entities != null && entities.size() > 0)
-			{
-				buffer.append("\n<!DOCTYPE xsl:stylesheet");
-				buffer.append(" [\n");
-				for(String key : entities.keySet())
-				{
-					buffer.append("  <!ENTITY ")
-						.append(key).append(" \"")
-						.append(entities.get(key))
-						.append("\" >\n");
-				}
-		  		buffer.append(" ]");
-				buffer.append(">\n");
-			}
-			inner.write(buffer.toString());
-		}
-		
-		public void writeWithEntities(String s)
-			throws IOException
-		{
-			if(ampersandPending)
-			{
-				int n = s.indexOf(';');
-				if(n == -1)
-				{
-					inner.write("&amp;");
-					
-				}
-				else
-				{
-					String ent = s.substring(0, n);
-					if(entities.containsKey(ent))
-					{
-						if(preserveEntities)
-						{
-							inner.write("&");
-							inner.write(ent);
-							inner.write(";");
-						}
-						else
-						{
-							inner.write(entities.get(ent));
-						}
-						s = s.substring(n+1);
-					}
-				}
-				ampersandPending = false;
-			}
-
-			int off = s.indexOf("&amp;");
-			if(off != -1)
-			{
-				if(off > 0)
-				{
-					inner.write(s.substring(0,off));
-				}
-				ampersandPending = true;
-				if(s.length() > off + 5)
-				{
-					writeWithEntities(s.substring(off+5));
-				}
-			}
-			else
-			{
-				inner.write(s);
-			}
-			
-		}
-
-		public void write(char[] ch, int off, int len)
-			throws IOException
-		{
-			String s = new String(ch,off,len);
-			
-			if(!started)
-			{
-				
-				int n = s.indexOf('>');
-				if(n == -1)
-				{
-					inner.write(s);
-				}
-				else
-				{
-					inner.write(s.substring(0,n+1));
-					started = true;
-					writeDocType();
-					if(s.length() > n+1)
-					{
-						writeWithEntities(s.substring(n, len - (n+1)));
-					}
-				}
-			}
-			else
-			{
-				writeWithEntities(s);
-			}
 		}
 	}
 }
