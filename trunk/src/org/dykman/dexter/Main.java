@@ -284,7 +284,6 @@ public class Main
 		public void close()
 			throws IOException
 		{
-System.out.println("CLOSE IS CALLED");			
 			inner.close();
 		}
 		public void flush()

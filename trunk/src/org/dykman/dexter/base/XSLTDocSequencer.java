@@ -428,10 +428,7 @@ System.out.println("DOCUMENT_TYPE_NODE seen");
 				// TODO: this is screwed up for this case, I am sure...
 			case Node.ENTITY_REFERENCE_NODE:
 			{
-//				
-System.out.println("name = " + name);				
 				Node n = translateEntityReference(name);
-//				EntityReference en = currentDocument.createEntityReference(name);
 				currentNode.appendChild(n);
 			}
 			break;
