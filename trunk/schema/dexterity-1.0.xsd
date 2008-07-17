@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://dexter.dykman.org/dexter/dexterity-1.0" elementFormDefault="qualified">
+
+	<attribute name="env" type="normalizedString">
+		<annotation>
+			<documentation>sets the default path for the scope of the element</documentation>
+		</annotation>
+	</attribute>
+
+	<attribute name="value" type="normalizedString">
+		<annotation>
+			<documentation>replace the content of the current element with the text context of the datapath expression</documentation>
+		</annotation>
+	</attribute>
+	<attribute name="ccpy" type="normalizedString">
+		<annotation>
+			<documentation>replace the content of the current element with the set of all child nodes of the datapath expression</documentation>
+		</annotation>
+	</attribute>
+
+	<attribute name="attr" type="normalizedString">
+		<annotation>
+			<documentation>a sequcence of space-delimited attribute-assgnment expressions</documentation>
+		</annotation>
+	</attribute>
+
+	<attribute name="if" type="normalizedString" >
+		<annotation>
+			<documentation>thelement wil be conditionally evaluated based on the expression</documentation>
+		</annotation>
+	</attribute>
+	
+	<attribute name="case" type="normalizedString"  >
+		<annotation>
+			<documentation>
+			expressions for  chain of elements are conditionally evaluated; the first to return true 
+			causes that node to be exsively evaluated</documentation>
+		</annotation>
+	</attribute>
+	
+	<attribute name="default" type="normalizedString"  >
+		<annotation>
+			<documentation>
+evaluates always-true expression when used to define a fallback for a 'case' chain
+			</documentation>
+		</annotation>
+	</attribute>
+	
+	<attribute name="each" type="normalizedString" />
+	<annotation>
+		<documentation>repeat the source node for every node found in the data path expression</documentation>
+	</annotation>
+
+	<attribute name="ignore" type="normalizedString">
+		<annotation>
+			<documentation>ignore this node, it's children and all associated productions during XSL generation</documentation>
+		</annotation>
+	</attribute>
+
+	<attribute name="uniq" type="normalizedString" >
+		<annotation>
+			<documentation>
+keep generated attributes unique across across a document
+			</documentation>
+		</annotation>
+	</attribute>
+	<attribute name="sub" type="normalizedString" >
+		<annotation>
+			<documentation>
+generate a seperate stylesheet representing the current element and include it into the top-level stylesheet
+			</documentation>
+		</annotation>
+	</attribute>
+	
+	<attribute name="ghost" type="normalizedString">
+		<annotation>
+			<documentation>replace this node with the set of it's children after all operations on the node are exavulated</documentation>
+		</annotation>
+	</attribute>
+
+</schema>
