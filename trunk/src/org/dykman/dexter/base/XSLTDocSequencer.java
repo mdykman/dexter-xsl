@@ -6,19 +6,16 @@
 
 package org.dykman.dexter.base;
 
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.TreeMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 
 import org.dykman.dexter.Dexter;
@@ -453,28 +450,25 @@ System.out.println("name = " + name);
 			}
 		}
 	}
-	protected String lookupEnitityReference(String ref)
+
+	protected Node translateEntityReference(String ref)
 	{
 		String val = dexter.getEntity(ref);
 		if(val == null)
 		{
 			throw new DexterException("unrecognized entity reference used: " + ref);
 		}
-		return val.trim();
-	}
-	protected Node translateEntityReference(String ref)
-	{
-//		currentDocument.
-		Node en = currentDocument.createEntityReference("nbsp");
-//		Node en = currentDocument.createEntityReference(lookupEnitityReference(ref));
-		Element el = currentDocument.createElement("xsl:text");
-		el.setAttribute("disable-output-escaping", "no");
-		el.appendChild(currentDocument.createEntityReference(ref));
-//		el.setNodeValue(lookupEnitityReference(ref));
-		el.setTextContent(lookupEnitityReference(ref));
-//		el.
-		el.appendChild(en);
-		return el;
+		val = val.trim();
+		
+		Map<String,String> ent = 
+			(Map<String,String>)currentDocument.getUserData("entity-map");
+		if(ent == null)
+		{
+			ent = new TreeMap<String,String>();
+			currentDocument.setUserData("entity-map",ent,null);
+		}
+		ent.put(ref, val);
+		return  currentDocument.createTextNode("&" + ref + ';');
 	}
 
 	public void endNode()
@@ -689,7 +683,6 @@ System.out.println("name = " + name);
 		nameStack.push(name + ".xsl");
 	}
 
-
 	private Document popDoc()
 	{
 		Document popped = docStack.pop();
@@ -704,7 +697,6 @@ System.out.println("name = " + name);
 		{
 			currentDocument = null;
 		}
-
 		return popped;
 	}
 
@@ -726,31 +718,6 @@ System.out.println("name = " + name);
 			currentNode = null;
 		}
 		return popped;
-	}
-
-	protected void write(Document document, Writer writer, String encoding)
-	{
-		try
-		{
-
-			document.normalizeDocument();
-
-			Transformer tranformer = factory.newTransformer();
-			tranformer.setOutputProperty("indent", indent);
-			tranformer.setOutputProperty("method", method);
-			tranformer.setOutputProperty("media-type", mediaType);
-			tranformer.setOutputProperty("encoding", encoding);
-
-			Result result = new javax.xml.transform.stream.StreamResult(writer);
-
-			Source source = new javax.xml.transform.dom.DOMSource(document);
-			tranformer.transform(source, result);
-		}
-		catch (Exception e)
-		{
-			throw new DexterException("An error has occured while trying to render the document",e);
-		}
-
 	}
 
 	public Map<String, Document> getDocuments()
