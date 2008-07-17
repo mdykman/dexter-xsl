@@ -20,6 +20,7 @@ import javax.xml.transform.TransformerFactory;
 
 import org.dykman.dexter.Dexter;
 import org.dykman.dexter.DexterException;
+import org.dykman.dexter.dexterity.DexteritySyntaxException;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
@@ -37,6 +38,9 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	private String mediaType = "text/html";
 
 	private TransformerFactory factory;
+	
+	private List<String> dexterNamespaces;
+	
 	private DocumentBuilder builder;
 	{
 		factory = TransformerFactory.newInstance();
@@ -119,7 +123,17 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	private String translateName(String name)
 	{
 		String result = name;
-		if(name.indexOf('!') != -1)
+		if(name.indexOf(':') != -1)
+		{
+			String[] b = name.split("[:]");
+			if(dexterNamespaces.contains(b[0]))
+			{
+				throw new DexteritySyntaxException(
+						"unrecognized attribute specified in dexter namespace: `" + name + "'");
+			}
+			
+		}
+			if(name.indexOf('!') != -1)
 		{
 			String[] b = name.split("[!]");
 			result = b[0] + ':' + b[1];
@@ -282,6 +296,16 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			element.appendChild(text);
 			currentNode.appendChild(element);
 		}
+	}
+	
+	public void setIdentityAttribute(String key, String value)
+	{
+		DocumentFragment fragment = processIdentityValueTemplate(key, value);
+
+		Element element = currentDocument.createElement("xsl:attribute");
+		element.setAttribute("name", key);
+		element.appendChild(fragment);
+		currentNode.appendChild(element);
 	}
 
 	public void startTest(String tests)
@@ -640,15 +664,6 @@ System.out.println("DOCUMENT_TYPE_NODE seen");
 		return currentNode;
 	}
 
-	public void setIdentityAttribute(String key, String value)
-	{
-		DocumentFragment fragment = processIdentityValueTemplate(key, value);
-
-		Element element = currentDocument.createElement("xsl:attribute");
-		element.setAttribute("name", key);
-		element.appendChild(fragment);
-		currentNode.appendChild(element);
-	}
 
 	private void popStylesheet()
 	{
@@ -721,4 +736,24 @@ System.out.println("DOCUMENT_TYPE_NODE seen");
 	{
 		return finished;
 	}
+
+	public void setIndent(String indent)
+    {
+    	this.indent = indent;
+    }
+
+	public void setMethod(String method)
+    {
+    	this.method = method;
+    }
+
+	public void setMediaType(String mediaType)
+    {
+    	this.mediaType = mediaType;
+    }
+
+	public void setDexterNamespaces(List<String> dexterNamespaces)
+    {
+    	this.dexterNamespaces = dexterNamespaces;
+    }
 }

@@ -31,7 +31,7 @@ public class Main
 {
 	private static String encoding = "UTF-8";
 	private static String mediaType = "text/html";
-	private static String method="xml";
+	private static String method="html";
 	private static String indent="no";
 	private static String outputDirectory = null;
 	private static File userProperties = null;
@@ -39,7 +39,6 @@ public class Main
 	private static Set<File> outputFile = new HashSet<File>();
 	private static TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	private static boolean preserveEntities = true;
-	private static boolean fullEntities = false;
 
 	public static void main(String[] args)
 	{
@@ -164,14 +163,12 @@ public class Main
 			
 			dexter.setMediaType(mediaType);
 			dexter.setMethod(method);
-			dexter.setIndent(true);
+			dexter.setIndent(indent.equals("yes"));
 
 			while(argp < args.length)
 			{
 				String fn = args[argp];
 				Document impl = builder.parse(new FileInputStream(fn));
-//				dexter.addToAllDocs(dexter.generateXSLT(fn,impl));
-				
 				Map<String, Document> docs = dexter.generateXSLT(fn,impl);
 				Iterator<String> k = docs.keySet().iterator();
 				while(k.hasNext())
@@ -239,15 +236,7 @@ public class Main
 
 		HackWriter writer = new HackWriter(new FileWriter(f));
 		writer.setPreserveEntities(preserveEntities);
-		Map<String,String> entities;
-		if(fullEntities)
-		{
-			
-		}
-		else
-		{
-			writer.setEntities((Map<String,String>)doc.getUserData("entity-map"));
-		}
+		writer.setEntities((Map<String,String>)doc.getUserData("entity-map"));
 		
 		write(doc, writer, encoding);
 		writer.close();
@@ -260,8 +249,8 @@ public class Main
 //			document.normalizeDocument();
 			Transformer tranformer = transformerFactory.newTransformer();
 			tranformer.setOutputProperty("indent", "no");
-			tranformer.setOutputProperty("method", "xml");
-			tranformer.setOutputProperty("media-type", "text/xsl");
+			tranformer.setOutputProperty("method", method);
+			tranformer.setOutputProperty("media-type","text/xsl");
 			tranformer.setOutputProperty("encoding", encoding);
 
 			Result result = new javax.xml.transform.stream.StreamResult(writer);

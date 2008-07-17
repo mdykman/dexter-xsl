@@ -45,10 +45,11 @@ public class Dexter
 	public static String DEXTER_VERSION = "dexter-0.2.1-alpha"; 
 	public static String DEXTER_COPYRIGHT = "copyright (c) 2007,2008 Michael Dykman"; 
 
-	private String propertyPath;
-	private String filename;
+	private String propertyPath = null;
+//	private String filename;
 
 	private String encoding;
+	
 	private String indent = "no";
 	private String method = "html";
 	private String mediaType = "text/html";
@@ -61,6 +62,8 @@ public class Dexter
 
 	protected Map<String,PropertyResolver> modulesMap 
 		= new LinkedHashMap<String, PropertyResolver>();
+
+  	List<String> dexterNamespaces = new ArrayList<String>();
 
 	protected List<String> idNames = new ArrayList<String>();
 	private Map<String, String> descriptors = new HashMap<String, String>();
@@ -212,6 +215,7 @@ public class Dexter
 			String module = it.next();
 			PropertyResolver resolver = modulesMap.get(module);
 			String ns = resolver.getProperty("namespace");
+			dexterNamespaces.add(ns);
 			String seq = resolver.getProperty("descriptors");
 
 			if(seq != null)
@@ -219,11 +223,9 @@ public class Dexter
 				String[] tk = seq.split(",");
 				for (int i = 0; i < tk.length; ++i)
 				{
-//System.out.println("      descriptor " + tk[i]);			
 					String key = "a." + tk[i];
 					String klassName = resolver.getProperty(key);
 					this.descriptors.put(ns + ':' + tk[i], klassName);
-//System.out.println(ns + ':' + tk[i] + "->" + klassName);			
 				}
 			}
 			v = resolver.getProperty("block");
@@ -294,20 +296,12 @@ public class Dexter
 		return result;
 	}
 	
-//	public Object getUserData(Object key)
-//	{
-//		return userData.get(key);
-//	}
-//	Map<String, Document> allDocs = new HashMap<String, Document>();
 	
 	public Map<String, Document> generateXSLT(String filename,Document document) throws Exception
 	{
-		this.filename = filename;
 		Document clone = (Document)document.cloneNode(true);
 		document = clone;
-		document.normalize();
 		
-		// search for each modules names space
 		Element docel = document.getDocumentElement();
 		Iterator<String> it = modulesMap.keySet().iterator();
 		while(it.hasNext())
@@ -320,16 +314,16 @@ public class Dexter
 				docel.removeAttribute(nsspec);
 			}
 		}
-		// strip the namespace specifier from the template document
-		// so it is not propigated to the output
-		
-
 		// convert dexter attributes
 		scanDocument(document);
 		Descriptor descriptor = marshall(document, this);
 
 		XSLTDocSequencer sequencer = new XSLTDocSequencer(this,filename, encoding);
+		sequencer.setDexterNamespaces(dexterNamespaces);
 		sequencer.setIdNames(idNames);
+		sequencer.setIndent(indent);
+		sequencer.setMediaType(mediaType);
+		sequencer.setMethod(method);
 		sequencer.runDescriptor(descriptor);
 		return sequencer.getDocuments();
 	}
@@ -639,53 +633,6 @@ public class Dexter
 		return Arrays.copyOfRange(related, 0, c);
 	}
 
-	/*
-	private void putToDisk(String name, Document doc) throws Exception
-	{
-		File f  = new File(name);
-
-		if (outputFile.contains(f))
-		{
-			throw new DexterException("duplicate output names: " + f.getPath());
-		}
-		else
-		{
-			outputFile.add(f);
-		}
-
-		Writer writer = new FileWriter(f);
-
-		write(doc, writer, encoding);
-		writer.close();
-	}
-
-	private TransformerFactory factory = TransformerFactory.newInstance();
-	protected void write(Document document, Writer writer, String encoding)
-	{
-		try
-		{
-
-			document.normalizeDocument();
-
-			Transformer tranformer = factory.newTransformer();
-			tranformer.setOutputProperty("indent", indent);
-			tranformer.setOutputProperty("method", method);
-			tranformer.setOutputProperty("media-type", mediaType);
-			tranformer.setOutputProperty("encoding", encoding);
-
-			// Writer writer = null;
-			Result result = new javax.xml.transform.stream.StreamResult(writer);
-
-			Source source = new javax.xml.transform.dom.DOMSource(document);
-			tranformer.transform(source, result);
-		}
-		catch (Exception e)
-		{
-			throw new DexterException("error while rendering document",e);
-			
-		}
-	}
-*/
 	public static Descriptor marshallNode(Node node,Dexter dexter)
    {
    	Descriptor descriptor = new NodeDescriptor(node);
@@ -811,4 +758,8 @@ public class Dexter
 			throw new RuntimeException(e);
 		}
 	}
+	public void setIndent(String indent)
+    {
+    	this.indent = indent;
+    }
 }
