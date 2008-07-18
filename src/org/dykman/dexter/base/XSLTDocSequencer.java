@@ -211,7 +211,11 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 		Element map;
 		Element valueOf = currentDocument.createElement("xsl:copy-of");
-		valueOf.setAttribute("select", path + "/*");
+
+		//		valueOf.setAttribute("select", path + "/*");
+		
+		valueOf.setAttribute("select", 
+				path + "/*|" + path + "/text()");
 
 		if (def != null)
 		{
