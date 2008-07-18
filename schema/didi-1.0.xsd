@@ -2,6 +2,14 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
   targetNamespace="http://dexter.dykman.org/dexter/didi-1.0" 
   elementFormDefault="qualified">
-  <attribute name="meta" type="string"/>  
+  <annotation>
+  	<appinfo>http://code.google.com/p/dexter-xsl</appinfo>
+  	<documentation>XHTLM-specific processing attributes</documentation>
+  </annotation>
+  <attribute name="meta" type="string">
+   <annotation>
+   <documentation>embed meta data into the HTML output  t specified decriptor file</documentation>
+   </annotation>
+  </attribute>  
   <attribute name="data" type="string"/>  
 </schema>
