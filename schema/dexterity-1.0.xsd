@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://dexter.dykman.org/dexter/dexterity-1.0" elementFormDefault="qualified">
+	<annotation>
+		<documentation>
+validates Dexter tranformation attributes
+		</documentation>
+	</annotation>
 
 	<attribute name="env" type="normalizedString">
 		<annotation>
@@ -46,10 +51,13 @@ evaluates always-true expression when used to define a fallback for a 'case' cha
 		</annotation>
 	</attribute>
 	
-	<attribute name="each" type="normalizedString" />
+	<attribute name="each" type="normalizedString" >
 	<annotation>
-		<documentation>repeat the source node for every node found in the data path expression</documentation>
+		<documentation>
+		repeat the source node for every node found in the data path expression
+		</documentation>
 	</annotation>
+	</attribute>
 
 	<attribute name="ignore" type="normalizedString">
 		<annotation>
