@@ -112,15 +112,6 @@ class HackWriter extends Writer
 	{
 		String s = new String(ch,off,len);
 		
-		// this is a shrot-term hack...  the xml declaration is getting dropped 
-		// this is a short-cicuit until I get that back
-		if(!started)
-		{
-			writeDocType();
-			started = true;
-		}
-		
-		
 		if(!started)
 		{
 			

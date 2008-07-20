@@ -23,6 +23,7 @@ import org.dykman.dexter.DexterException;
 import org.dykman.dexter.dexterity.DexteritySyntaxException;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
+import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.DocumentType;
@@ -37,9 +38,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	private String method = "html";
 	private String mediaType = "text/html";
 
-	private TransformerFactory factory;
-	
 	private List<String> dexterNamespaces;
+	private TransformerFactory factory;
 	
 	private DocumentBuilder builder;
 	{
@@ -47,11 +47,11 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		dbf.setValidating(false);
+		
 		dbf.setExpandEntityReferences(false);
 		dbf.setCoalescing(true);
 		dbf.setIgnoringComments(false);
 		builder = dbf.newDocumentBuilder();
-
 	}
 
 	private Map<String, Document> finished = new HashMap<String, Document>();
@@ -510,18 +510,20 @@ System.out.println("DOCUMENT_TYPE_NODE seen");
 
 	protected Document createStub(String match)
 	{
-	
-		Document document = builder.newDocument();
-//		builder.
+		DOMImplementation impl = builder.getDOMImplementation();
+//		impl.
+		DocumentType dt = impl.createDocumentType("stylesheet", null, 
+				"http://www.w3.org/1999/XSL/Transform");
+		
+		Document document = impl.createDocument(
+				"http://www.w3.org/1999/XSL/Transform",
+				"xsl:stylesheet", dt);
 
-		Element style = document.createElement("xsl:stylesheet");
-		style.setAttribute("version", "1.0");
-		style.setAttribute("xmlns:xsl", "http://www.w3.org/1999/XSL/Transform");
-		document.appendChild(style);
+		Element style = document.getDocumentElement();
 
 		pushStylesheet(style);
 		pushNode(style);
-		// TODO: hacky, hacky
+
 		Element output = document.createElement("xsl:output");
 		output.setAttribute("encoding", encoding);
 		output.setAttribute("indent", indent);
@@ -533,7 +535,6 @@ System.out.println("DOCUMENT_TYPE_NODE seen");
 
 		Element template = document.createElement("xsl:template");
 		template.setAttribute("match", match);
-//		tagTemplate(template);
 		style.appendChild(template);
 
 		pushNode(template);
