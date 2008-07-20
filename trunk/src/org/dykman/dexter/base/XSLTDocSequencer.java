@@ -65,7 +65,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	private short[] nodeTypes = new short[8092];
 	private int nodeLevel = 0;
 
-	private List idNames;
+	private List<String> idNames;
 
 	private Stack<Document> docStack = new Stack<Document>();
 	private Stack<String> nameStack = new Stack<String>();
@@ -120,89 +120,49 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		--pathc;
 	}
 
-	private String translateName(String name)
+	public void mapNode(String path, String def,boolean disableEscaping)
 	{
-		String result = name;
-		if(name.indexOf(':') != -1)
+		path = translateXSLPath(path);
+
+		Element map;
+		Element valueOf = currentDocument.createElement("xsl:value-of");
+		valueOf.setAttribute("select", path);
+		if(disableEscaping)
 		{
-			String[] b = name.split("[:]");
-			if(dexterNamespaces.contains(b[0]))
-			{
-				throw new DexteritySyntaxException(
-						"unrecognized attribute specified in dexter namespace: `" + name + "'");
-			}
-			
+			valueOf.setAttribute("disable-output-escaping", "yes");
 		}
-			if(name.indexOf('!') != -1)
+
+		if (def != null)
 		{
-			String[] b = name.split("[!]");
-			result = b[0] + ':' + b[1];
-		}
-		return result;
-	}
-	public void mapAttribute(String name, String[] path, String def)
-	{
-
-		Element element = currentDocument.createElement("xsl:attribute");
-		name = translateName(name);
-		element.setAttribute("name", name);
-
-		if (def != null || path.length > 1)
-		{
-			StringBuffer attrTest = new StringBuffer();
-			boolean first = true;
-			if (path.length == 1)
-			{
-				attrTest.append(translateXSLPath(path[0]));
-			}
-			else for (int i = 0; i < path.length; ++i)
-			{
-				if (i % 2 != 0)
-				{
-					String p = path[i] = translateXSLPath(path[i]);
-					if (!first)
-					{
-						attrTest.append(" and ");
-					}
-					else
-					{
-						first = false;
-					}
-					attrTest.append(p);
-				}
-			}
-
 			Element choose = currentDocument.createElement("xsl:choose");
-			Element when = currentDocument.createElement("xsl:when");
-			when.setAttribute("test", attrTest.toString());
+			Element when;
+			
+//			when = currentDocument.createElement("xsl:when");
+//			when.setAttribute("test", path + "/" + "text()");
+//			Element copyOf = currentDocument.createElement("xsl:copy-of");
+//			copyOf.setAttribute("select", path);
+//			when.appendChild(copyOf);
+//			choose.appendChild(when);
+
+			when = currentDocument.createElement("xsl:when");
+			when.setAttribute("test", path);
+			when.appendChild(valueOf);
 			choose.appendChild(when);
-			for (int i = 0; i < path.length; ++i)
-			{
-				if (i % 2 == 0)
-				{
-					when.appendChild(textContainer(path[i]));
-				}
-				else
-				{
-					Element valueOf = currentDocument.createElement("xsl:value-of");
-					valueOf.setAttribute("select", path[i]);
-					when.appendChild(valueOf);
-				}
-			}
-			Element otherwise = currentDocument.createElement("xsl:otherwise");
-			otherwise.appendChild(textContainer(def == null ? "" : def));
-			choose.appendChild(otherwise);
-			element.appendChild(choose);
+
+			map = choose;
 		}
 		else
 		{
-			Element valueOf = currentDocument.createElement("xsl:value-of");
-			valueOf.setAttribute("select", translateXSLPath(path[0]));
-			element.appendChild(valueOf);
+			map = valueOf;
 		}
 
-		currentNode.appendChild(element);
-
+		if (def != null)
+		{
+			Element otherwise = currentDocument.createElement("xsl:otherwise");
+			otherwise.appendChild(currentDocument.createTextNode(def));
+			map.appendChild(otherwise);
+		}
+		currentNode.appendChild(map);
 	}
 
 	public void copyChildren(String path, String def)
@@ -240,50 +200,81 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		currentNode.appendChild(map);
 	}
 
-	public void mapNode(String path, String def,boolean disableEscaping)
+	public void mapAttribute(String name, String[] path, String def)
 	{
-		path = translateXSLPath(path);
 
-		Element map;
-		Element valueOf = currentDocument.createElement("xsl:value-of");
-		valueOf.setAttribute("select", path);
-		if(disableEscaping)
-		{
-			valueOf.setAttribute("disable-output-escaping", "yes");
-		}
+		Element element = currentDocument.createElement("xsl:attribute");
+		name = translateName(name);
+		element.setAttribute("name", name);
 
-		if (def != null)
+		if (def != null || path.length > 1)
 		{
+			StringBuffer attrTest = new StringBuffer();
+			boolean first = true;
+			if (path.length == 1)
+			{
+				attrTest.append(translateXSLPath(path[0]));
+				attrTest.append("/text()");
+			}
+			else for (int i = 0; i < path.length; ++i)
+			{
+				if (i % 2 != 0)
+				{
+					String p = path[i] = translateXSLPath(path[i]);
+					if (!first)
+					{
+						attrTest.append(" and ");
+					}
+					else
+					{
+						first = false;
+					}
+					attrTest.append(p);
+					attrTest.append("/text()");
+				}
+			}
+
 			Element choose = currentDocument.createElement("xsl:choose");
-			Element when;
-			
-			when = currentDocument.createElement("xsl:when");
-			when.setAttribute("test", path + "/" + "text()");
-			Element copyOf = currentDocument.createElement("xsl:copy-of");
-			copyOf.setAttribute("select", path);
-			when.appendChild(copyOf);
+			Element when = currentDocument.createElement("xsl:when");
+			when.setAttribute("test", attrTest.toString());
 			choose.appendChild(when);
-
-			when = currentDocument.createElement("xsl:when");
-			when.setAttribute("test", path);
-			when.appendChild(valueOf);
-			choose.appendChild(when);
-
-			map = choose;
+			// if path.length > 1, then we alternating literals and paths
+			if(path.length == 1)
+			{
+				Element valueOf = currentDocument.createElement("xsl:value-of");
+				valueOf.setAttribute("select", translateXSLPath(path[0]));
+				when.appendChild(valueOf);
+				
+			} 
+			else for (int i = 0; i < path.length; ++i)
+			{
+				if (i % 2 == 0) 
+				{
+					when.appendChild(textContainer(path[i]));
+				}
+				else
+				{
+					Element valueOf = currentDocument.createElement("xsl:value-of");
+					valueOf.setAttribute("select", translateXSLPath(path[i]));
+					when.appendChild(valueOf);
+				}
+			}
+			Element otherwise = currentDocument.createElement("xsl:otherwise");
+			otherwise.appendChild(textContainer(def == null ? "" : def));
+			choose.appendChild(otherwise);
+			element.appendChild(choose);
 		}
 		else
 		{
-			map = valueOf;
+			Element valueOf = currentDocument.createElement("xsl:value-of");
+			valueOf.setAttribute("select", translateXSLPath(path[0]));
+			element.appendChild(valueOf);
 		}
 
-		if (def != null)
-		{
-			Element otherwise = currentDocument.createElement("xsl:otherwise");
-			otherwise.appendChild(currentDocument.createTextNode(def));
-			map.appendChild(otherwise);
-		}
-		currentNode.appendChild(map);
+		currentNode.appendChild(element);
+
 	}
+
 
 	public void setAttribute(String key, String value)
 	{
@@ -760,4 +751,24 @@ System.out.println("DOCUMENT_TYPE_NODE seen");
     {
     	this.dexterNamespaces = dexterNamespaces;
     }
+	private String translateName(String name)
+	{
+		String result = name;
+		if(name.indexOf(':') != -1)
+		{
+			String[] b = name.split("[:]");
+			if(dexterNamespaces.contains(b[0]))
+			{
+				throw new DexteritySyntaxException(
+						"unrecognized attribute specified in dexter namespace: `" + name + "'");
+			}
+		}
+
+		if(name.indexOf('!') != -1)
+		{
+			String[] b = name.split("[!]");
+			result = b[0] + ':' + b[1];
+		}
+		return result;
+	}
 }

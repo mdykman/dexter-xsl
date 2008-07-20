@@ -60,17 +60,26 @@ public class MapAttributeDescriptor extends PathDescriptor
 		{
 			return new String[]{""};
 		}
+		
 		if(value.startsWith("{"))
 		{
 			list.add("");
 		}
+		
 		int pc = 0;
-		while(pc < value.length())
+		if(value.indexOf('{') == -1)
+		{
+			String 	s =  mapPath(getPath(),value);
+			list.add(dequalify(getIteratorContext(),s));
+		}
+		else while(pc < value.length())
 		{
 			if(value.charAt(pc) == '{')
 			{
 				int end = value.indexOf('}',pc);
-				String s = value.substring(pc+1, end); 
+				String s = value.substring(pc+1, end);
+								
+				s =  mapPath(getPath(),s);
 				list.add(dequalify(getIteratorContext(),s));
 				pc = end+1;
 			}
@@ -88,9 +97,7 @@ public class MapAttributeDescriptor extends PathDescriptor
 					pc = end;
 				}
 			}
-			
 		}
-//System.out.println("returning " + list.size() + " components");		
 		return list.toArray(new String[list.size()]);
 	}
 }
