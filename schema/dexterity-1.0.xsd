@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://dexter.dykman.org/dexter/dexterity-1.0" elementFormDefault="qualified">
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	elementFormDefault="qualified">
 	<annotation>
-  	<appinfo>http://code.google.com/p/dexter-xsl</appinfo>
-		<documentation>
-validates Dexter tranformation attributes
-		</documentation>
+  		<appinfo>http://code.google.com/p/dexter-xsl</appinfo>
+		<documentation>validates Dexter tranformation attributes</documentation>
 	</annotation>
 
 	<attribute name="env" type="normalizedString">
@@ -32,7 +31,7 @@ validates Dexter tranformation attributes
 
 	<attribute name="if" type="normalizedString" >
 		<annotation>
-			<documentation>thelement wil be conditionally evaluated based on the expression</documentation>
+			<documentation>conditionally render the node based expression evaluations</documentation>
 		</annotation>
 	</attribute>
 	

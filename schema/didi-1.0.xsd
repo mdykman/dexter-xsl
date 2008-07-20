@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
-  targetNamespace="http://dexter.dykman.org/dexter/didi-1.0" 
   elementFormDefault="qualified">
   <annotation>
   	<appinfo>http://code.google.com/p/dexter-xsl</appinfo>
