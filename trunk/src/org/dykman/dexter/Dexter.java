@@ -6,12 +6,10 @@
 
 package org.dykman.dexter;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,7 +44,6 @@ public class Dexter
 	public static String DEXTER_COPYRIGHT = "copyright (c) 2007,2008 Michael Dykman"; 
 
 	private String propertyPath = null;
-//	private String filename;
 
 	private String encoding;
 	
@@ -54,7 +51,6 @@ public class Dexter
 	private String method = "html";
 	private String mediaType = "text/html";
 
-//	private String prefix;
 	protected Map<Object, Object> userData = new HashMap<Object, Object>();
 
 	protected PropertyResolver baseResolver; 
@@ -451,7 +447,6 @@ public class Dexter
 				String[] bb = parseNs(alabel);
 				String namespace = bb[0];
 
-//System.out.println("trying to load editor				
 				Class klass = Class.forName(editors.get(alabel));
 				DocumentEditor editor = (DocumentEditor) klass.newInstance();
 				editor.setPropertyResolver(modulesMap.get(namespace));
@@ -685,79 +680,7 @@ public class Dexter
 		}
 		out.println("!!!! end of message !!!!");
 	}
-	/*
-	public static void main(String[] args)
-	{
-		int argp = 0;
-		try
-		{
-			if (args.length == 0)
-			{
-				System.out.println("please specify an input file");
-				System.exit(1);
-			}
-			String encoding = "UTF-8";
-			
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			dbf.setValidating(false);
-			DocumentBuilder builder = dbf.newDocumentBuilder();
-//			builder.
 
-			builder.setEntityResolver(new DexterEntityResolver(encoding));
-			Dexter dexter = new Dexter(encoding);
-			dexter.setMediaType("text/html");
-			dexter.setMethod("xml");
-			dexter.setIndent(true);
-
-			while(argp < args.length)
-			{
-				String fn = args[argp];
-				Document impl = builder.parse(new FileInputStream(fn));
-//				dexter.addToAllDocs(dexter.generateXSLT(fn,impl));
-				
-				Map<String, Document> docs = dexter.generateXSLT(fn,impl);
-				++argp;
-				Iterator<String> k = docs.keySet().iterator();
-				while(k.hasNext())
-				{
-					String name = k.next();
-	 				if(!name.endsWith(".dispose"))
-					{
-						dexter.putToDisk(name, docs.get(name));
-					}
-				}
-			}
-		}
-		catch (DexterException e)
-		{
-			String msg = e.getMessage();
-			System.err.println("DexterException: " + msg);
-			e.printStackTrace();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-	*/
-	protected static void showHelpFile()
-	{
-		try
-		{
-			
-			InputStream in = Dexter.class.getResourceAsStream("help.txt");
-			BufferedReader read = new BufferedReader(new InputStreamReader(in));
-			String  line;
-			while((line = read.readLine())!= null)
-			{
-				System.out.println(line);
-			}
-		}
-		catch(IOException e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
 	public void setIndent(String indent)
     {
     	this.indent = indent;

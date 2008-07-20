@@ -84,37 +84,31 @@ public class Main
 					indent = go.getOptarg();
 				break;
 				case 'p' :
-				{
 					userProperties = new File(go.getOptarg());
 					if(!userProperties.canRead())
 					{
 						throw new DexterException("unable to read properties file: " + userProperties.getName());
 					}
-				}
 				break;
 				case 'd' :
+					String ps = go.getOptarg();
+					if(ps.indexOf('=') != -1)
 					{
-						String ps = go.getOptarg();
-						if(ps.indexOf('=') != -1)
-						{
-							String b[] = ps.split("[=]");
-							String v = b.length > 1 ? b[1] : "";
-							System.setProperty(b[0], v);
-						}
-						else
-						{
-							throw new DexterException("invalid property definition: " + ps);
-						}
+						String b[] = ps.split("[=]");
+						String v = b.length > 1 ? b[1] : "";
+						System.setProperty(b[0], v);
+					}
+					else
+					{
+						throw new DexterException("invalid property definition: " + ps);
 					}
 				break;
 				case 'o' :
+					outputDirectory = go.getOptarg();
+					File ff = new File(outputDirectory);
+					if(!ff.isDirectory() || ff.canWrite())
 					{
-						outputDirectory = go.getOptarg();
-						File ff = new File(outputDirectory);
-						if(!ff.isDirectory() || ff.canWrite())
-						{
-							throw new DexterException(outputDirectory + " is not a writeable directory");
-						}
+						throw new DexterException(outputDirectory + " is not a writeable directory");
 					}
 				break;
 				case '?' :
@@ -134,7 +128,7 @@ public class Main
 		{
 			if (args.length <= argp)
 			{
-				Dexter.showHelpFile();
+				showHelpFile();
 				System.exit(1);
 			}
 
@@ -144,7 +138,6 @@ public class Main
 			dbf.setCoalescing(true);
 			dbf.setIgnoringComments(false);
 			DocumentBuilder builder = dbf.newDocumentBuilder();
-
 			builder.setEntityResolver(new DexterEntityResolver(encoding));
 			Dexter dexter;
 			
@@ -186,7 +179,7 @@ public class Main
 		{
 			String msg = e.getMessage();
 			System.err.println("DexterException: " + msg);
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 		catch (Exception e)
 		{
@@ -203,9 +196,7 @@ public class Main
 			BufferedReader read = new BufferedReader(new InputStreamReader(in));
 			String  line;
 			while((line = read.readLine())!= null)
-			{
 				System.out.println(line);
-			}
 		}
 		catch(IOException e)
 		{
@@ -216,23 +207,12 @@ public class Main
 	private static void putToDisk(String name, Document doc) throws Exception
 	{
 		File f;
-		if(outputDirectory == null)
-		{
-			f = new File(name);
-		}
-		else
-		{
-			f = new File(outputDirectory,name);
-		}
+		if(outputDirectory == null) f = new File(name);
+		else f = new File(outputDirectory,name);
 
-		if (outputFile.contains(f))
-		{
+		if (outputFile.contains(f)) 
 			throw new DexterException("duplicate output names: " + f.getPath());
-		}
-		else
-		{
-			outputFile.add(f);
-		}
+		else	outputFile.add(f);
 
 		HackWriter writer = new HackWriter(new FileWriter(f));
 		writer.setPreserveEntities(preserveEntities);
@@ -246,24 +226,21 @@ public class Main
 	{
 		try
 		{
-//			transformerFactory.
 			Transformer tranformer = transformerFactory.newTransformer();
-
 			tranformer.setOutputProperty("indent", "no");
 			tranformer.setOutputProperty("method", "xml");
 			tranformer.setOutputProperty("media-type","text/xsl");
 			tranformer.setOutputProperty("encoding", encoding);
 
 			Result result = new javax.xml.transform.stream.StreamResult(writer);
-
 			Source source = new javax.xml.transform.dom.DOMSource(document);
+
 			tranformer.transform(source, result);
 		}
 		catch (Exception e)
 		{
 			throw new DexterException("error while rendering document: " 
 					+ e.getMessage(),e);
-			
 		}
 	}
 }
