@@ -247,7 +247,9 @@ public class Main
 		try
 		{
 //			document.normalizeDocument();
+//			transformerFactory.
 			Transformer tranformer = transformerFactory.newTransformer();
+//			tranformer.
 			tranformer.setOutputProperty("indent", "no");
 			tranformer.setOutputProperty("method", method);
 			tranformer.setOutputProperty("media-type","text/xsl");
