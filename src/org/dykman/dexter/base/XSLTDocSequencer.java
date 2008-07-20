@@ -71,7 +71,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	private Stack<String> nameStack = new Stack<String>();
 	private Stack<Node> nodeStack = new Stack<Node>();
 	private Stack<Element> stylesheetStack = new Stack<Element>();
-//	private Element scriptNode = null;
 
 	private Document currentDocument;
 	private Node currentNode;
@@ -137,13 +136,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			Element choose = currentDocument.createElement("xsl:choose");
 			Element when;
 			
-//			when = currentDocument.createElement("xsl:when");
-//			when.setAttribute("test", path + "/" + "text()");
-//			Element copyOf = currentDocument.createElement("xsl:copy-of");
-//			copyOf.setAttribute("select", path);
-//			when.appendChild(copyOf);
-//			choose.appendChild(when);
-
 			when = currentDocument.createElement("xsl:when");
 			when.setAttribute("test", path);
 			when.appendChild(valueOf);
@@ -172,8 +164,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		Element map;
 		Element valueOf = currentDocument.createElement("xsl:copy-of");
 
-		//		valueOf.setAttribute("select", path + "/*");
-		
 		valueOf.setAttribute("select", 
 				path + "/*|" + path + "/text()");
 
@@ -272,7 +262,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		}
 
 		currentNode.appendChild(element);
-
 	}
 
 
@@ -296,7 +285,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	public void setIdentityAttribute(String key, String value)
 	{
 		DocumentFragment fragment = processIdentityValueTemplate(key, value);
-
 		Element element = currentDocument.createElement("xsl:attribute");
 		element.setAttribute("name", key);
 		element.appendChild(fragment);
@@ -326,7 +314,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	public void endCaseBlock()
 	{
 		popNode();
-
 	}
 
 	public void startCase(String tests)
@@ -344,8 +331,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		currentNode.appendChild(element);
 		pushNode(element);
 	}
-
-	// public void endCase(String[] tests)
 
 	public void endCase()
 	{
@@ -377,7 +362,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 		Element template = currentDocument.createElement("xsl:template");
 		template.setAttribute("match", "/");
-//		tagTemplate(template);
 
 		apply = currentDocument.createElement("xsl:apply-templates");
 		apply.setAttribute("select", match);
@@ -426,11 +410,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 				pushNode(el);
 			}
 			break;
-			case Node.DOCUMENT_TYPE_NODE:
-System.out.println("DOCUMENT_TYPE_NODE seen");				
-//currentDocument.cre				
-				// do nothing
-			break;
 			case Node.TEXT_NODE:
 			{
 				Text text = currentDocument.createTextNode(name);
@@ -456,7 +435,6 @@ System.out.println("DOCUMENT_TYPE_NODE seen");
 			{
 				Comment comment = currentDocument.createComment(name);
 				currentNode.appendChild(comment);
-
 			}
 			break;
 			default:
@@ -498,7 +476,6 @@ System.out.println("DOCUMENT_TYPE_NODE seen");
 
 		switch (type)
 		{
-//			case Node.DOCUMENT_FRAGMENT_NODE:
 			case Node.DOCUMENT_NODE:
 				popStylesheet();
 				popDoc();
@@ -511,7 +488,6 @@ System.out.println("DOCUMENT_TYPE_NODE seen");
 	protected Document createStub(String match)
 	{
 		DOMImplementation impl = builder.getDOMImplementation();
-//		impl.
 		DocumentType dt = impl.createDocumentType("stylesheet", null, 
 				"http://www.w3.org/1999/XSL/Transform");
 		
@@ -665,13 +641,9 @@ System.out.println("DOCUMENT_TYPE_NODE seen");
 	{
 		stylesheetStack.pop();
 		if (stylesheetStack.size() > 0)
-		{
 			currentStylesheet = stylesheetStack.peek();
-		}
 		else
-		{
 			currentStylesheet = null;
-		}
 	}
 
 	private void pushStylesheet(Element t)
@@ -685,9 +657,7 @@ System.out.println("DOCUMENT_TYPE_NODE seen");
 		currentDocument = document;
 		docStack.push(document);
 		if(nameStack.size() > 0)
-		{
 			name = filename +"-" + name;
-		}
 		nameStack.push(name + ".xsl");
 	}
 
@@ -698,13 +668,9 @@ System.out.println("DOCUMENT_TYPE_NODE seen");
 		finished.put(name, popped);
 
 		if (docStack.size() > 0)
-		{
 			currentDocument = docStack.peek();
-		}
 		else
-		{
 			currentDocument = null;
-		}
 		return popped;
 	}
 
@@ -718,13 +684,9 @@ System.out.println("DOCUMENT_TYPE_NODE seen");
 	{
 		Node popped = nodeStack.pop();
 		if (nodeStack.size() > 0)
-		{
 			currentNode = nodeStack.peek();
-		}
 		else
-		{
 			currentNode = null;
-		}
 		return popped;
 	}
 
@@ -759,10 +721,9 @@ System.out.println("DOCUMENT_TYPE_NODE seen");
 		{
 			String[] b = name.split("[:]");
 			if(dexterNamespaces.contains(b[0]))
-			{
 				throw new DexteritySyntaxException(
-						"unrecognized attribute specified in dexter namespace: `" + name + "'");
-			}
+						"unrecognized attribute specified in dexter namespace: `" 
+						+ name + "'");
 		}
 
 		if(name.indexOf('!') != -1)
