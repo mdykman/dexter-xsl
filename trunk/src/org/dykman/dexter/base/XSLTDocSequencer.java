@@ -496,6 +496,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 				"xsl:stylesheet", dt);
 
 		Element style = document.getDocumentElement();
+		style.setAttribute("version", "1.0");
 
 		pushStylesheet(style);
 		pushNode(style);

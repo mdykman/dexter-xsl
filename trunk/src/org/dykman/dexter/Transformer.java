@@ -2,14 +2,12 @@ package org.dykman.dexter;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -73,12 +71,15 @@ public class Transformer
 					
 					inf = new File(args[i]);
 					in = new FileInputStream(inf);
-					OutputStream out = new FileOutputStream(args[i]
-					    + "." + type);
+//					OutputStream out = new FileOutputStream(args[i]
+//					    + "." + type);
+					
+					OutputStream out = System.out;
 					transformer.transform(new StreamSource(in), 
 							new StreamResult(out));
 					in.close();
-					out.close();
+//					out.close();
+					System.out.println();
 				}
 			}
 			else

@@ -40,19 +40,18 @@ class HackWriter extends Writer
 
 		if(preserveEntities && entities != null && entities.size() > 0)
 		{
-			buffer.append("<!DOCTYPE xsl:stylesheet");
-			buffer.append(" [\n");
+			buffer.append("<!DOCTYPE xsl:stylesheet [\n");
 			for(String key : entities.keySet())
 			{
-				buffer.append("  <!ENTITY ")
+				buffer.append(" <!ENTITY ")
 					.append(key).append(" \"")
 					.append(entities.get(key))
 					.append("\" >\n");
 			}
 	  		buffer.append(" ]");
 			buffer.append(">\n");
+			inner.write(buffer.toString());
 		}
-		inner.write(buffer.toString());
 	}
 	
 	public void writeWithEntities(String s)
