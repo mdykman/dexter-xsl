@@ -7,7 +7,9 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
 	<title>The Case for XSL</title>
 	<subtitle><![CDATA[this.changes(everything);]]></subtitle>
 	<author><![CDATA[Michael Dykman <michael@dykman.org>]]></author>
-  <references>
+		<overview>
+			<para>Why XSL seems like a good idea</para>
+		</overview>  <references>
     <reference>
       <title>Dexter</title>
       <summary>An introduction to dexter and it's design philosophy.</summary>
@@ -38,9 +40,7 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
 	<section>
 		<title>The Case for XSL</title>
 
-		<overview>
-			<para>Why XSL seems like a good idea</para>
-		</overview>
+
 		<chapter>
 			<title>The Objective</title>
 			<para><![CDATA[
