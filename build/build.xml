@@ -80,7 +80,7 @@
 	<target name="compile">
 		<mkdir dir="../bin"/>
 		<javac destdir="../bin" 
-			classpath="../lib/gnu-getopt.jar" 
+			classpath="../lib/gnu-getopt.jar:../lib/Tidy.jar" 
 			srcdir="../src" 
 			debug="yes"
 			failonerror="true" 
@@ -117,6 +117,7 @@
 			<arg line="docster.html"/>
 			<classpath>
 				<fileset dir="..">
+					<include name="lib/Tidy.jar"/>
 					<include name="lib/gnu-getopt.jar"/>
 					<include name="build/dexter.jar"/>
 				</fileset>

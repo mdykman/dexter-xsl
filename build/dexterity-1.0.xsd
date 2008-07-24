@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema"
+<schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	targetNamespace="http://dexter.dykman.org/dexter/dexterity-1.0"
 	elementFormDefault="qualified">
 
-	<attribute name="env" type="normalizedString" />
+	<xs:attribute name="env" type="xs:normalizedString" />
 
-	<attribute name="value" type="normalizedString" />
+	<xs:attribute name="value" type="xs:normalizedString" />
 
-	<attribute name="ccpy" type="normalizedString">
-		<annotation>
-			<documentation>???</documentation>
+	<xs:attribute name="ccpy" type="xs:normalizedString">
+		<xs:annotation>
+			<xs:documentation>???</documentation>
 		</annotation>
 	</attribute>
 
-	<attribute name="attr" type="normalizedString">
-		<annotation>
-			<documentation>
+	<xs:attribute name="attr" type="normalizedString">
+		<xs:annotation>
+			<xs:documentation>
 				a sequcence of space-delimited attribute-assgnment
 				expressions
-			</documentation>
-		</annotation>
-	</attribute>
+			</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
 
 	<attribute name="if" type="normalizedString" />
 

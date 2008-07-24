@@ -15,6 +15,12 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
       <url>index.xml</url>
     </reference>
     <reference>
+      <title>The Case for XSL</title>
+      <summary>Reflections on the pros and cons of using XSLT in
+		the web application build process</summary>
+      <url>case-for-xsl.xml</url>
+    </reference>
+    <reference>
       <title>Dexter User Guide</title>
       <summary>Reference material 
       needed to use dexter and dexterity to produce XSL stylesheets</summary>
@@ -29,8 +35,8 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
     <reference>
       <title>Javadoc</title>
       <summary>Javadoc of the dexter code base, including modules</summary>
-      <url>javadoc/index.html</url>
-    </reference>
+       <url>html/index.html</url>
+   </reference>
   </references>
   <overview>
     <para>

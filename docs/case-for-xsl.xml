@@ -33,7 +33,7 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
     <reference>
       <title>Javadoc</title>
       <summary>Javadoc of the dexter code base, including modules</summary>
-      <url>javadoc/index.html</url>
+      <url>html/index.html</url>
 
     </reference>
   </references>
