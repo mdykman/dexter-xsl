@@ -69,14 +69,15 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
 	list of available options is given below.
 	</para>
 	<code><![CDATA[
+ -d, --define=key=value     * explicitly override a single property; may be specified multiple times
+ -r, --resolve-entities     * resolve entity references in source. Default: preserve entities
+ -t, --mime-type=STRING     * specify the media-type in the XSLT output element. Default: text/html
+ -m, --method=xml|hmtl|text * specify the method in the XSLT output element.   Default: html
+ -i, --indent=yes|no        * specify the indent attribute in the output element. Default: no
+ -p, --properties=filename  * override the built-in properties
+ -e, --encoding=STRING      * specify the encoding used throughout the production  Default: UTF-8
+ -o, --directory=PATH       * specify an output directory. Default: use source directory
  -v, --version              * print version and copyright information.
- -t, --mime-type=STRING     * specify the media-type in the XSLT output element.
- -m, --method=xml|hmtl|text * specify the method in the XSLT output element. 
- -i, --indent=yes|no        * specifiy the indent attribute in the output element
- -p, --properties=FILE      * override the built-in properties
- -e, --encoding=STRING      * specify the encoding used throughout the production
- -d, --define=KEY=VALUE     * explicitly override a single property; may be specified multiple times
- -o, --directory=PATH       * specify an output directory
  -h, --help                 * print this screen and exit
 	]]></code>
    	<para>
