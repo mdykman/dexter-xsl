@@ -1,4 +1,5 @@
 <?xml-stylesheet href="docster.html.xsl" type="text/xsl" ?>
+
 <doc><copyright>dexter (c) 2007, 2008 Michael Dykman 
 Free for use under version 2.0 of the Artistic License.     
 http://www.opensource.org/licences/artistic-license.php</copyright>
@@ -64,8 +65,8 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
    	in an application, such as an IDE.  
    	</para>
 	<para>
-	Dexter has integrated gnu-getopt to the command-line functionality. The full list of available
-	options is listed below.
+	Dexter has integrated gnu-getopt to the command-line functionality. The full 
+	list of available options is given below.
 	</para>
 	<code><![CDATA[
  -v, --version              * print version and copyright information.
@@ -85,7 +86,6 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
    	java -cp dexteer.jar:gnu-getopt.jar org.dykman.dexter.Main [OPTIONS] file1 ...
    	</code>
    	<para>
-   	</para>
    	For *nix users, A very simple shell script is provided.
    	Users of other operating systems may have to adapt the script to suit their 
    	environment.
