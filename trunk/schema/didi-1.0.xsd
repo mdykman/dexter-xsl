@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
   elementFormDefault="qualified">
-  <annotation>
-  	<appinfo>http://code.google.com/p/dexter-xsl</appinfo>
-  	<documentation>XHTLM-specific processing attributes</documentation>
-  </annotation>
-  <attribute name="meta" type="string">
-   <annotation>
-   <documentation>embed meta data into the HTML output  t specified decriptor file</documentation>
-   </annotation>
-  </attribute>  
-  <attribute name="data" type="string"/>  
-</schema>
+  <xs:annotation>
+  	<xs:appinfo>http://code.google.com/p/dexter-xsl</xs:appinfo>
+  	<xs:documentation>XHTLM-specific processing attributes</xs:documentation>
+  </xs:annotation>
+  <xs:attribute name="meta" type="xs:normalizedString">
+   <xs:annotation>
+   <xs:documentation>embed meta data into the HTML output  t specified decriptor file</xs:documentation>
+   </xs:annotation>
+  </xs:attribute>  
+  <xs:attribute name="data" type="xs:normalizedString"/>  
+</xs:schema>
