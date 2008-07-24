@@ -61,37 +61,8 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
    	</para>
    	<para>
    	Dexter can be run as a command line application or it can be embedded
-   	in an application, such as an IDE. A very simple launch script is provided.
+   	in an application, such as an IDE.  
    	</para>
-   	<code>
-   	<![CDATA[
- $ dexter.sh [OPTIONS] file ...
-   	]]>
-   	</code>
-    <para>
-    Windows users may wish to add the Dexter installation directory to the
-    system path.  Alternatively, you may edit 'dexter.bat' to set DEXTER_HOME 
-    to be the installation directory.  Otherwise, usage is  the same.
-    </para>
-    <code>
-    <![CDATA[
- C:\> dexter.bat [OPTIONS] file ...
-    ]]>
-    </code>
-    <para>
-    This will generate an XSL file with the name formed from the 
-    name of the input file with the 'xsl' extension added.
-    </para>
-    <code><![CDATA[
- index.html        -> index.html.xsl
- monthly-chart.svg -> monthly-chart.svg.xsl
-    ]]>
-    </code>
-    <para>
-    Additional XSL files may be produced as the result of certain
-    descriptor productions.  See <link url="#Dexterity Descriptors-sub">sub</link>
-    for an example.
-    </para>
 	<para>
 	Dexter has integrated gnu-getopt to the command-line functionality. The full list of available
 	options is listed below.
@@ -107,6 +78,37 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
  -o, --directory=PATH       * specify an output directory
  -h, --help                 * print this screen and exit
 	]]></code>
+   	<para>
+   	The form for direct invocation follows.
+   	</para>
+   	<code>
+   	java -cp dexteer.jar:gnu-getopt.jar org.dykman.dexter.Main [OPTIONS] file1 ...
+   	</code>
+   	<para>
+   	</para>
+   	For *nix users, A very simple shell script is provided.
+   	Users of other operating systems may have to adapt the script to suit their 
+   	environment.
+   	</para>
+   	<code>
+   	<![CDATA[
+ $ dexter.sh [OPTIONS] file1 ...
+   	]]>
+   	</code>
+    <para>
+    This will generate an XSL file with the name formed from the 
+    name of the input file with the 'xsl' extension added.
+    </para>
+    <code><![CDATA[
+ index.html        -> index.html.xsl
+ monthly-chart.svg -> monthly-chart.svg.xsl
+    ]]>
+    </code>
+    <para>
+    Additional XSL files may be produced as the result of certain
+    descriptor productions.  See <link url="#Dexterity Descriptors-sub">sub</link>
+    for an example.
+    </para>
    	<para>
    	If the input document contains no dexter-defined attributes, the resulting
    	stylesheet, when applied to any XML data set, will output the input 
