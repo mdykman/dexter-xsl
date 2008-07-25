@@ -3,10 +3,5 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/gnu-getopt.jar"/>
-	<classpathentry kind="lib" path="lib/Tidy.jar" sourcepath="/home/michael/scratch/jtidy-04aug2000r7-dev/src">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/home/michael/scratch/jtidy-04aug2000r7-dev/doc/api/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
