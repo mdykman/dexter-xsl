@@ -9,8 +9,7 @@
 
 	<target name="rebuild" depends="clean,all" />
 	<target name="all" depends="dexter-jar,docs" />
-	<target name="docs" depends="dexter-javadoc" />
-
+	<target name="docs" depends="compile-doc" />
 
 	<target name="clean" description="clean the output files">
 		<delete failonerror="no">
@@ -55,9 +54,9 @@
 	    <copy todir="${PACKAGEDIR}/docs" file="${DOCSOURCE}/docster.html.xsl" />
 		<copy todir="${PACKAGEDIR}/docs" file="${DOCSOURCE}/style.css" />
 
-		<copy todir="${PACKAGEDIR}/docs">
-			<fileset dir="${DOCSOURCE}">
-				<include name="javadoc/**/*.*" />
+		<copy todir="${PACKAGEDIR}/docs/doxygen">
+			<fileset dir="${DOCSOURCE}/html">
+				<include name="**/*.*" />
 			</fileset>
 		</copy>
 
@@ -69,13 +68,6 @@
 		</zip>
 	</target>
 
-	<target name="dexter-javadoc">
-		<javadoc destdir="${DOCSOURCE}/javadoc">
-			<fileset dir="../src">
-				<include name="**/*.java" />
-			</fileset>
-		</javadoc>
-	</target>
 
 	<target name="compile">
 		<mkdir dir="../bin"/>
@@ -93,8 +85,6 @@
 			<manifest>
 				<attribute name="Main-Class" value="org.dykman.dexter.Main" />
 				<attribute name="Version" value="${RELEASENAME}" />
-				<attribute name="Requires" value="gnu-getopt.jar" />
-				<attribute name="Depends" value="gnu-getopt.jar" />
 			</manifest>
 
 			<fileset dir="../bin">
@@ -113,16 +103,7 @@
 	</target>
 
 	<target name="compile-doc" description="compile a document">
-		<java dir="../docs" fork="yes" classname="org.dykman.dexter.Main">
-			<arg line="docster.html"/>
-			<classpath>
-				<fileset dir="..">
-					<include name="lib/Tidy.jar"/>
-					<include name="lib/gnu-getopt.jar"/>
-					<include name="build/dexter.jar"/>
-				</fileset>
-			</classpath>
-		</java>
+		<exec command="doxygen" dir=".."/>
 	</target>
 	
 
