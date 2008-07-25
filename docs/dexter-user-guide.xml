@@ -84,7 +84,7 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
    	The form for direct invocation follows.
    	</para>
    	<code>
-   	java -cp dexteer.jar:gnu-getopt.jar org.dykman.dexter.Main [OPTIONS] file1 ...
+   	java -cp dexter.jar:gnu-getopt.jar org.dykman.dexter.Main [OPTIONS] file1 ...
    	</code>
    	<para>
    	For *nix users, A very simple shell script is provided.
