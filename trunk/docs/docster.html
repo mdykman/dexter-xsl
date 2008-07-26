@@ -1,123 +1,130 @@
-<html  xmlns="http://www.w3.org/1999/xhtml" 
-  xmlns:dx="http://www.dykman.org/dexter/dexterity.xsd"
-  xmlns:dd="http://www.dykman.org/dexter/didi.xsd"
-  >
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:dx="http://dexter-xsl.googlecode.com/svn/trunk/schema/dexterity-1.0.xsd"
+	xmlns:dd="http://dexter-xsl.googlecode.com/svn/trunk/schema/didi-1.0.xsd">
 <head>
 <style type="text/css">
-    @import url("style.css");
+@import url("style.css");
 </style>
 <title dx:value="*/title">Document Title</title>
-<meta name="author" content="some guy" dd:meta="dexter.meta"/>
+<meta name="author" content="some guy" dd:meta="dexter.meta" />
 </head>
 <body>
-<div class="foo">
-<span>
-<a name="TOP" ></a></span>
+<div class="foo"><span> <a name="TOP"></a></span>
 <div>
- <h1 dx:value="*/title">Document Title</h1>
- <h5 dx:if="*/subtitle" dx:value="*/subtitle">Sub-Title</h5>
+<h1 dx:value="*/title">Document Title</h1>
+<h5 dx:if="*/subtitle" dx:value="*/subtitle">Sub-Title</h5>
 </div>
 
-<div style="float:right; width:35%" >
-<div style="clear:both; align:left; width:100%;">
- <span class="author" style="width:100%  align:left;">author: <span dx:ghost="" dx:value="*/author">Author Name</span></span>
-</div>
-<br/>
+<div style="float: right; width: 35%">
+<div style="clear: both; align: left; width: 100%;"><span
+	class="author" style="width: 100% align : left;">author: <span
+	dx:ghost="" dx:value="*/author">Author Name</span></span></div>
+<br />
 
-<div style="clear:both;" dx:each="*/references/reference">
-  <div style="padding-left:5px; left-margin:5px;">
-  <a href="#" dx:attr="href:url" dx:value="title">external title</a><br/>
-   <div style="left-margin:5px;" dx:value="summary">this is a document summary; typically, a short paragraph</div>
- </div>
+<div style="clear: both;" dx:each="*/references/reference">
+<div style="padding-left: 5px; left-margin: 5px;"><a href="#"
+	dx:attr="href:url" dx:value="title">external title</a><br />
+<div style="left-margin: 5px;" dx:value="summary">this is a
+document summary; typically, a short paragraph</div>
 </div>
-
-<div dx:ignore="" style="clear:both;" >
-  <div style="padding-left:5px; left-margin:5px;">
-  <a href="#" >external title</a><br/>
-   <div style="left-margin:5px;" >this is a document summary; typically, a short paragraph</div>
- </div>
 </div>
 
-
+<div dx:ignore="" style="clear: both;">
+<div style="padding-left: 5px; left-margin: 5px;"><a href="#">external
+title</a><br />
+<div style="left-margin: 5px;">this is a document summary;
+typically, a short paragraph</div>
 </div>
-
-<div style="float:left; width:55%">
-
-<div dx:env="*/overview" style="float:left; clear:both;">
- <h2 width="100%">Overview</h2>
- <p><i dx:each="para" dx:value=".">bla bla bla</i></p>
-</div>
-
-<div  dx:if="*/section@!morethan:1" style="top-margin:15px;">
-   <h2>Table of Contents</h2>
-   <a name="TOC" ></a>
-      <div dx:each="#*/section" style="left-margin:30px;">
-         <a dx:attr="href:#{title}" dx:value="title">Section Title</a><br/>
-      </div>
 </div>
 
 
 </div>
 
+<div style="float: left; width: 55%">
+<div dx:env="*/overview" style="float: left; clear: both;">
+<h2 width="100%">Overview</h2>
+<p><i dx:each="para" dx:value=".">bla bla bla</i></p>
 </div>
 
-<div style="clear:both">
-<div dx:each="*/section">
- <a name="tagname" dx:attr="name:{title}" ></a>
+<div dx:if="*/section@!morethan:1" style="top-margin: 15px;">
+<h2>Table of Contents</h2>
+<a name="TOC"></a>
+<div dx:each="#*/section" style="left-margin: 30px;"><a
+	dx:attr="href:#{title}" dx:value="title">Section Title</a><br />
+</div>
+</div>
 
- <h2 dx:value="title" width="80%">Section Title</h2>
 
- <div width="60%" dx:if="overview" dx:each="#overview/para">
-  <p><i dx:value=".">overview paragraph</i></p>
-  <p dx:ignore=""><i>another overview paragraph</i></p>
- </div>
+</div>
 
- <div dx:each="#chapter" class="listing">
-  <a dx:attr="href:#{../title}-{title}">&gt; <span dx:ghost="" dx:value="title" >Chapter Title</span></a><br/>
- </div>
- <a href="#TOC">&lt;&lt; Table of Contents</a><br/>
- <a href="#TOP">&lt;&lt; Top</a><br/>
+</div>
 
- <div dx:each="chapter" class="section">
-  <a name="tagname" dx:attr="name:{../title}-{title}" ></a>
-  <h3 dx:value="title">chapter title</h3>
-  <div dx:each="#*">
-   <p dx:case="@para" dx:each="#link|@!text">
-    <span dx:case="@!istext" dx:ghost="" dx:value=".">
-    ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
-    ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
-    ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
-    ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
-    ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
-    </span>
-    <a dx:case="@link" href="extern" dx:attr="href::url" dx:value=".">links to something</a>
-    <span dx:ignore="">
-    ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
-    ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
-    ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
-    ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
-    ipsum lorum ipsum lorum ipsum lorum ipsum lorum  
-    </span>
-   </p>
-   <div dx:case="@code">
-    <pre dx:value="." style="width:80%;">
+<div style="clear: both">
+<div dx:each="*/section"><a name="tagname" dx:attr="name:{title}"></a>
+
+<h2 dx:value="title" width="80%">Section Title</h2>
+
+<div width="60%" dx:if="overview" dx:each="#overview/para">
+<p><i dx:value=".">overview paragraph</i></p>
+<p dx:ignore=""><i>another overview paragraph</i></p>
+</div>
+
+<div dx:each="#chapter" class="listing"><a
+	dx:attr="href:#{../title}-{title}">&gt; <span dx:ghost=""
+	dx:value="title">Chapter Title</span></a><br />
+</div>
+<a href="#TOC">&lt;&lt; Table of Contents</a><br />
+<a href="#TOP">&lt;&lt; Top</a><br />
+
+<div dx:each="chapter" class="section"><a name="tagname"
+	dx:attr="name:{../title}-{title}"></a>
+<h3 dx:value="title">chapter title</h3>
+<div dx:each="#*">
+<p dx:case="@para" dx:each="#link|@!text"><span dx:case="@!istext"
+	dx:ghost="" dx:value="."> Lorem ipsum dolor sit amet,
+consectetuer adipiscing elit. Nam elit massa, volutpat pulvinar,
+pellentesque nec, bibendum vitae, tortor. Praesent congue. Donec lorem.
+Morbi elementum, metus in adipiscing molestie, est lacus blandit erat,
+malesuada dignissim orci urna vel nunc. Lorem ipsum dolor sit amet,
+consectetuer adipiscing elit. Nulla sit amet odio vitae nunc bibendum
+dignissim. Maecenas pellentesque aliquam eros. Duis in ipsum sed lectus
+mollis lacinia. Pellentesque habitant morbi tristique senectus et netus
+et malesuada fames ac turpis egestas. Curabitur id urna vel nisi mollis
+facilisis. Morbi ac erat. Sed bibendum dolor non sem. Cras velit risus,
+pellentesque vitae, tristique a, tincidunt at, leo. Donec at velit.
+Mauris ullamcorper. Aliquam erat volutpat. </span><a dx:case="@link"
+	href="extern" dx:attr="href::url" dx:value=".">links to something</a> 
+	<span
+	dx:ignore=""> Praesent felis neque, consectetuer nec,
+ullamcorper sed, lobortis id, ipsum. Quisque commodo commodo nisi.
+Mauris urna elit, laoreet sed, interdum at, ornare a, nunc. Duis
+pharetra mattis nisi. Aenean tristique. Aliquam vel tortor. Sed tempus
+blandit ipsum. Nullam vel nisl id eros laoreet lobortis. Cum sociis
+natoque penatibus et magnis dis parturient montes, nascetur ridiculus
+mus. Nunc ut leo et massa tempor vehicula. Ut ultrices, felis nec
+pretium tristique, risus diam pellentesque velit, in imperdiet diam diam
+quis sem. Proin eget velit sit amet diam facilisis suscipit.  </span></p>
+<div dx:case="@code"><pre dx:value="." style="width: 80%;">
     
      // a code example
      foo.bar('foobar');
-    </pre>
-   </div>
-  </div>
-
-<div style="text-align:center">
-  <a href="#" dx:attr="href:#{../title}"><span dx:ghost="" dx:value="../title">Section Title</span></a>
- -- <span dx:if="*/section@!morethan:1" ><a href="#TOC">Table of Contents</a>-- </span><a href="#TOP">Top</a>
+    </pre></div>
 </div>
-  <br/>
-  <br/>
- </div>
- <br/>
+
+<div style="text-align: center"><a href="#"
+	dx:attr="href:#{../title}"><span dx:ghost="" dx:value="../title">Section
+Title</span></a> -- <span dx:if="*/section@!morethan:1"><a href="#TOC">Table
+of Contents</a>-- </span><a href="#TOP">Top</a></div>
+<br />
+<br />
+</div>
+<br />
 </div>
 <div class="copy"><sub dx:value="*/copyright">copyright info</sub>
-</div></div>
+</div>
+</div>
 </body>
 </html>
