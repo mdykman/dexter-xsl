@@ -77,9 +77,6 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
 	operators may be useful for other formats as well.
 			</para>
 			<para>
-	A module for SVG production using simplified matrix notation is in early design stages.
-			</para>
-			<para>
 	For information about using dexter as a tool to generate XSL stylesheets
 	with the built-in mechanisms, refer to the <link url="dexter-user-guide.xml">Dexter User Guide</link>.
 			</para>
@@ -97,17 +94,10 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
 		latest vision.
 			</para>
 			<para>
-		The success of the web service has proved, irrefutably, that applications
-		can be developed more quickly and accuately when layout considerations
-		are not a factor. For a web application which is expected to operate
-		in any standard browser, the path to such independance lies through
-		XSL. 
-			</para>
-			<para>
-		Why then, one wonders, have mainstream web developers all but 
+		Why one wonders, have mainstream web developers all but 
 		ignored XSLT? Certainly not the learning curve; competent web
 		developers absorb new technologies constantly and XSLT is
-		not even a new technology.  The short answer is: maintainence.
+		nearly 10 years old.  The short answer is: maintainence.
       I have a <link url="case-for-xsl.xml">full-length rant</link> on 
 		the subject.
 			</para>
@@ -125,7 +115,8 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
 			It defines a set of XML-agnostic descriptors which provide capabilities for 
 			data mappings, conditional evaluation, iteration and sub-document creation. 
 			Dexterity's descriptors expose a surprising amount of power
-			to the user.
+			to the user.  Details on dexterity's operators can be found 
+			<link url="dexter-user-guide.xml#Dexterity">here</link>
 			</para>
 		</chapter>
 		<chapter>
@@ -133,15 +124,16 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
 			<para><![CDATA[
 			Didi is an experimental module for interfacing XHTML documents
 			and is the local module for implementation classes which relate
-			specifically to XHTML.  I expected to have a reasonably stable 
-			implementation before the end of January for a JavaScript 
-			interface (which I seem to keep rewriting) .
+			specifically to XHTML. 
 			Didi does provide the ironically undocumented editor 'meta' which
 			inserts meta nodes according to an external file into 
 			the document before it is rendered.
 		Obviously, didi is XHTML-aware and is 
 			not compatible with other XML formats. 
-			]]></para>
+			]]>
+			Details on didi's operators can be found 
+			<link url="dexter-user-guide.xml#Didi">here</link>
+			</para>
 		</chapter>
 	</section>
 </doc>
