@@ -167,16 +167,18 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
          ]]></para>
          <code><![CDATA[
  #simple path macros
- dexterity.macro.def.cmp-name=local-name($path)="$arg"
- dexterity.macro.def.eq=string($path)="$arg"
- dexterity.macro.def.name=local-name($path)
- dexterity.macro.def.text=$path/text()
- dexterity.macro.def.istext=$path/self::text()
- dexterity.macro.def.trim=normalize-space($path)
- dexterity.macro.def.count=count($path)
- dexterity.macro.def.pos=$path/position()
- dexterity.macro.def.contains=contains($path,"$arg")
- dexterity.macro.def.starts-with=starts-with($path,"$arg")
+dexter.macro.cmp-name=local-name($path) = "$arg"
+dexter.macro.eq=string($path) = "$arg"
+dexter.macro.name=local-name($path)
+dexter.macro.text=$path/text()
+dexter.macro.istext=$path/self::text()
+dexter.macro.trim=normalize-space($path)
+dexter.macro.count=count($path)
+dexter.macro.lessthan=count($path) < $arg
+dexter.macro.morethan=count($path) > $arg
+dexter.macro.pos=$path/self::position()
+dexter.macro.contains=contains($path,"$arg")
+dexter.macro.starts-with=starts-with($path,"$arg")
          ]]></code>
        </chapter>
        <chapter>
