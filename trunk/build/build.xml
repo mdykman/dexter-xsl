@@ -8,7 +8,7 @@
 	<property name="DOCSOURCE" value ="../docs" />
 
 	<target name="rebuild" depends="clean,all" />
-	<target name="all" depends="dexter-jar,docs" />
+	<target name="all" depends="dexter-jar" />
 	<target name="docs" depends="compile-doc" />
 
 	<target name="clean" description="clean the output files">
