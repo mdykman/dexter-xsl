@@ -42,9 +42,12 @@ for quick reference
 		<chapter>
 			<title>chapter title</title>
 			<para>
-				text text <link url="http://www.foo.com"> text
+			Lorem ipsum <link url="http://www.cicero.spqr">dolor</link> sit amet
 				...
 			</para>
+			<code><![CDATA[a possibly multi-line code fragment, CDATA is for conveninece
+			and is not required ]]>
+			</code>
 		</chapter>
 		...
 	</section>
@@ -52,11 +55,11 @@ for quick reference
 	
 <doc>
 --><!-- 
-declare dexter-related attributes in thier default namespace..  
+declare dexter-related attributes in their default namespace..  
 dexter does not care is you do so or not, but it will in any case
 prevent them from being reflected in generated code.  
 
-Please note that if you use an alternate namespace, you must set a property at the 
+NOTE: if you use an alternate namespace, you must set a property at the 
 command line:
     $ dexter.sh -d=dexterity.namespace=myns input.html ...
  --><xsl:element name="html">
@@ -69,14 +72,15 @@ command line:
   
   dx:value
   replace the content of the 'title' tag with the text content of */title 
+  from the data document
 
   REMEMBER: all path expressions refer to the data document, not to nodes within 
-  the current document.  
+  this document.  
  -->
 <xsl:element name="title"><xsl:value-of select="*/title"/></xsl:element>
 <!--
   dd:meta
-  replace the currrent tag with a set of meta tags derived from data in the file dexter.meta 
+  replace the current tag with a set of meta tags derived from data in the file dexter.meta 
  -->
 <xsl:element name="meta"><xsl:attribute name="content">Global</xsl:attribute><xsl:attribute name="name">Distribution</xsl:attribute></xsl:element><xsl:element name="meta"><xsl:attribute name="content">Michael Dykman &lt;michael@dykman.org&gt;</xsl:attribute><xsl:attribute name="name">Author</xsl:attribute></xsl:element><xsl:element name="meta"><xsl:attribute name="content">2007,2008 Michael Dykman</xsl:attribute><xsl:attribute name="name">Copyright</xsl:attribute></xsl:element><xsl:element name="meta"><xsl:attribute name="content">General</xsl:attribute><xsl:attribute name="name">Rating</xsl:attribute></xsl:element><xsl:element name="meta"><xsl:attribute name="content">XSL,XSLT,XHTML,XML,W3C,DocType,web,development,web-development,tool,code-generation,convert,converter</xsl:attribute><xsl:attribute name="name">Keywords</xsl:attribute></xsl:element><xsl:element name="meta"><xsl:attribute name="content">Dexter is a tool for simplifying the production of XSL stylesheets.</xsl:attribute><xsl:attribute name="name">Description</xsl:attribute></xsl:element><xsl:element name="meta"><xsl:attribute name="content">dexter-0.1.6-beta (c) 2007,2008 Michael Dykman</xsl:attribute><xsl:attribute name="name">Generator</xsl:attribute></xsl:element><xsl:element name="meta"><xsl:attribute name="content">index, follow</xsl:attribute><xsl:attribute name="name">Robots</xsl:attribute></xsl:element>
 </xsl:element>
@@ -92,9 +96,8 @@ command line:
 <!--
   dx:if
   if a node is found at the path */subtitle in the data document,
-  	replace the content of the 'title' tag with the text content of */title
-  if no node is found, this node will not be rendered 
-  from the data document 
+  	replace the content of <h5> with the text content of */subtitle
+  if no node is found in the data document, this node will not be rendered 
  -->
 <xsl:if test="*/subtitle"><xsl:element name="h5"><xsl:value-of select="*/subtitle"/></xsl:element></xsl:if>
 </xsl:element>
@@ -105,12 +108,12 @@ command line:
 <xsl:element name="span"><xsl:attribute name="class">author</xsl:attribute><xsl:attribute name="style">width: 100% align : left;</xsl:attribute>author:
 <!-- 
   dx:ghost
-  remove the current element from output while performing all operaetions attached
-  to that element. 
+  remove the current element from output while performing all operations 
+  attached to that element. 
   
   The following expression will evaluate the dx:value expression, inserting
-  the text value of */author from the data document but not outputing the span
-  which it is contained in
+  the text value of */author from the data document while suppressing the span
+  element which it is contained in
  --> 
 <xsl:value-of select="*/author"/>
 </xsl:element></xsl:element>
@@ -122,10 +125,10 @@ command line:
   this has the additional effect of setting the path context.
   
   in this case, it will generate a div for each element found in the data document
-  at the path */references/reference. 
-  relative path expressions oncountered within this element's children will be
-  evaluated in the context */references/reference
-  For example, the path expression 'title' is evaluated as
+  at the path /*/references/reference. 
+  relative path expressions encountered within this element  or it's children will be
+  evaluated in the context /*/references/reference
+  For example, the path expression 'title' in this context is treated as
   the title element of the current reference element.
  --> 
  
@@ -136,7 +139,9 @@ command line:
   rewrite an attribute values on the current node
   
   here, we render the text context of the url element of
-  the current reference as the value of the href attribute 
+  the current reference element as the value of the href attribute
+  while replacing the content of the element with the text context of
+  the title element of the current reference 
  -->	
 <xsl:element name="a"><xsl:attribute name="href"><xsl:value-of select="url"/></xsl:attribute><xsl:value-of select="title"/></xsl:element><xsl:element name="br"/>
 
@@ -150,10 +155,11 @@ command line:
   dx:ignore
   ignore the current node and any embedded operations.
    
-  this node is left in for cosmetic purposes as an example
-  of what more than one reference looks like but is completely 
-  ignored during XSL generation, as the preceeding dx:each 
-  descriptor will handle all refernce nodes in the data document  
+  this node is retained in the document for cosmetic purposes as 
+  an example
+  of what more than one reference looks like when viewed directly in a web browser.
+  It is completely ignored during XSL generation, as the preceeding dx:each 
+  descriptor will handle all reference nodes in the data document  
  -->
 
 
@@ -164,7 +170,8 @@ command line:
 
 <!--
   dx:env
-  set the context path while performing no operation 
+  set the context path for the scope of this element while performing 
+  no operation 
  -->
 <xsl:element name="div"><xsl:attribute name="style">float: left; clear: both;</xsl:attribute>
 <xsl:element name="h2"><xsl:attribute name="width">100%</xsl:attribute>Overview</xsl:element>
@@ -182,20 +189,39 @@ command line:
   the path macro morethan is a core path macro.  it is defined in
   dexter.properties as
 
-  	dexter.macro.morethan=count($path) > $arg
+		dexter.macro.morethan=count($path) > $arg
  
-  therefore the expression is tranlated into the XPATH expression:
+  therefore the expression 
+  
+  		*/section@!morethan:1
+  
+  as used in the following dx:if descriptor is translated into the 
+  XPATH expression:
   
   		count(*/section) > 1
   		
-  	as used in the following dx:if descriptor, it means that the table
-  	of contents will only be rendered if the data document has more than 
+  	As applied here, it means that the table of contents will only be rendered if the 
+  	data document has more than 
   	one section.
   	 
  -->
 <xsl:if test="count(*/section) &gt; 1"><xsl:element name="div"><xsl:attribute name="style">top-margin: 15px;</xsl:attribute>
 <xsl:element name="h2">Table of Contents</xsl:element>
 <xsl:element name="a"><xsl:attribute name="name">TOC</xsl:attribute></xsl:element>
+<!--
+  note the '#' sign at the start of the expression in dx:each.  it is used as 
+  the child operator. instead of rendering a div for each section found in
+  the data document, we wish to render one <div> and 
+  evaluate it's children for each section. 
+
+  the expression in dx:attr is an example of a compound expression where
+  elements between the braces { } are treated as data paths and elements
+  outside the braces are treated as literal.  Here it is used to 
+  generate a table of contents with links to thier respect sections.
+  The # sign in the context of the dx:attr descriptor, has no special meaning 
+  and is interpreted literally.
+
+ -->
 <xsl:element name="div"><xsl:attribute name="style">left-margin: 30px;</xsl:attribute><xsl:for-each select="*/section"><xsl:element name="a"><xsl:attribute name="href"><xsl:choose><xsl:when test="title/text()"><xsl:text><![CDATA[#]]></xsl:text><xsl:value-of select="title"/></xsl:when><xsl:otherwise><xsl:text/></xsl:otherwise></xsl:choose></xsl:attribute><xsl:value-of select="title"/></xsl:element><xsl:element name="br"/>
 </xsl:for-each></xsl:element>
 </xsl:element></xsl:if>
@@ -214,10 +240,8 @@ create a div for each section, setting the context path
 <xsl:element name="h2"><xsl:attribute name="width">80%</xsl:attribute><xsl:value-of select="title"/></xsl:element>
 
 <!--
-  note the '#' sign at the start of the expression in dx:each.  it is used as 
-  the child operator.       instead of rendering a div for each para found in
-  the data document under */section/overview/, we render one 'div' tag and 
-  iterate through the children. (note the enclosing dx:each context).
+now render each para found in the section/overview
+inside a single div
  -->
 <xsl:if test="overview"><xsl:element name="div"><xsl:attribute name="width">60%</xsl:attribute><xsl:for-each select="overview/para">
 <xsl:element name="p"><xsl:element name="i"><xsl:value-of select="."/></xsl:element></xsl:element>
@@ -225,14 +249,8 @@ create a div for each section, setting the context path
 </xsl:for-each></xsl:element></xsl:if>
 
 <!-- 
-  create one 'div' to contain all chpaters in the current section
-  
-  the expression in dx:attr is an example of a compound expression where
-  element between the braces { } are treated as data paths and elements
-  outside the braces are treated as literal.  Here it is used to 
-  generate a table of links to each chapter in the section. The # sign,
-  in the context of the dx:attr descriptor, has no special meaning and is
-  interpreted literally.
+  create one <div> to contain a list of lniks to chapters
+  within the current section
 -->
 <xsl:element name="div"><xsl:attribute name="class">listing</xsl:attribute><xsl:for-each select="chapter"><xsl:element name="a"><xsl:attribute name="href"><xsl:choose><xsl:when test="../title/text() and title/text()"><xsl:text><![CDATA[#]]></xsl:text><xsl:value-of select="../title"/><xsl:text><![CDATA[-]]></xsl:text><xsl:value-of select="title"/></xsl:when><xsl:otherwise><xsl:text/></xsl:otherwise></xsl:choose></xsl:attribute>&gt; <xsl:value-of select="title"/></xsl:element><xsl:element name="br"/>
 </xsl:for-each></xsl:element>
@@ -244,29 +262,33 @@ create a div for each section, setting the context path
  -->
 <xsl:for-each select="chapter"><xsl:element name="div"><xsl:attribute name="class">section</xsl:attribute>
 <!--
-   here we used the compound attribute to build the target for those same links 
+   here we used the compound attribute to build the target for chapter links
+   by explicitly defining the name attribute 
  -->
 <xsl:element name="a"><xsl:attribute name="name"><xsl:choose><xsl:when test="../title/text() and title/text()"><xsl:text/><xsl:value-of select="../title"/><xsl:text><![CDATA[-]]></xsl:text><xsl:value-of select="title"/></xsl:when><xsl:otherwise><xsl:text/></xsl:otherwise></xsl:choose></xsl:attribute></xsl:element>
 <xsl:element name="h3"><xsl:value-of select="title"/></xsl:element>
 
 <!--
-create a div and iterate through it's children with each element 
-under chapter  
+create a div and evlauate it's children node returned by the path expression
+under the current path context; translates to  /*/section/chapter/*
+which will only return element children of chapter, text and comments are ignored
+in this expression/  
  -->
 <xsl:element name="div"><xsl:for-each select="*">
 <!--
 	dx:case
-	similar to if, but expressions are evaluated between contiguous 
-	tagged nodes, rendering the first which evaluates to true.
-	in this case @para will be true if the current node is named 
-	'para'. The next contiguous node in this chain tests for nodes
-	name 'code'  
+	similar to if, but expressions are evaluated in a chain of contiguous 
+	tagged elements, evalauating the first node the for which the expression
+	tests true.
+	in this case, the expression @para will be true if the current data element
+	in the iteration is <para>. The next contiguous node in this chain tests 
+	for the data element <code>  
 	
 	the dx:each expression is evaluated in the context of the para node.
 	With various nested dx:each expressions, the effective path within this
-	tag and it's childeren is */section/chapter/para.  Both lnk nodes
-	and text nodes will be combined into a signle cursor which will
-	return those nodes in document order.  IT is by this mechanism that 
+	tag and it's children is */section/chapter/para.  Both <link> elements
+	and text nodes will be combined into a single cursor which will
+	return the set of these nodes in document order.  It is by this mechanism that 
 	link tags may be intermingled with raw text.
  -->
 <xsl:choose><xsl:when test="local-name(.) = &quot;para&quot;"><xsl:element name="p"><xsl:for-each select="link|./text()">
@@ -274,8 +296,13 @@ under chapter
 node, in which case dx:value is applied replacing the content of this element
 with the text node from the data document 
  -->
-<xsl:choose><xsl:when test="./self::text()"><xsl:value-of select="."/></xsl:when><xsl:when test="local-name(.) = &quot;link&quot;"><xsl:element name="a"><xsl:attribute name="href"><xsl:value-of select="@url"/></xsl:attribute><xsl:value-of select="."/></xsl:element></xsl:when></xsl:choose></xsl:for-each></xsl:element></xsl:when><xsl:when test="local-name(.) = &quot;code&quot;"><xsl:element name="div"><xsl:element name="pre"><xsl:attribute name="style">width: 80%;</xsl:attribute><xsl:value-of select="."/></xsl:element></xsl:element></xsl:when></xsl:choose></xsl:for-each></xsl:element>
-<!-- outer case chain terminates for want of a continuation -->
+<xsl:choose><xsl:when test="./self::text()"><xsl:value-of select="."/></xsl:when><xsl:when test="local-name(.) = &quot;link&quot;"><xsl:element name="a"><xsl:attribute name="href"><xsl:value-of select="@url"/></xsl:attribute><xsl:value-of select="."/></xsl:element></xsl:when></xsl:choose></xsl:for-each></xsl:element></xsl:when><xsl:when test="local-name(.) = &quot;code&quot;"><xsl:element name="div"><xsl:element name="pre"><xsl:attribute name="style">width: 80%;</xsl:attribute><xsl:value-of select="."/></xsl:element>
+</xsl:element></xsl:when></xsl:choose></xsl:for-each></xsl:element>
+<!-- outer case chain terminates for want of a continuation.
+if dx:default had been specified, it would be invoked to handle any node 
+not handled by the cases in the dx:case chain. In the absence of one, no 
+output will be produced.
+ -->
 
 <xsl:element name="div"><xsl:attribute name="style">text-align: center</xsl:attribute><xsl:element name="a"><xsl:attribute name="href"><xsl:choose><xsl:when test="../title/text()"><xsl:text><![CDATA[#]]></xsl:text><xsl:value-of select="../title"/></xsl:when><xsl:otherwise><xsl:text/></xsl:otherwise></xsl:choose></xsl:attribute><xsl:value-of select="../title"/></xsl:element> -- <xsl:if test="count(*/section) &gt; 1"><xsl:element name="span"><xsl:element name="a"><xsl:attribute name="href">#TOC</xsl:attribute>Table
 of Contents</xsl:element>-- </xsl:element></xsl:if><xsl:element name="a"><xsl:attribute name="href">#TOP</xsl:attribute>Top</xsl:element></xsl:element>
