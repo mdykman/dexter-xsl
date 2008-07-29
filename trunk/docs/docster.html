@@ -55,14 +55,20 @@ for quick reference
 <doc>
 -->
 
+<!--
+An XSLT stylesheet is generated with the command   
+    $ dexter.sh docster.html
+ -->
 <!-- 
 declare dexter-related attributes in their default namespace..  
 dexter does not care is you do so or not, but it will in any case
 prevent them from being reflected in generated code.  
 
 NOTE: if you use an alternate namespace, you must set a property at the 
-command line:
+command line through by specifying an option:
     $ dexter.sh -d=dexterity.namespace=myns input.html ...
+    
+Refer to the README for information on running dexter in your environment
  -->
 <html
 	xmlns:dx="http://dexter-xsl.googlecode.com/svn/trunk/schema/dexterity-1.0.xsd"
