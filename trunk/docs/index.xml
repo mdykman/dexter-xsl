@@ -22,7 +22,7 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
     <reference>
       <title>The Case for XSL</title>
       <summary>Reflections on the pros and cons of using XSLT in
-		the web application build process</summary>
+		the web application build process and why Dexter is a perfect fit</summary>
       <url>case-for-xsl.xml</url>
     </reference>
     <reference>
