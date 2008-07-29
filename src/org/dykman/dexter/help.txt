@@ -12,6 +12,7 @@ Valid options are listed below.  Long and short options are behave identically.
  -i, --indent=yes|no        * specify the indent attribute in the output element. Default: no
  -p, --properties=filename  * override the built-in properties
  -e, --encoding=STRING      * specify the encoding used throughout the production  Default: UTF-8
+ -c, --suppress-comments    * filter all user comments out of the stylesheet  
  -o, --directory=PATH       * specify an output directory. Default: use source directory
  -v, --version              * print version and copyright information.
  -h, --help                 * print this screen and exit

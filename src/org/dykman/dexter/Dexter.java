@@ -40,7 +40,7 @@ public class Dexter
 	static Set<File> outputFile = new HashSet<File>();
 
 	protected Document inputDocument;
-	public static String DEXTER_VERSION = "dexter-0.2.1-alpha"; 
+	public static String DEXTER_VERSION = "dexter-0.2.2-beta"; 
 	public static String DEXTER_COPYRIGHT = "copyright (c) 2007,2008 Michael Dykman"; 
 
 	private String propertyPath = null;
@@ -66,6 +66,7 @@ public class Dexter
 	private Map<String, String> editors = new HashMap<String, String>();
 	private Map<String, String> blocks = new HashMap<String, String>();
 
+	private boolean propigateComments = true;
 	/**
 	 * construct a Dexter object with default encoding and properties
 	 */
@@ -606,21 +607,25 @@ public class Dexter
 			{
 				if (child.getNodeType() == Node.COMMENT_NODE)
 				{
-					// quitely dropping comments between block nodes
+					// quietly dropping comments between block nodes
+					// because it's WAY easier than trying to save them
 					
 				}
 				else if (child.getNodeType() != Node.TEXT_NODE)
 				{
-					reportInternalError("dropping non-text nodes between siblings",null);
+					reportInternalError("dropping non-text nodes between siblings: "
+							+ child.getNodeType(),null);
 				}
 				else if (child.getNodeValue().trim().length() != 0)
 				{
-					System.err.println(
-							"WARNING: dropping non-empty text nodes between siblings" +
-					      		"in block section...");
-					System.err.print("-->> ");
+					reportInternalError("dropping non-empty text nodes between siblings" +
+					      		"in block section...",null);
 					System.err.print(child.getNodeValue().trim());
-					System.err.println(" <<--");
+					throw new DexterHaltException();
+				}
+				else
+				{
+				// empty text node, ignore
 				}
 				drop[dc++] = child;
 			}
@@ -672,22 +677,33 @@ public class Dexter
 	public static void reportInternalError(String msg, Exception ex)
 	{
 		PrintStream out = System.err;
-		out.println("!!!! An internal error has occured: `" + msg + "' !!!!");
+		
+		out.println("!!!! An unexpected condition has occured: `" + msg + "'");
+		out.println("dexter version "
+				+ DEXTER_VERSION);
+			out.println("java version " 
+				+ System.getProperty("java.version"));
+		out.println("javax.xml.parsers.DocumentBuilderFactory = " 
+				+ System.getProperty("javax.xml.parsers.DocumentBuilderFactory"));
 		out.println("    please send an error report to michael@dykman.org with the word ");
-		out.println("    'DEXTER-INTERNAL' in the subject line including the following information: ");
-		out.println("       * the dexter version number");
-		out.println("       * the source file which triggered the error");
-		out.println("       * the version the JRE (output of '$ java -version')");
-		out.println("       * the full contents of this message ");
+		out.println("    'DEXTER-INTERNAL' in the subject line including "
+				+ "the full contents of this message ");
 		if(ex!=null)
 		{
 			ex.printStackTrace(out);
 		}
-		out.println("!!!! end of message !!!!");
 	}
 
 	public void setIndent(String indent)
     {
     	this.indent = indent;
+    }
+	public boolean isPropigateComments()
+    {
+    	return propigateComments;
+    }
+	public void setPropigateComments(boolean propigateComments)
+    {
+    	this.propigateComments = propigateComments;
     }
 }
