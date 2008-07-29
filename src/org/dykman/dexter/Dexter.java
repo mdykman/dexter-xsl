@@ -604,7 +604,12 @@ public class Dexter
 			}
 			else if (start)
 			{
-				if (child.getNodeType() != Node.TEXT_NODE)
+				if (child.getNodeType() == Node.COMMENT_NODE)
+				{
+					// quitely dropping comments between block nodes
+					
+				}
+				else if (child.getNodeType() != Node.TEXT_NODE)
 				{
 					reportInternalError("dropping non-text nodes between siblings",null);
 				}
