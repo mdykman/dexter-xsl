@@ -25,6 +25,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 
 import org.dykman.dexter.base.DexterEntityResolver;
+import org.dykman.dexter.dexterity.DexteritySyntaxException;
 import org.w3c.dom.Document;
 
 public class Main
@@ -40,11 +41,12 @@ public class Main
 	private static TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	private static boolean preserveEntities = true;
 
+	private static boolean propComments = true;
 	public static void main(String[] args)
 	{
 		
 		int argp = 0;
-		LongOpt[] opts = new LongOpt[10];
+		LongOpt[] opts = new LongOpt[11];
 		opts[0] = new LongOpt("mime-type",LongOpt.REQUIRED_ARGUMENT,null,'t');
 		opts[1] = new LongOpt("method",LongOpt.REQUIRED_ARGUMENT,null,'m');
 		opts[2] = new LongOpt("properties",LongOpt.REQUIRED_ARGUMENT,null,'p');
@@ -55,13 +57,17 @@ public class Main
 		opts[7] = new LongOpt("define",LongOpt.REQUIRED_ARGUMENT,null,'d');
 		opts[8] = new LongOpt("version",LongOpt.NO_ARGUMENT,null,'v');
 		opts[9] = new LongOpt("resolve-entities",LongOpt.NO_ARGUMENT,null,'r');
+		opts[10] = new LongOpt("suppress-comments",LongOpt.NO_ARGUMENT,null,'c');
 		
-		Getopt go = new Getopt("dexter",args,"m::o::p::e::i::t::d::hvr",opts,false);
+		Getopt go = new Getopt("dexter",args,"m::o::p::e::i::t::d::hvrc",opts,false);
 		int s;
 		while((s = go.getopt()) != -1)
 		{
 			switch(s)
 			{
+				case 'c':
+					propComments = false;
+				break;
 				case 'r':
 					preserveEntities = false;
 				break;
@@ -153,6 +159,7 @@ public class Main
 				in.close();
 				dexter = new Dexter(encoding,p);
 			}
+			dexter.setPropigateComments(propComments);
 			
 			dexter.setMediaType(mediaType);
 			dexter.setMethod(method);
@@ -175,11 +182,17 @@ public class Main
 				++argp;
 			}
 		}
+		catch (DexterHaltException e)
+		{
+			// just end it quietly
+		}
+		catch (DexteritySyntaxException e)
+		{
+			System.err.println("Syntax exception in dexterity descriptor: " + e.getMessage());
+		}
 		catch (DexterException e)
 		{
-			String msg = e.getMessage();
-			System.err.println("DexterException: " + msg);
-//			e.printStackTrace();
+			System.err.println("DexterException: " + e.getMessage());
 		}
 		catch (Exception e)
 		{

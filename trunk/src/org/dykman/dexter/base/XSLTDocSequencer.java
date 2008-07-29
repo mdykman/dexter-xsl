@@ -20,6 +20,7 @@ import javax.xml.transform.TransformerFactory;
 
 import org.dykman.dexter.Dexter;
 import org.dykman.dexter.DexterException;
+import org.dykman.dexter.DexterHaltException;
 import org.dykman.dexter.dexterity.DexteritySyntaxException;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
@@ -433,14 +434,17 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 			case Node.COMMENT_NODE:
 			{
-				Comment comment = currentDocument.createComment(name);
-				currentNode.appendChild(comment);
+				if(dexter.isPropigateComments())
+				{
+					Comment comment = currentDocument.createComment(name);
+					currentNode.appendChild(comment);
+				}
 			}
 			break;
 			default:
 			{
-				Dexter.reportInternalError("FATAL: encountered  an unhandler node type: " + type, null);
-				throw new DexterException("internal exception - unhandled node type: " + type);
+				Dexter.reportInternalError("FATAL: encountered  an unhandle node type: " + type, null);
+				throw new DexterHaltException("internal exception - unhandled node type: " + type);
 			}
 		}
 	}
