@@ -67,6 +67,7 @@
 <xsl:element name="a"><xsl:attribute name="name">TOC</xsl:attribute></xsl:element>
 
 <xsl:element name="div"><xsl:attribute name="style">left-margin: 30px;</xsl:attribute><xsl:for-each select="*/section"><xsl:element name="a"><xsl:attribute name="href"><xsl:choose><xsl:when test="title/text()"><xsl:text><![CDATA[#]]></xsl:text><xsl:value-of select="title"/></xsl:when><xsl:otherwise><xsl:text/></xsl:otherwise></xsl:choose></xsl:attribute><xsl:value-of select="title"/></xsl:element><xsl:element name="br"/>
+	
 </xsl:for-each></xsl:element>
 </xsl:element></xsl:if>
 

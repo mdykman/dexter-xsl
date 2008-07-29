@@ -78,11 +78,11 @@ Refer to the README for information on running dexter in your environment
 @import url("style.css");
 </style>
 <!--
-  intial context is '/'
+  initial context is '/'
   
   dx:value
-  replace the content of the 'title' tag with the text content of */title 
-  from the data document
+  replace the content of this <title> with the text content of /*/title 
+  from the data document.
 
   REMEMBER: all path expressions refer to the data document, not to nodes within 
   this document.  
@@ -100,15 +100,15 @@ Refer to the README for information on running dexter in your environment
 <div>
 <!--
   dx:value
-  replace the content of the 'title' tag with the text content of */title 
-  from the data document 
+  replace the content of <title> with the text content of /*/title 
+  from the data document.
  -->
 <h1 dx:value="*/title">Document Title</h1>
 <!--
   dx:if
   if a node is found at the path */subtitle in the data document,
-  	replace the content of <h5> with the text content of */subtitle
-  if no node is found in the data document, this node will not be rendered 
+  	replace the content of <h5> with the text content of /*/subtitle.
+  if no node is found in the data document, this node will not be rendered. 
  -->
 <h5 dx:if="*/subtitle" dx:value="*/subtitle">Sub-Title</h5>
 </div>
@@ -124,7 +124,7 @@ Refer to the README for information on running dexter in your environment
   
   The following expression will evaluate the dx:value expression, inserting
   the text value of */author from the data document while suppressing the span
-  element which it is contained in
+  element which contains it.
  --> 
 <span dx:ghost="" dx:value="*/author">Author Name</span>
 </span></div>
@@ -135,7 +135,7 @@ Refer to the README for information on running dexter in your environment
   iterate over the current element for each node found in the expression.
   this has the additional effect of setting the path context.
   
-  in this case, it will generate a div for each element found in the data document
+  in this case, it will generate a <div> for each element found in the data document
   at the path /*/references/reference. 
   relative path expressions encountered within this element  or it's children will be
   evaluated in the context /*/references/reference
@@ -152,7 +152,7 @@ Refer to the README for information on running dexter in your environment
   here, we render the text context of the url element of
   the current reference element as the value of the href attribute
   while replacing the content of the element with the text context of
-  the title element of the current reference 
+  the title element of the current reference. 
  -->	
 <a href="#" dx:attr="href:url" dx:value="title">external title</a><br />
 
@@ -241,7 +241,11 @@ typically, a short paragraph</div>
 
  -->
 <div dx:each="#*/section" style="left-margin: 30px;"><a
-	dx:attr="href:#{title}" dx:value="title">Section Title</a><br />
+	dx:attr="href:#{title}" dx:value="title">Section Title 1</a><br />
+	<span dx:ignore="">
+	<a>Section Title 2</a><br />
+	<a>Section Title 3</a><br />
+	</span>
 </div>
 </div>
 <!-- end dx:if -->
