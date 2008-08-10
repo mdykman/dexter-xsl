@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xml-stylesheet href="profile.html.xsl" type="text/xsl" ?>
+
+<result>
+	<profile>
+		<userid>1</userid>
+		<username>mdykman</username>
+		<first>Michael</first>
+		<last>Dykman</last>
+		<email>mdykman@gmail.com</email>
+		<image>images/fry.jpg</image>
+	</profile>
+</result>
