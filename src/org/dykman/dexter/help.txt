@@ -16,4 +16,3 @@ Valid options are listed below.  Long and short options are behave identically.
  -o, --directory=PATH       * specify an output directory. Default: use source directory
  -v, --version              * print version and copyright information.
  -h, --help                 * print this screen and exit
-
