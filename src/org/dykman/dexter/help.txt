@@ -1,5 +1,5 @@
-** Dexter-0.2.2-beta 
-** copyright (c)2007,2008 Michael Dykman
+** Dexter-0.2.3-beta 
+** copyright (c)2007-2009 Michael Dykman
 Usage:
  java -cp lib/dexter.jar:lib/gnu-getopt.jar org.dykman.dexter.Main  [OPTIONS] file ...
 
