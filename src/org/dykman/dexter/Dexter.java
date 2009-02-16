@@ -40,8 +40,8 @@ public class Dexter
 	static Set<File> outputFile = new HashSet<File>();
 
 	protected Document inputDocument;
-	public static String DEXTER_VERSION = "dexter-0.2.2-beta"; 
-	public static String DEXTER_COPYRIGHT = "copyright (c) 2007,2008 Michael Dykman"; 
+	public static String DEXTER_VERSION = "dexter-0.2.3-beta"; 
+	public static String DEXTER_COPYRIGHT = "copyright (c) 2007-2009 Michael Dykman"; 
 
 	private String propertyPath = null;
 

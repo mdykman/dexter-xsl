@@ -20,11 +20,15 @@ public class MapAttributeDescriptor extends PathDescriptor
 	{
 		super(descriptor);
 	}
+	
+	protected String [] getTests() {
+		return value.split(DexterityConstants.ARG_SEP);
+	}
 
 	@Override
 	public void attributes()
 	{
-		String [] tests = value.split(DexterityConstants.ARG_SEP);
+		String [] tests = getTests();
 		NamedNodeMap  attr = element.getAttributes();
 		for(int i = 0; i < tests.length; ++i)
 		{
