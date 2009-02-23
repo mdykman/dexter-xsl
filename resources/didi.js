@@ -160,21 +160,11 @@ Didi.Ajax.transformer = function(uri) {
 	if(uri instanceof Document)
 	{
 		uri = this.xslUri(uri); 
-	}
-	
-	if(uri)
-	{
-		if(this.XSLTcache[uri])
-		{
-			return this.XSLTcache[uri];
-		}
-		else
-		{
-			var xslt = this.createTransformer(uri);
-			this.XSLTcache[uri] = xslt;
-			return xslt;
+		if(uri) {
+			return this.createTransformer(uri);
 		}
 	}
+	return function(xml) { return xml; };
 }
 
 Didi.Ajax.createTransformer = function(uri) {
@@ -187,7 +177,7 @@ Didi.Ajax.createTransformer = function(uri) {
 			alert("failed to load stylesheet.");
 		}
 	}
-	else if(typeof XSLTProcessor != "undefined")
+	else if(typeof XSLTProcessor != "undefined") // DOM 3 browsers
 	{
 		return function(xml) {
 			var processor = new XSLTProcessor();
@@ -195,7 +185,7 @@ Didi.Ajax.createTransformer = function(uri) {
 			return processor.transformToFragment(xml,document);
 		}
 	}
-	else if("transformNode" in xslt)
+	else if("transformNode" in xslt) // IE
 	{
 		return function(xml) {
 			return xml.transformNode(xslt);
@@ -339,14 +329,59 @@ Didi.Ajax.update = function(id,url,async) {
 
 Didi.Ajax.updateXML = function(id,data,ch) {
 	var tr = this.transformer(data);
-	if(tr)
-	{
-		var trd = tr(data);
-		this.replace_node(id,trd,ch);
-	}
-	else
-	{
-		this.replace_node(id,data,ch);
-	}
-	return tr ? true : false;
+	this.replace_node(id,tr(data),ch);
+	return true;
 }
+
+Didi.Ajax.updateContent = function(id,url,params,post) {
+	this.request(url,params, function(xml) {
+			Didi.Ajax.updateXML(id,xml,true);	
+		}, post);
+}
+
+Didi.Ajax.request = function(uri, params,callback,post) {
+	var req = this.createXMLHTTPObject();
+   var args = this.buildArgString(params);
+   req.onreadystatechange = function () {
+		if(req.readyState == 4 && req.status == 200) {
+			callback(req.responseXML);
+		}
+	}
+
+	if(post) {
+	   req.open("POST",uri);
+		req.send(args);
+	} else {
+		if(args.length > 0) {
+			uri = uri + '?' + args;
+		}
+	   req.open("GET",uri);
+		req.send(null);
+	}
+	return true;
+}
+
+
+Didi.Ajax.createXMLHTTPObject = function() {
+	var xmlobj;
+	if(window.XMLHttpRequest) xmlobj = new XMLHttpRequest(); // dom3 browser
+	if((!xmlobj) && window.ActiveXObject) { // IE
+		xmlobj = new ActiveXObject("Msxml2.XMLHTTP");
+		if(!xmlobj) xmlobj = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	return xmlobj;
+}
+
+Didi.Ajax.buildArgString = function(params) {
+	var uri = '';
+	if(params) {
+		var first = true;
+		for(var k in params) {
+			if(first) first = false;
+			else uri = uri + '&';
+			uri = uri + escape(k) + '=' + escape(params[k]);
+		}
+	}
+	return uri;
+}
+

@@ -1,0 +1,10 @@
+<result>
+	<thing>
+		<default>cat</default>
+		<list>
+			<item>dog</item>
+			<item>cat</item>
+			<item>fish</item>
+		</list>
+	</thing>
+</result>

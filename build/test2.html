@@ -1,0 +1,19 @@
+<html>
+<head>
+<script type="text/javascript" src="js/didi.js"></script>
+<script type="text/javascript">
+	function sayhello(msg) {
+		alert('hello ' + msg)
+		return false;
+	}
+</script>
+
+</head>
+<body>
+<div dx:each="*/things/thing" >
+	<button name="clicker" dx:attrs="|onclick:return sayhello('{.}');|name:." dx:value=".">click me</button>
+</div>
+<div id="container">
+</div>
+</body>
+</html>

@@ -1,0 +1,6 @@
+<select name="foo">
+	<option 
+		dx:each="*/thing/list/*" 
+		dx:cattr="selected:../../default@!seq:. @!str:true" 
+		dx:value=".">an option here</option>
+</select>

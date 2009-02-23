@@ -7,7 +7,6 @@
 package org.dykman.dexter.descriptor;
 
 import org.dykman.dexter.base.TransformSequencer;
-
 import org.dykman.dexter.dexterity.DexterityConstants;
 
 
@@ -27,6 +26,10 @@ public abstract class PathDescriptor extends NodeTransformDescriptor
 			value = value.substring(1);
 		}
 	};
+
+	protected String [] getTests() {
+		return value.split(DexterityConstants.ARG_SEP);
+	}
 
 	public static char nextOf(String s,int offset, char[] set)
 	{
