@@ -1,0 +1,36 @@
+<html>
+	<head>
+		<title>Workastica Tools</title>
+		<link rel="stylesheet" type="text/css" href="/css/main.css" />
+		<script type="text/javascript" src="/js/jquery.js" ></script>
+				<script type="text/javascript" src="/js/didi.js" ></script>
+		<script type="text/javascript" src="/js/main.js" ></script>
+	</head>
+	<body>
+		<div id="mainContainer">
+			<div id="nodeMapContainer">
+				<div id="nodeMapNav">
+					<div id="worldButton" class="floatleft" onClick="return showWorldeMap()"><button>View the World</button></div> 
+					<div id="searchContext" class="floatleft">How do I become a <select id="position" dx:attrs="|onChange:return setBottomNode({pid})">
+						<option dx:each="**/Position" dx:attr="id:pid" dx:value="title">Architect</option>
+						</select> when I grow up?</div>
+				</div>
+				<div class="clearboth"></div>
+				<div id="nodeMap">
+nodeMap
+				</div>
+			</div>
+			<div id="toolSetContainer">
+				<div id="toolSet">
+				Tools in Here
+				</div>
+				<div id="jobInfo">
+					Job info
+				</div>
+			</div>
+		</div>
+		<script>
+			populateAreas();
+			</script>
+	</body>
+</html>

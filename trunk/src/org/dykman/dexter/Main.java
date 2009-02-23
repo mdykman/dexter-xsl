@@ -21,8 +21,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
+import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.dykman.dexter.base.DexterEntityResolver;
 import org.dykman.dexter.dexterity.DexteritySyntaxException;
@@ -42,11 +45,12 @@ public class Main
 	private static boolean preserveEntities = true;
 
 	private static boolean propComments = true;
+	private static String inputXSL = null; 
 	public static void main(String[] args)
 	{
 		
 		int argp = 0;
-		LongOpt[] opts = new LongOpt[11];
+		LongOpt[] opts = new LongOpt[12];
 		opts[0] = new LongOpt("mime-type",LongOpt.REQUIRED_ARGUMENT,null,'t');
 		opts[1] = new LongOpt("method",LongOpt.REQUIRED_ARGUMENT,null,'m');
 		opts[2] = new LongOpt("properties",LongOpt.REQUIRED_ARGUMENT,null,'p');
@@ -58,13 +62,17 @@ public class Main
 		opts[8] = new LongOpt("version",LongOpt.NO_ARGUMENT,null,'v');
 		opts[9] = new LongOpt("resolve-entities",LongOpt.NO_ARGUMENT,null,'r');
 		opts[10] = new LongOpt("suppress-comments",LongOpt.NO_ARGUMENT,null,'c');
+		opts[11] = new LongOpt("transform",LongOpt.REQUIRED_ARGUMENT,null,'x');
 		
-		Getopt go = new Getopt("dexter",args,"m::o::p::e::i::t::d::hvrc",opts,false);
+		Getopt go = new Getopt("dexter",args,"m::o::p::e::i::t::d::x::hvrc",opts,false);
 		int s;
 		while((s = go.getopt()) != -1)
 		{
 			switch(s)
 			{
+				case 'x':
+					inputXSL = go.getOptarg();
+				break;
 				case 'c':
 					propComments = false;
 				break;
@@ -139,12 +147,28 @@ public class Main
 			}
 
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = dbf.newDocumentBuilder();
+			builder.setEntityResolver(new DexterEntityResolver(encoding));
+
+			if(inputXSL != null) {
+				TransformerFactory transFact = TransformerFactory.newInstance( );
+				Templates templates = transFact.newTemplates(
+					new StreamSource(new File((inputXSL))));
+				 
+				while(argp < args.length) {
+					Transformer transformer = templates.newTransformer();
+					transformer.transform(new StreamSource(
+							new FileInputStream(args[argp])), 
+							new StreamResult(System.out));
+					++argp;
+				}
+				System.exit(0);
+			}
+
 			dbf.setValidating(false);
 			dbf.setExpandEntityReferences(false);
 			dbf.setCoalescing(true);
 			dbf.setIgnoringComments(false);
-			DocumentBuilder builder = dbf.newDocumentBuilder();
-			builder.setEntityResolver(new DexterEntityResolver(encoding));
 			Dexter dexter;
 			
 			if(userProperties == null)
