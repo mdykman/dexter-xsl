@@ -23,12 +23,6 @@
 		</xs:annotation>
 	</xs:attribute>
 
-	<xs:attribute name="attr" type="xs:normalizedString">
-		<xs:annotation>
-			<xs:documentation>a sequcence of space-delimited attribute-assgnment expressions</xs:documentation>
-	</xs:annotation>
-	</xs:attribute>
-
 	<xs:attribute name="if" type="xs:normalizedString" >
 		<xs:annotation>
 			<xs:documentation>conditionally render the node based expression evaluations</xs:documentation>
@@ -85,5 +79,30 @@ generate a seperate stylesheet representing the current element and include it i
 			<xs:documentation>replace this node with the set of it's children after all operations on the node are exavulated</xs:documentation>
 		</xs:annotation>
 	</xs:attribute>
+
+	<xs:attribute name="attr" type="xs:normalizedString">
+		<xs:annotation>
+			<xs:documentation>a sequcence of space-delimited attribute-assgnment expressions</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+
+	<xs:attribute name="attrs" type="xs:normalizedString">
+		<xs:annotation>
+			<xs:documentation>a sequcence of space-delimited attribute-assgnment expressions</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+
+	<xs:attribute name="cattr" type="xs:normalizedString">
+		<xs:annotation>
+			<xs:documentation>a sequcence of space-delimited attribute-assgnment expressions</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+
+	<xs:attribute name="cattrs" type="xs:normalizedString">
+		<xs:annotation>
+			<xs:documentation>a sequcence of space-delimited attribute-assgnment expressions</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+
 
 </xs:schema>
