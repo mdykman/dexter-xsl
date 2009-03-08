@@ -158,15 +158,24 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		currentNode.appendChild(map);
 	}
 
-	public void copyChildren(String path, String def)
+	/**
+     * @deprecated Use {@link #copyNodes(String,String,boolean)} instead
+     */
+    public void copyNodes(String path, String def)
+    {
+        copyNodes(path, def, true);
+    }
+
+	public void copyNodes(String path, String def, boolean children)
 	{
 		path = translateXSLPath(path);
 
 		Element map;
 		Element valueOf = currentDocument.createElement("xsl:copy-of");
 
-		valueOf.setAttribute("select", 
-				path + "/*|" + path + "/text()");
+		String av = path;
+		if(children) av = path + "/*";
+		valueOf.setAttribute("select",av); 
 
 		if (def != null)
 		{

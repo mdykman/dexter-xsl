@@ -27,7 +27,12 @@ public interface TransformSequencer
 
 	public void mapAttribute(String name,String[] path, String def);
 	public void mapNode(String path, String def,boolean disableEscaping);
-	public void copyChildren(String path, String def);
+	/**
+     * @deprecated Use {@link #copyNodes(String,String,boolean)} instead
+     */
+    public void copyNodes(String path, String def);
+
+	public void copyNodes(String path, String def, boolean children);
 	
 	public void startSubdoc(String altDoc,String name,String match,boolean keep);
 	public void endSubdoc();

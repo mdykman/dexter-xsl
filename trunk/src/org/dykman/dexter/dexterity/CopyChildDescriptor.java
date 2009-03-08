@@ -10,9 +10,9 @@ import org.dykman.dexter.descriptor.Descriptor;
 import org.dykman.dexter.descriptor.PathDescriptor;
 import org.w3c.dom.Element;
 
-public class CopyNodeDescriptor extends PathDescriptor
+public class CopyChildDescriptor extends PathDescriptor
 {
-	public CopyNodeDescriptor(Descriptor descriptor)
+	public CopyChildDescriptor(Descriptor descriptor)
 	{
 		super(descriptor);
 	}
@@ -30,6 +30,6 @@ public class CopyNodeDescriptor extends PathDescriptor
 		String nref = mapPath(getPath(),value);
 //		String p = getIteratorContext();
 		sequencer.copyNodes(dequalify(getIteratorContext(), nref), 
-				useDefault ? ((Element)element).getTextContent() : null, false);
+				useDefault ? ((Element)element).getTextContent() : null, true);
 	}
 }
