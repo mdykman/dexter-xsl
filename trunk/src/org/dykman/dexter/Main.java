@@ -199,7 +199,7 @@ public class Main
 				while(k.hasNext())
 				{
 					String name = k.next();
-	 				if(!name.endsWith(".dispose"))
+	 				if(!name.endsWith(".dispose.xsl"))
 					{
 						putToDisk(name, docs.get(name));
 					}

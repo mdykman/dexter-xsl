@@ -120,42 +120,10 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		--pathc;
 	}
 
-	public void mapNode(String path, String def,boolean disableEscaping)
+	public void mapNode(String []path, String def,boolean disableEscaping)
 	{
-		path = translateXSLPath(path);
-
-		Element map;
-		Element valueOf = currentDocument.createElement("xsl:value-of");
-		valueOf.setAttribute("select", path);
-		if(disableEscaping)
-		{
-			valueOf.setAttribute("disable-output-escaping", "yes");
-		}
-
-		if (def != null)
-		{
-			Element choose = currentDocument.createElement("xsl:choose");
-			Element when;
-			
-			when = currentDocument.createElement("xsl:when");
-			when.setAttribute("test", path);
-			when.appendChild(valueOf);
-			choose.appendChild(when);
-
-			map = choose;
-		}
-		else
-		{
-			map = valueOf;
-		}
-
-		if (def != null)
-		{
-			Element otherwise = currentDocument.createElement("xsl:otherwise");
-			otherwise.appendChild(currentDocument.createTextNode(def));
-			map.appendChild(otherwise);
-		}
-		currentNode.appendChild(map);
+		
+		currentNode.appendChild(valueTemplate(path, def));
 	}
 
 	/**
@@ -199,13 +167,22 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		}
 		currentNode.appendChild(map);
 	}
-
+	
 	public void mapAttribute(String name, String[] path, String def)
 	{
 
 		Element element = currentDocument.createElement("xsl:attribute");
 		name = translateName(name);
 		element.setAttribute("name", name);
+
+		element.appendChild(valueTemplate(path, def));
+
+		currentNode.appendChild(element);
+	}
+
+	public Element valueTemplate(String[] path, String def)
+	{
+
 
 		if (def != null || path.length > 1)
 		{
@@ -262,18 +239,18 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			Element otherwise = currentDocument.createElement("xsl:otherwise");
 			otherwise.appendChild(textContainer(def == null ? "" : def));
 			choose.appendChild(otherwise);
-			element.appendChild(choose);
+			return choose;
 		}
 		else
 		{
 			Element valueOf = currentDocument.createElement("xsl:value-of");
 			valueOf.setAttribute("select", translateXSLPath(path[0]));
-			element.appendChild(valueOf);
+			return valueOf;
 		}
-
-		currentNode.appendChild(element);
 	}
 
+	
+	
 
 	public void setAttribute(String key, String value)
 	{
