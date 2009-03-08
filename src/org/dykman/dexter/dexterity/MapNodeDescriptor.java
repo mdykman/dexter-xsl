@@ -27,15 +27,15 @@ public class MapNodeDescriptor extends PathDescriptor
 			value = value.substring(1);
 			useDefault = true;
 		}
+
 		if(value.startsWith("~"))
 		{
 			value = value.substring(1);
 			disableEscape = true;
 		}
 		
-		String nref = mapPath(getPath(),value);
-//		String p = getIteratorContext();
-		sequencer.mapNode(dequalify(getIteratorContext(), nref), 
+
+		sequencer.mapNode(attributeTemplate(value), 
 				useDefault ? ((Element)element).getTextContent() : null,disableEscape);
 	}
 }
