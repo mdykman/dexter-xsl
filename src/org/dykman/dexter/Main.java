@@ -162,6 +162,7 @@ public class Main
 							new StreamResult(System.out));
 					++argp;
 				}
+				System.out.println();
 				System.exit(0);
 			}
 

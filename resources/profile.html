@@ -4,28 +4,29 @@
 	>
 <head>
 
-<title>profile of <span 
-		dx:ghost="" dx:value="*/profile/first">Rick</span
+<title>profile of <span dx:ghost="" 
+		dx:value="*/profile/first">Rick</span
 	>&nbsp;<span dx:ghost="" dx:value="*/profile/last">Nelson</span
 	></title>
 </head>
 <body>
 <div dx:case="*/error">
-<b dx:value="*/error">this will display an error if theres is one</b>
+<b dx:value="*/error">this will display an error if there is one.  
+The table shown below will not be displayed if error is present</b>
 </div>
 <table dx:default="" dx:env="*/profile" border="1">
 	<tr >
 		<td rowspan="2"><img dx:attr="src:!image" src="images/no-image.jpg"/></td>
 		<td dx:value="username">ricky</td>
 		<td><a dx:attr="href:!mailto://{email}" 
-			href="javascript:alert('no address given');">email this user</a></td>
+			href="javascript:alert('no address given');">email <span 
+				dx:value="first"
+				dx:ghost="">Ricky</span></a></td>
 	</tr>
 	<tr >
 		<td dx:value="first">Ricky</td>
 		<td dx:value="last">Nelson</td>
 	</tr>
 </table>
-
-
 </body>
 </html>

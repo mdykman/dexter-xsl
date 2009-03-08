@@ -8,6 +8,7 @@ package org.dykman.dexter.base;
 
 
 import org.dykman.dexter.Dexter;
+import org.dykman.dexter.dexterity.DexterityConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -32,6 +33,12 @@ public abstract class AbstractDocumentEditor implements DocumentEditor
 	{
 		return getDexterAttribute(element, key, true);
 	}
+	
+	protected String [] splitArgs(String v) {
+		return v.split(DexterityConstants.ARG_SEP);
+	}
+
+
 	protected String getDexterAttribute(Element element,String key, boolean erase)
 	{
 		String result = null;
