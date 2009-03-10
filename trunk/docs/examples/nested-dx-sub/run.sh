@@ -15,6 +15,7 @@ diff $RESULT $TMPDAT
 if [[ $? == "0" ]]; then
 	echo success
 	rm $TMPDAT
+	rm *.xsl
 else
 	echo test failed
 fi;
