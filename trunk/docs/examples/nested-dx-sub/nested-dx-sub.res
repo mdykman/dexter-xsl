@@ -1,1 +1,1 @@
-<xxx><www>stuff-data</www><yyy id="yyy"><span>stuff-data1</span><zzz id="zzz"><span>stuff-data2</span></zzz></yyy></xxx>
+<xxx><www>stuff-data</www><yyy id="yyy">stuff-data1<zzz id="zzz">stuff-data2</zzz></yyy></xxx>

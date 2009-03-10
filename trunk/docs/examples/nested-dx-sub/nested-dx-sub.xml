@@ -1,11 +1,8 @@
 <xxx>
-	<www dx:value="*/cat/stuff">
-	</www>
+	<www dx:value="*/cat/stuff" />
 	<yyy id="yyy" dx:sub="*/thing1">
-	<span dx:value="stuff"/>
-		<zzz id="zzz" dx:sub="/*/thing2">
-		<span dx:value="stuff"/>
-		</zzz>
+		<span dx:ghost="" dx:value="stuff"/>
+		<zzz id="zzz" dx:sub="/*/thing2" dx:value="stuff" />
 	</yyy>
 </xxx>
 
