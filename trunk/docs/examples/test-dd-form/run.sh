@@ -15,7 +15,7 @@ diff ${RESULT} ${TMPDAT}
 if [[ $? == "0" ]]; then
 	echo ok
 	rm $TMPDAT
-	rm *.xsl
+#	rm *.xsl
 	exit 0 
 else
 	echo fail
