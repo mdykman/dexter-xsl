@@ -40,7 +40,14 @@ public class DexterPropertyResolver implements PropertyResolver
 			
 		}
 	}
+	
+
 	public String getProperty(String key)
+	{
+		return this.getProperty(module, key);
+	}
+
+	public String getProperty(String module,String key)
 	{
 		if(module != null)
 		{
