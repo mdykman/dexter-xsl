@@ -5,6 +5,7 @@ import org.dykman.dexter.base.AbstractDocumentEditor;
 import org.dykman.dexter.dexterity.DexterityConstants;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 public class OptionEditor extends AbstractDocumentEditor
 {
@@ -18,10 +19,20 @@ public class OptionEditor extends AbstractDocumentEditor
 		String dexterity = DexterityConstants.BASE_NAMESPACE;
 		
 		String[] args = splitArgs(value);
-		if(args.length < 2) {
+		if(args.length < 1) {
 			throw new DexteritySyntaxException("too few arguments in " + name + " attribute");
 		}
 
+		if(args[0].startsWith("!")) {
+			// make a strict and insert it previously
+			args[0] = args[0].substring(1);
+			Node nn = element.cloneNode(true);
+			NamedNodeMap attr = nn.getAttributes();
+			attr.removeNamedItem(name);
+			Node parent = element.getParentNode();
+			parent.insertBefore(nn, element);
+		}
+		
 		String v;
 		NamedNodeMap attr = element.getAttributes();
 
@@ -30,14 +41,17 @@ public class OptionEditor extends AbstractDocumentEditor
 		a.setValue(v);
 		attr.setNamedItem(a);
 		
-		a = document.createAttribute( dexterity + "value");
-		v = args[1];
-		a.setValue(v);
+		a = document.createAttribute( dexterity + ":value");
+		if(args.length > 1) {
+			a.setValue(args[1]);
+		} else {
+			a.setValue(".");
+		}
 		attr.setNamedItem(a);
 
 		if(args.length > 2) {
 			if(sep == null) {
-				a = document.createAttribute(dexterity + "attr");
+				a = document.createAttribute(dexterity + ":attr");
 				v = "value:" + args[2];
 				a.setValue(v);
 				attr.setNamedItem(a);
