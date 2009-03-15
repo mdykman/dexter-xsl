@@ -1,0 +1,12 @@
+
+<form dd:form="*/formdata" name="userform">
+	<input name="first" /> <br/>
+	<input type="radio" name="size" value="tall" />tall
+	<input type="radio" name="size" value="short" />short <br/>
+	<input type="checkbox" name="adult" value="yes" />adult
+	<textarea name="story">
+	some lame crap
+	</textarea>
+	<input name="clicker" type="submit" value="go!" />
+</form>
+

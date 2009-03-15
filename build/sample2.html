@@ -1,0 +1,8 @@
+<select name="thing">
+	<option 
+	dx:each = "result/pets/pet"
+	dx:value = "name"
+	dx:attr = "value:id"
+	dx:cattr = "selected:/result/default@!seq:id @!str:true" />
+
+</select>

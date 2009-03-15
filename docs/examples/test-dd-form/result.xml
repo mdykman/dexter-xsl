@@ -1,0 +1,3 @@
+<form name="userform"><input value="Michael" name="first"><br><input checked="true" name="size" type="radio" value="tall">tall
+	<input name="size" type="radio" value="short">short <br><input checked="true" name="adult" type="checkbox" value="yes">adult
+	<textarea name="story">this is my story</textarea><input value="press this" name="clicker" type="submit"></form>
