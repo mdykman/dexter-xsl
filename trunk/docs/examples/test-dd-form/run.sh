@@ -11,11 +11,13 @@ TMPDAT="tmp-${DATA}.res"
 
 dexter.sh ${INPUT}
 dexter.sh -x${INPUT}.xsl ${DATA} > $TMPDAT
-diff $RESULT $TMPDAT
+diff ${RESULT} ${TMPDAT}
 if [[ $? == "0" ]]; then
-	echo success
+	echo ok
 	rm $TMPDAT
 	rm *.xsl
+	exit 0 
 else
-	echo test failed
+	echo fail
+	exit 1
 fi;
