@@ -11,6 +11,7 @@ public abstract class DexterityConstants
 	public static final String BLOCK = "DEXTER-BLOCK-NODE";
 	public static final String ITER_CONTEXT = "ITERATOR_CONTEXT";
 	public static final String PATH = "DEXTERITY_PATH";
+	public static final String BASE_NAMESPACE = "dx";
 	public static final String ARG_SEP = " +";
 	public static final String ATTR_SEP = ":";
 	public static final String SCAN_CFG = "dexter.properties";

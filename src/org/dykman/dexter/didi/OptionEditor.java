@@ -2,16 +2,12 @@ package org.dykman.dexter.didi;
 
 import org.dykman.dexter.DexteritySyntaxException;
 import org.dykman.dexter.base.AbstractDocumentEditor;
+import org.dykman.dexter.dexterity.DexterityConstants;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 
 public class OptionEditor extends AbstractDocumentEditor
 {
-
-	public OptionEditor()
-	{
-		// TODO Auto-generated constructor stub
-	}
 
 	public void edit(String namespace, String name, String value)
 	{
@@ -19,6 +15,7 @@ public class OptionEditor extends AbstractDocumentEditor
 		if(name.endsWith("s")) {
 			sep = value.substring(0,1);
 		}
+		String dexterity = DexterityConstants.BASE_NAMESPACE;
 		
 		String[] args = splitArgs(value);
 		if(args.length < 2) {
@@ -28,24 +25,24 @@ public class OptionEditor extends AbstractDocumentEditor
 		String v;
 		NamedNodeMap attr = element.getAttributes();
 
-		Attr a = document.createAttribute("dx:each");
+		Attr a = document.createAttribute(dexterity + ":each");
 		v = args[0];
 		a.setValue(v);
 		attr.setNamedItem(a);
 		
-		a = document.createAttribute( "dx:value");
+		a = document.createAttribute( dexterity + "value");
 		v = args[1];
 		a.setValue(v);
 		attr.setNamedItem(a);
 
 		if(args.length > 2) {
 			if(sep == null) {
-				a = document.createAttribute("dx:attr");
+				a = document.createAttribute(dexterity + "attr");
 				v = "value:" + args[2];
 				a.setValue(v);
 				attr.setNamedItem(a);
 			} else {
-				a = document.createAttribute("dx:attrs");
+				a = document.createAttribute(dexterity + ":attrs");
 				v = sep + "value:" + args[2];
 				a.setValue(v);
 				attr.setNamedItem(a);
@@ -54,12 +51,12 @@ public class OptionEditor extends AbstractDocumentEditor
 		
 		if(args.length > 3) {
 			if(sep == null) {
-				a = document.createAttribute("dx:cattr");
+				a = document.createAttribute(dexterity + ":cattr");
 				v = "selected:" + args[3] + " @!str:true";
 				a.setValue(v);
 				attr.setNamedItem(a);
 			} else {
-				a = document.createAttribute("dx:cattrs");
+				a = document.createAttribute(dexterity + ":cattrs");
 				v = sep + "selected:" + args[3] + sep + "@!str:true";
 				a.setValue(v);
 				attr.setNamedItem(a);

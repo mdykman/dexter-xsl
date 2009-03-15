@@ -193,10 +193,17 @@ public class Dexter
 		return result;
 	}
 
-	public void init()
+  	public String getProperty(String module,String key) {
+  		PropertyResolver pr = modulesMap.get(module);
+  		return pr.getProperty(key);
+  	}
+
+  	public String getProperty(String key) {
+  		return baseResolver.getProperty(key);
+  	}
+
+  	public void init()
 	{
-		
-// attrbiute names to be blessed as ids
 		String v = baseResolver.getProperty("node.id");
 		String[] b = v.split(",");
 		for (int i = 0; i < b.length; ++i)
