@@ -81,6 +81,9 @@ public class Dexter
 		this(encoding, null);
 	}
 
+	public String[] namespaces() {
+		return modulesMap.keySet().toArray(new String[modulesMap.size()]);
+	}
 	/**
 	 * construct a Dexter object with specified encoding and properties
 	 */

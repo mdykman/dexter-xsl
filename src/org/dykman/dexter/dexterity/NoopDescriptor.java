@@ -4,10 +4,13 @@
  * http://www.opensource.org/licences/artistic-license.php     
  */
 
-package org.dykman.dexter.descriptor;
+package org.dykman.dexter.dexterity;
+
+import org.dykman.dexter.descriptor.Descriptor;
+import org.dykman.dexter.descriptor.PathDescriptor;
 
 
-public class NoopDescriptor extends TransformDescriptor
+public class NoopDescriptor extends PathDescriptor
 {
 	public NoopDescriptor(Descriptor descriptor)
 	{
