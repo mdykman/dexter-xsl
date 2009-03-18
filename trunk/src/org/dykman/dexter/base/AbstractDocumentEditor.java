@@ -11,6 +11,8 @@ import org.dykman.dexter.Dexter;
 import org.dykman.dexter.dexterity.DexterityConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 public abstract class AbstractDocumentEditor implements DocumentEditor
 {
@@ -73,5 +75,18 @@ public abstract class AbstractDocumentEditor implements DocumentEditor
    {
    	this.dexter = dexter;
    }
+	protected boolean usesNamespace(NamedNodeMap attr, String[] ns)
+    {
+    		int len = attr.getLength();
+    		for(int i = 0; i < len; ++i) {
+    			Node a = attr.item(i);
+    			for(String n : ns) {
+    				if(a.getNodeName().startsWith(n + ":")) {
+    					return true;
+    				}
+    			}
+    		}
+    		return false;
+    	}
 
 }

@@ -45,16 +45,26 @@ public class FormCompletionEditor extends AbstractDocumentEditor
 		else if("radio".equalsIgnoreCase(inputType)
 			|| "checkbox".equalsIgnoreCase(inputType)) {
 			Node val = attr.getNamedItem("value");
-			if(val == null) {
+			if(val == null && ! "checkbox".equalsIgnoreCase(inputType)) {
 				System.err.println(
 						"WARNING: " + inputType + " has no defined value");
 			} else {
+				String nv;
+				if(val != null) {
+					nv = val.getNodeValue();
+				} else {
+					nv = "on";
+					newAtt = document.createAttribute("value");
+					newAtt.setNodeValue(nv);
+					attr.setNamedItem(newAtt);
+				}
 				newAtt = document.createAttribute(
 					dexterity + ":cattr");
 				String exp = "checked:" + value + "/" + fieldname
-					+ "@!eq:" + val.getNodeValue() + " @!str:true";
+					+ "@!eq:" + nv + " @!str:true";
 				newAtt.setNodeValue(exp);
 				attr.setNamedItem(newAtt);
+				
 			}
 		}
 		
@@ -90,20 +100,6 @@ public class FormCompletionEditor extends AbstractDocumentEditor
 				}
 			}
 		}
-	}
-	
-	protected boolean usesNamespace(NamedNodeMap attr,String[] ns) {
-		int len = attr.getLength();
-//		dexter.
-		for(int i = 0; i < len; ++i) {
-			Node a = attr.item(i);
-			for(String n : ns) {
-				if(a.getNodeName().startsWith(n + ":")) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 	
 	static class InputFilter implements NodeFilter {
