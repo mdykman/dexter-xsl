@@ -147,6 +147,11 @@ public class Main
 			}
 
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			dbf.setValidating(false);
+			dbf.setExpandEntityReferences(false);
+			dbf.setCoalescing(true);
+			dbf.setIgnoringComments(false);
+//			dbf.
 			DocumentBuilder builder = dbf.newDocumentBuilder();
 			builder.setEntityResolver(new DexterEntityResolver(encoding));
 
@@ -166,10 +171,6 @@ public class Main
 				System.exit(0);
 			}
 
-			dbf.setValidating(false);
-			dbf.setExpandEntityReferences(false);
-			dbf.setCoalescing(true);
-			dbf.setIgnoringComments(false);
 			Dexter dexter;
 			
 			if(userProperties == null)

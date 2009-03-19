@@ -305,8 +305,8 @@ public class Dexter
 	
 	public Map<String, Document> generateXSLT(String filename,Document document) throws Exception
 	{
-		Document clone = (Document)document.cloneNode(true);
-		document = clone;
+//		Document clone = (Document)document.cloneNode(true);
+//		document = clone;
 		
 		Element docel = document.getDocumentElement();
 		Iterator<String> it = modulesMap.keySet().iterator();
@@ -315,10 +315,7 @@ public class Dexter
 			String mod = it.next();
 			String ns = modulesMap.get(mod).getProperty("namespace");
 			String nsspec = "xmlns:" + ns;
-			if(docel.hasAttribute(nsspec))
-			{
-				docel.removeAttribute(nsspec);
-			}
+			if(docel.hasAttribute(nsspec))  docel.removeAttribute(nsspec);
 		}
 		// convert dexter attributes
 		scanDocument(document);
@@ -647,26 +644,25 @@ public class Dexter
 		return Arrays.copyOfRange(related, 0, c);
 	}
 
-	public static Descriptor marshallNode(Node node,Dexter dexter)
-   {
-   	Descriptor descriptor = new NodeDescriptor(node);
-   	List<NodeSpecifier> list = (List<NodeSpecifier>) node
-   	      .getUserData(DexterityConstants.DEXTER_SPECIFIERS);
-   	if (list != null)
-   	{
-   		Iterator<NodeSpecifier> it = list.iterator();
-   		TransformDescriptor td;
-   		while (it.hasNext())
-   		{
-   			NodeSpecifier specifier = it.next();
-   			descriptor = td = specifier.enclose(descriptor);
-   		}
-   	}
-   	return descriptor;
-   }
+	public static Descriptor marshallNode(Node node,Dexter dexter) {
+	   	Descriptor descriptor = new NodeDescriptor(node);
+	   	List<NodeSpecifier> list = (List<NodeSpecifier>) node
+	   	      .getUserData(DexterityConstants.DEXTER_SPECIFIERS);
+	   	if (list != null) {
+	   		Iterator<NodeSpecifier> it = list.iterator();
+	   		TransformDescriptor td;
+	   		while (it.hasNext()) {
+	   			NodeSpecifier specifier = it.next();
+	   			descriptor = td = specifier.enclose(descriptor);
+	   		}
+	   	}
+	   	return descriptor;
+	}
 
 	public static Descriptor marshall(Node node,Dexter dexter)
 	{
+//		int i = Node.ENTITY_NODE;
+System.out.println(node.getNodeType());
 		Descriptor parent = Dexter.marshallNode(node,dexter);
 		Descriptor c;
 		NodeList children = node.getChildNodes();
