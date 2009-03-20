@@ -662,7 +662,6 @@ public class Dexter
 	public static Descriptor marshall(Node node,Dexter dexter)
 	{
 //		int i = Node.ENTITY_NODE;
-System.out.println(node.getNodeType());
 		Descriptor parent = Dexter.marshallNode(node,dexter);
 		Descriptor c;
 		NodeList children = node.getChildNodes();
