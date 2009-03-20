@@ -609,7 +609,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	{
 		DocumentFragment fragment = document.createDocumentFragment();
 
-		Element element = textContainer(value);
+		Element element = currentDocument.createElement("xsl:text");
+		element.appendChild(currentDocument.createTextNode(value));
 		fragment.appendChild(element);
 
 //		for (int i = 0; i < iteratorStack.size(); ++i)
