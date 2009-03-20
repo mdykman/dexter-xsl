@@ -1,5 +1,5 @@
 /**
- * dexter (c) 2007, 2008 Michael Dykman 
+ * dexter (c) 2007,-2009 Michael Dykman 
  * Free for use under version 2.0 of the Artistic License.     
  * http://www.opensource.org/licences/artistic-license.php     
  */
@@ -399,8 +399,9 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			break;
 			case Node.TEXT_NODE:
 			{
-				Text text = currentDocument.createTextNode(name);
-				currentNode.appendChild(text);
+				Element el = currentDocument.createElement("xsl:text");
+				el.setTextContent(name);
+				currentNode.appendChild(el);
 			}
 			break;
 			case Node.CDATA_SECTION_NODE:
@@ -602,23 +603,25 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		return element;
 	}
 
-	protected DocumentFragment createIdentityValueTemplate(Document document,
-	      String value)
+	protected DocumentFragment createIdentityValueTemplate(
+			Document document, 
+			String value) 
 	{
 		DocumentFragment fragment = document.createDocumentFragment();
 
 		Element element = textContainer(value);
 		fragment.appendChild(element);
 
-		for (int i = 0; i < iteratorStack.size(); ++i)
-		{
-			element = textContainer("-");
-			fragment.appendChild(element);
-
-			element = currentDocument.createElement("xsl:value-of");
-			element.setAttribute("select", iteratorStack.get(i) + "/position()");
-			fragment.appendChild(element);
-		}
+//		for (int i = 0; i < iteratorStack.size(); ++i)
+//		{
+//			element = currentDocument.createElement("xsl:text");
+//			element.appendChild(currentDocument.createTextNode("-"));
+//			fragment.appendChild(element);
+//
+//			element = currentDocument.createElement("xsl:value-of");
+//			element.setAttribute("select", "[" + iteratorStack.get(i) + "] position()");
+//			fragment.appendChild(element);
+//		}
 		return fragment;
 	}
 
