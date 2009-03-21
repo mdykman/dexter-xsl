@@ -17,7 +17,7 @@ public interface TransformSequencer
 
 	public void runDescriptor(Descriptor descriptor);
 	public Node getCurrentNode();
-	public Node getIdentityValueTemplate(String key, String value);
+	public Node getTextExpression(String key, String value);
 	public String translateXSLPath(String p);
 	public void setIdNames(java.util.List<String> names);
 	public Element textContainer(String content);

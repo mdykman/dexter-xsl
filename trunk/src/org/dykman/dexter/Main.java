@@ -191,19 +191,26 @@ public class Main
 			dexter.setMethod(method);
 			dexter.setIndent(indent.equals("yes"));
 
+			String fn;
 			while(argp < args.length)
 			{
-				String fn = args[argp];
-				Document impl = builder.parse(new FileInputStream(fn));
-				Map<String, Document> docs = dexter.generateXSLT(fn,impl);
-				Iterator<String> k = docs.keySet().iterator();
-				while(k.hasNext())
-				{
-					String name = k.next();
-	 				if(!name.endsWith(".dispose.xsl"))
+				fn = args[argp];
+				try {
+					Document impl = builder.parse(new FileInputStream(fn));
+					Map<String, Document> docs = dexter.generateXSLT(fn,impl);
+					Iterator<String> k = docs.keySet().iterator();
+					while(k.hasNext())
 					{
-						putToDisk(name, docs.get(name));
+						String name = k.next();
+		 				if(!name.endsWith(".dispose.xsl"))
+						{
+							putToDisk(name, docs.get(name));
+						}
 					}
+				}
+				catch(Exception e) {
+					System.out.println("error while processing source file `" + fn + "'");
+					throw e;
 				}
 				++argp;
 			}
