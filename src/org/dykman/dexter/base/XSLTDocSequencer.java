@@ -39,9 +39,15 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	private String method = "html";
 	private String mediaType = "text/html";
 
+	private String levelCounter = "DexterDepthLevel";
 	private List<String> dexterNamespaces;
 	private TransformerFactory factory;
 	
+	public static final String XSLTEXT = "xsl:text";
+	public static final String XSLVALUEOF = "xsl:value-of";
+	public static final String XSLTEMPLATE = "xsl:template";
+	public static final String XSLFOREACH = "xsl:for-each";
+	public static final String XSLVARIABLE = "xsl:variable";
 	private DocumentBuilder builder;
 	{
 		factory = TransformerFactory.newInstance();
@@ -106,9 +112,16 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		}
 		path = sb.toString();
 		iteratorStack.push(path);
-		Element element = currentDocument.createElement("xsl:for-each");
+		Element element = currentDocument.createElement(XSLFOREACH);
 		element.setAttribute("select", path);
 		currentNode.appendChild(element);
+		
+		Element var = currentDocument.createElement(XSLVARIABLE);
+		var.setAttribute("name", levelCounter + iteratorStack.size());
+		Element vo = currentDocument.createElement(XSLVALUEOF);
+		vo.setAttribute("select", "position()");
+		var.appendChild(vo);
+		element.appendChild(var);
 
 		pushNode(element);
 	}
@@ -218,7 +231,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			// if path.length > 1, then we alternating literals and paths
 			if(path.length == 1)
 			{
-				Element valueOf = currentDocument.createElement("xsl:value-of");
+				Element valueOf = currentDocument.createElement(XSLVALUEOF);
 				valueOf.setAttribute("select", translateXSLPath(path[0]));
 				when.appendChild(valueOf);
 				
@@ -231,7 +244,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 				}
 				else
 				{
-					Element valueOf = currentDocument.createElement("xsl:value-of");
+					Element valueOf = currentDocument.createElement(XSLVALUEOF);
 					valueOf.setAttribute("select", translateXSLPath(path[i]));
 					when.appendChild(valueOf);
 				}
@@ -243,7 +256,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		}
 		else
 		{
-			Element valueOf = currentDocument.createElement("xsl:value-of");
+			Element valueOf = currentDocument.createElement(XSLVALUEOF);
 			valueOf.setAttribute("select", translateXSLPath(path[0]));
 			return valueOf;
 		}
@@ -332,7 +345,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		Element element = currentDocument.createElement("xsl:include");
 		element.setAttribute("href", fn + ".xsl");
 
-		NodeList ch = currentDocument.getElementsByTagName("xsl:template");
+		NodeList ch = currentDocument.getElementsByTagName(XSLTEMPLATE);
 		Node output = ch.item(0);
 		currentStylesheet.insertBefore(element, output);
 
@@ -347,13 +360,13 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		}
 		pushDoc(document, name);
 
-		Element template = currentDocument.createElement("xsl:template");
+		Element template = currentDocument.createElement(XSLTEMPLATE);
 		template.setAttribute("match", "/");
 
 		apply = currentDocument.createElement("xsl:apply-templates");
 		apply.setAttribute("select", match);
 		template.appendChild(apply);
-		ch = currentDocument.getElementsByTagName("xsl:template");
+		ch = currentDocument.getElementsByTagName(XSLTEMPLATE);
 		output = ch.item(0);
 		currentStylesheet.insertBefore(template, output);
 	}
@@ -399,7 +412,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			break;
 			case Node.TEXT_NODE:
 			{
-				Element el = currentDocument.createElement("xsl:text");
+				Element el = currentDocument.createElement(XSLTEXT);
 				el.setTextContent(name);
 				currentNode.appendChild(el);
 			}
@@ -501,7 +514,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		style.appendChild(output);
 		tagTemplate(output);
 
-		Element template = document.createElement("xsl:template");
+		Element template = document.createElement(XSLTEMPLATE);
 		template.setAttribute("match", match);
 		style.appendChild(template);
 
@@ -528,7 +541,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		blockComment(element, TAG);
 	}
 
-	public Node getIdentityValueTemplate(String key, String value)
+	public Node getTextExpression(String key, String value)
 	{
 		Map<String, DocumentFragment> vt = valMap.get(key);
 		if (vt != null && vt.containsKey(value))
@@ -560,7 +573,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	protected DocumentFragment processIdentityValueTemplate(String key,
 	      String value)
 	{
-		DocumentFragment fragment = createIdentityValueTemplate(currentDocument,
+		DocumentFragment fragment = createIdentityValueExpression(currentDocument,
 		      value);
 		Map<String, List<Element>> im = replacementMap.get(key);
 		if (im != null)
@@ -597,32 +610,31 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 	public Element textContainer(Document document, String content)
 	{
-		Element element = document.createElement("xsl:text");
+		Element element = document.createElement(XSLTEXT);
 		CDATASection cd = document.createCDATASection(content);
 		element.appendChild(cd);
 		return element;
 	}
 
-	protected DocumentFragment createIdentityValueTemplate(
+	protected DocumentFragment createIdentityValueExpression(
 			Document document, 
 			String value) 
 	{
 		DocumentFragment fragment = document.createDocumentFragment();
 
-		Element element = currentDocument.createElement("xsl:text");
+		Element element = currentDocument.createElement(XSLTEXT);
 		element.appendChild(currentDocument.createTextNode(value));
 		fragment.appendChild(element);
-
-//		for (int i = 0; i < iteratorStack.size(); ++i)
-//		{
-//			element = currentDocument.createElement("xsl:text");
-//			element.appendChild(currentDocument.createTextNode("-"));
-//			fragment.appendChild(element);
-//
-//			element = currentDocument.createElement("xsl:value-of");
-//			element.setAttribute("select", "[" + iteratorStack.get(i) + "] position()");
-//			fragment.appendChild(element);
-//		}
+		
+		for (int i = 1; i <= iteratorStack.size(); ++i)
+		{
+			element = currentDocument.createElement(XSLTEXT);
+			element.appendChild(currentDocument.createTextNode("-"));
+			Element vo = currentDocument.createElement(XSLVALUEOF);
+			vo.setAttribute("select", "$" + levelCounter + i);
+			fragment.appendChild(element);
+			fragment.appendChild(vo);
+		}
 		return fragment;
 	}
 

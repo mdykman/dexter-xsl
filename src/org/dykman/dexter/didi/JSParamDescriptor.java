@@ -74,7 +74,7 @@ public class JSParamDescriptor extends PathDescriptor
 						String s = exp.substring(1);
 						String[] kk = s.split("[.]", 2);
 						at.appendChild(sequencer.textContainer("document.forms[\""));
-						at.appendChild(sequencer.getIdentityValueTemplate("name", kk[0]));
+						at.appendChild(sequencer.getTextExpression("name", kk[0]));
 						at.appendChild(sequencer.textContainer("\"]." + kk[1] + ".value"));
 					}
 					else	// assume its a path exp
