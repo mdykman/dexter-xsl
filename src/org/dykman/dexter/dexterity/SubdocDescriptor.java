@@ -23,7 +23,6 @@ public class SubdocDescriptor extends PathDescriptor
 	@Override
 	public void beforeNode()
 	{
-		// push an attribute querier into  
 		id = element.getAttribute("id");
 		if (id == null)
 		{
@@ -37,10 +36,7 @@ public class SubdocDescriptor extends PathDescriptor
 			altDoc = bits[1];
 		}
 		String path = mapPath(value);
-		String ic = getIteratorContext();
 		setPath(path);
-		setIteratorContext(path);
-		path = dequalify(ic, value);
 		sequencer.startSubdoc(altDoc,id, path,true);
 	}
 
