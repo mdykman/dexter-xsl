@@ -341,31 +341,35 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	      boolean keepSubDoc)
 	{
 		String fn = altDoc == null ? filename + '-' + name : altDoc;
+		String tn = fn.replaceAll("[^a-zA-Z0-9]","-");
 		match = this.translateXSLPath(match);
+
 		Element element = currentDocument.createElement("xsl:include");
 		element.setAttribute("href", fn + ".xsl");
-
+// put the include at the top of the current document
 		NodeList ch = currentDocument.getElementsByTagName(XSLTEMPLATE);
 		Node output = ch.item(0);
 		currentStylesheet.insertBefore(element, output);
 
-		Element apply = currentDocument.createElement("xsl:apply-templates");
-		apply.setAttribute("select", match);
-		currentNode.appendChild(apply);
+		Element call = currentDocument.createElement("xsl:call-template");
+		call.setAttribute("name", tn);
+		currentNode.appendChild(call);
 
-		Document document = createStub(getLastToken(match));
+		Document document = createStub(null,tn);
 		if (altDoc != null)
 		{
 			name = name + ".dispose";
 		}
 		pushDoc(document, name);
-
+		
+// create the main entry point template to handle cases where it is invoked independently
 		Element template = currentDocument.createElement(XSLTEMPLATE);
 		template.setAttribute("match", "/");
 
-		apply = currentDocument.createElement("xsl:apply-templates");
-		apply.setAttribute("select", match);
-		template.appendChild(apply);
+		call = currentDocument.createElement("xsl:call-template");
+		call.setAttribute("name", tn);
+		template.appendChild(call);
+// insert the top level before the names template		
 		ch = currentDocument.getElementsByTagName(XSLTEMPLATE);
 		output = ch.item(0);
 		currentStylesheet.insertBefore(template, output);
@@ -489,7 +493,10 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		}
 	}
 
-	protected Document createStub(String match)
+	protected Document createStub(String match) {
+		return createStub(match, null);
+	}
+	protected Document createStub(String match,String name)
 	{
 		DOMImplementation impl = builder.getDOMImplementation();
 		DocumentType dt = impl.createDocumentType("stylesheet", null, 
@@ -515,8 +522,14 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		tagTemplate(output);
 
 		Element template = document.createElement(XSLTEMPLATE);
-		template.setAttribute("match", match);
-		style.appendChild(template);
+		if(match != null) {
+			template.setAttribute("match", match);
+			style.appendChild(template);
+		}
+		if(name != null) {
+			template.setAttribute("name", name);
+			style.appendChild(template);
+		}
 
 		pushNode(template);
 		return document;

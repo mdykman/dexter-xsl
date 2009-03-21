@@ -40,7 +40,7 @@ public class Dexter
 	static Set<File> outputFile = new HashSet<File>();
 
 	protected Document inputDocument;
-	public static String DEXTER_VERSION = "dexter-0.2.3-beta"; 
+	public static String DEXTER_VERSION = "dexter-0.2.4-beta"; 
 	public static String DEXTER_COPYRIGHT = "copyright (c) 2007-2009 Michael Dykman"; 
 	private String propertyPath = null;
 
@@ -305,9 +305,6 @@ public class Dexter
 	
 	public Map<String, Document> generateXSLT(String filename,Document document) throws Exception
 	{
-//		Document clone = (Document)document.cloneNode(true);
-//		document = clone;
-		
 		Element docel = document.getDocumentElement();
 		Iterator<String> it = modulesMap.keySet().iterator();
 		while(it.hasNext())
