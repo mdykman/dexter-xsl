@@ -46,7 +46,7 @@ public class ConditionalAttributeDescriptor extends AbstractAttributeDescriptor
 					buffer.append('!');
 					t = t.substring(1);
 				}
-				
+				t = mapPath(t);
 				buffer.append(dequalify(path, t));
 				char c = nextOf(test,p, new char[] { ' ' , '|' });
 				if(c != 0)
@@ -55,6 +55,7 @@ public class ConditionalAttributeDescriptor extends AbstractAttributeDescriptor
 					p = value.indexOf(c, p)+1;
 				}
 			}
+			
 			this.sequencer.startTest(buffer.toString());			
 			
 			

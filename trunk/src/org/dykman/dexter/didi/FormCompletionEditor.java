@@ -61,7 +61,7 @@ public class FormCompletionEditor extends AbstractDocumentEditor
 				newAtt = document.createAttribute(
 					dexterity + ":cattr");
 				String exp = "checked:" + value + "/" + fieldname
-					+ "@!eq:" + nv + " @!str:true";
+					+ "!eq:" + nv + " .!str:true";
 				newAtt.setNodeValue(exp);
 				attr.setNamedItem(newAtt);
 				
