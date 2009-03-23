@@ -164,11 +164,14 @@ public abstract class BaseTransformSequencer implements TransformSequencer
 	
 	public String translateXSLPath(String p)
 	{
+		// scanning for macros?
 		StringBuffer buffer = new StringBuffer();
-		int n = p.indexOf('@');
+		
+		
 		String name = null;
-		if(n != -1)
-		{
+		int n = p.indexOf("!");
+		if(n != -1) {
+			// name is the macro
 			name=p.substring(n+1);
 			p = p.substring(0,n);
 		}
@@ -178,22 +181,16 @@ public abstract class BaseTransformSequencer implements TransformSequencer
 		{
 			PathFunction tf = null;
 			String arg = null;
-			if(name.startsWith("!"))
+			String[] bits = name.split(":",2);
+			tf = createPathFunction(bits[0]);
+			if(bits.length > 1)
 			{
-				String[] bits = name.substring(1).split(":",2);
-				tf = createPathFunction(bits[0]);
-				if(bits.length > 1)
-				{
-					arg = bits[1];
-				}
+				arg = bits[1];
 			}
-			else
-			{
-				tf = createPathFunction("cmp-name");
-				arg = name;
-			}
+
 			if(xslPath.length() == 0)
 			{
+System.out.println("THIS SHOULD NOT HAPPEN ANYMORE");				
 				xslPath = ".";
 			}
 			buffer.append(tf.apply(xslPath, arg));
@@ -210,39 +207,31 @@ public abstract class BaseTransformSequencer implements TransformSequencer
 	{
 		StringBuffer buffer = new StringBuffer();
 		String[] el = p.split("/");
-		for (int i = 0; i < el.length; ++i)
-		{
+		for (int i = 0; i < el.length; ++i) {
 			String t = el[i];
-			if (t.equals("**"))
-			{
+			if (t.equals("**")) {
 				buffer.append("./");
 			}
-			else
-			{
-				if (t.indexOf(":") != -1)
+			else {
+				if (t.indexOf("@") != -1)
 				{
-					String[] bb = t.split(":", 2);
-					if (bb[0].length() == 0)
-					{
-						if (i > 0)
-						{
+					String[] bb = t.split("@", 2);
+					if (bb[0].length() == 0) {
+						if (i > 0) {
 							buffer.append("./");
 						}
 					}
-					else
-					{
+					else {
 						buffer.append(bb[0]).append("/");
 					}
 					buffer.append("@").append(bb[1]);
 				}
-				else
-				{
+				else {
 					buffer.append(t);
 				}
 			}
 
-			if (i + 1 < el.length)
-			{
+			if (i + 1 < el.length) {
 				buffer.append("/");
 			}
 		}

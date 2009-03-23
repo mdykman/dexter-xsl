@@ -1,5 +1,6 @@
 package org.dykman.dexter;
 
+import java.util.Map;
 import java.util.Properties;
 
 import org.dykman.dexter.base.PropertyResolver;
@@ -41,6 +42,25 @@ public class DexterPropertyResolver implements PropertyResolver
 		}
 	}
 	
+
+	public Properties getPropertiesMatching(String key)
+	{
+		String kk = module + "." + key;
+		int len = kk.length() + 1;
+		String k;
+		Properties props = new Properties();
+		for(Map.Entry<Object,Object> entry : properties.entrySet()) {
+			k = entry.getKey().toString();
+			if(k.startsWith(kk))
+				props.put(k.substring(len), entry.getValue());
+		}
+		for(Map.Entry<Object,Object> entry : System.getProperties().entrySet()) {
+			k = entry.getKey().toString();
+			if(k.startsWith(kk))
+				props.put(k.substring(len), entry.getValue());
+		}
+		return props;
+	}
 
 	public String getProperty(String key)
 	{

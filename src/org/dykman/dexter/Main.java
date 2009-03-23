@@ -46,11 +46,13 @@ public class Main
 
 	private static boolean propComments = true;
 	private static String inputXSL = null; 
+	private static boolean displayMacros = false;
+	
 	public static void main(String[] args)
 	{
 		
 		int argp = 0;
-		LongOpt[] opts = new LongOpt[12];
+		LongOpt[] opts = new LongOpt[13];
 		opts[0] = new LongOpt("mime-type",LongOpt.REQUIRED_ARGUMENT,null,'t');
 		opts[1] = new LongOpt("method",LongOpt.REQUIRED_ARGUMENT,null,'m');
 		opts[2] = new LongOpt("properties",LongOpt.REQUIRED_ARGUMENT,null,'p');
@@ -63,13 +65,18 @@ public class Main
 		opts[9] = new LongOpt("resolve-entities",LongOpt.NO_ARGUMENT,null,'r');
 		opts[10] = new LongOpt("suppress-comments",LongOpt.NO_ARGUMENT,null,'c');
 		opts[11] = new LongOpt("transform",LongOpt.REQUIRED_ARGUMENT,null,'x');
+		opts[12] = new LongOpt("macros",LongOpt.NO_ARGUMENT,null,'M');
 		
-		Getopt go = new Getopt("dexter",args,"m::o::p::e::i::t::d::x::hvrc",opts,false);
+		Getopt go = new Getopt("dexter",args,"m::o::p::e::i::t::d::x::hvrcM",opts,false);
 		int s;
 		while((s = go.getopt()) != -1)
 		{
 			switch(s)
 			{
+				case 'M':
+					displayMacros = true;
+				break;
+
 				case 'x':
 					inputXSL = go.getOptarg();
 				break;
@@ -140,7 +147,7 @@ public class Main
 		argp = go.getOptind();
 		try
 		{
-			if (args.length <= argp)
+			if ((!displayMacros) && args.length <= argp)
 			{
 				showHelpFile();
 				System.exit(1);
@@ -184,6 +191,22 @@ public class Main
 				p.load(in);
 				in.close();
 				dexter = new Dexter(encoding,p);
+			}
+			
+			if(displayMacros) {
+				dexter.baseResolver.getPropertiesMatching("macro");
+				System.out.println(" defined macros:");
+				for(Map.Entry<Object, Object> entry : 
+					dexter.baseResolver.getPropertiesMatching("macro").entrySet()) {
+					String k = entry.getKey().toString();
+					System.out.print("   " + k);
+					for(int i = 20 -k.length(); i >= 0; --i) {
+						System.out.print(" ");
+					}
+					System.out.println("\t" + entry.getValue().toString());
+				}
+				
+				System.exit(0);
 			}
 			dexter.setPropigateComments(propComments);
 			

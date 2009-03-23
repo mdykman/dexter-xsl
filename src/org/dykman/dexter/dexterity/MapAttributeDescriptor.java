@@ -33,6 +33,8 @@ public class MapAttributeDescriptor extends AbstractAttributeDescriptor
 				attr.removeNamedItem(nv[0]);
 			}
 			String nref = nv[1];
+			
+			
 			if(nref.startsWith("!"))
 			{
 				nref = nref.substring(1);
