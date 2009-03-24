@@ -33,13 +33,14 @@ import org.w3c.dom.Document;
 
 public class Main
 {
+	private static Properties dexterProps = new Properties();
 	private static String encoding = "UTF-8";
 	private static String mediaType = "text/html";
 	private static String method="html";
 	private static String indent="no";
 	private static String outputDirectory = null;
 	private static File userProperties = null;
-
+	private static boolean checkValidity = true;
 	private static Set<File> outputFile = new HashSet<File>();
 	private static TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	private static boolean preserveEntities = true;
@@ -52,7 +53,7 @@ public class Main
 	{
 		
 		int argp = 0;
-		LongOpt[] opts = new LongOpt[13];
+		LongOpt[] opts = new LongOpt[14];
 		opts[0] = new LongOpt("mime-type",LongOpt.REQUIRED_ARGUMENT,null,'t');
 		opts[1] = new LongOpt("method",LongOpt.REQUIRED_ARGUMENT,null,'m');
 		opts[2] = new LongOpt("properties",LongOpt.REQUIRED_ARGUMENT,null,'p');
@@ -63,11 +64,12 @@ public class Main
 		opts[7] = new LongOpt("define",LongOpt.REQUIRED_ARGUMENT,null,'d');
 		opts[8] = new LongOpt("version",LongOpt.NO_ARGUMENT,null,'v');
 		opts[9] = new LongOpt("resolve-entities",LongOpt.NO_ARGUMENT,null,'r');
-		opts[10] = new LongOpt("suppress-comments",LongOpt.NO_ARGUMENT,null,'c');
+		opts[10] = new LongOpt("suppress-comments",LongOpt.NO_ARGUMENT,null,'C');
 		opts[11] = new LongOpt("transform",LongOpt.REQUIRED_ARGUMENT,null,'x');
 		opts[12] = new LongOpt("macros",LongOpt.NO_ARGUMENT,null,'M');
+		opts[13] = new LongOpt("skip-validation",LongOpt.NO_ARGUMENT,null,'V');
 		
-		Getopt go = new Getopt("dexter",args,"m::o::p::e::i::t::d::x::hvrcM",opts,false);
+		Getopt go = new Getopt("dexter",args,"m::o::p::e::i::t::d::x::hvrCMV",opts,false);
 		int s;
 		while((s = go.getopt()) != -1)
 		{
@@ -76,11 +78,14 @@ public class Main
 				case 'M':
 					displayMacros = true;
 				break;
+				case 'V':
+					checkValidity = false;
+				break;
 
 				case 'x':
 					inputXSL = go.getOptarg();
 				break;
-				case 'c':
+				case 'C':
 					propComments = false;
 				break;
 				case 'r':
@@ -105,17 +110,22 @@ public class Main
 					indent = go.getOptarg();
 				break;
 				case 'p' :
-					userProperties = new File(go.getOptarg());
-					if(!userProperties.canRead())
-					{
-						throw new DexterException("unable to read properties file: " + userProperties.getName());
+					File userProperties = null;
+					try {
+						userProperties = new File(go.getOptarg());
+						if(!userProperties.canRead()) {
+							throw new DexterHaltException("unable to read properties file: " + userProperties.getName());
+						}
+						dexterProps.load(new FileInputStream(userProperties));
+					} catch(IOException e) {
+						throw new DexterHaltException("error reading properties file: " + userProperties.getName(),e);
 					}
 				break;
 				case 'd' :
 					String ps = go.getOptarg();
 					if(ps.indexOf('=') != -1)
 					{
-						String b[] = ps.split("[=]");
+						String b[] = ps.split("[=]",2);
 						String v = b.length > 1 ? b[1] : "";
 						System.setProperty(b[0], v);
 					}
@@ -158,19 +168,19 @@ public class Main
 			dbf.setExpandEntityReferences(false);
 			dbf.setCoalescing(true);
 			dbf.setIgnoringComments(false);
-//			dbf.
 			DocumentBuilder builder = dbf.newDocumentBuilder();
 			builder.setEntityResolver(new DexterEntityResolver(encoding));
 
+			TransformerFactory transFact = TransformerFactory.newInstance( );
 			if(inputXSL != null) {
-				TransformerFactory transFact = TransformerFactory.newInstance( );
 				Templates templates = transFact.newTemplates(
 					new StreamSource(new File((inputXSL))));
 				 
 				while(argp < args.length) {
 					Transformer transformer = templates.newTransformer();
-					transformer.transform(new StreamSource(
-							new FileInputStream(args[argp])), 
+					Source source = new StreamSource(new File(args[argp]));
+					source.setSystemId(args[argp]);
+					transformer.transform(source, 
 							new StreamResult(System.out));
 					++argp;
 				}
@@ -180,12 +190,10 @@ public class Main
 
 			Dexter dexter;
 			
-			if(userProperties == null)
-			{
+			if(userProperties == null) {
 				dexter = new Dexter(encoding);
 			}
-			else
-			{
+			else {
 				Properties p = new Properties();
 				InputStream in = new FileInputStream(userProperties);
 				p.load(in);
@@ -205,7 +213,7 @@ public class Main
 					}
 					System.out.println("\t" + entry.getValue().toString());
 				}
-				
+				System.out.println();
 				System.exit(0);
 			}
 			dexter.setPropigateComments(propComments);
@@ -215,12 +223,13 @@ public class Main
 			dexter.setIndent(indent.equals("yes"));
 
 			String fn;
+			Map<String, Document> docs = null;
 			while(argp < args.length)
 			{
 				fn = args[argp];
 				try {
 					Document impl = builder.parse(new FileInputStream(fn));
-					Map<String, Document> docs = dexter.generateXSLT(fn,impl);
+					docs = dexter.generateXSLT(fn,impl);
 					Iterator<String> k = docs.keySet().iterator();
 					while(k.hasNext())
 					{
@@ -236,6 +245,26 @@ public class Main
 					throw e;
 				}
 				++argp;
+			}
+			
+			Iterator<String> k = docs.keySet().iterator();
+			if(checkValidity && docs != null) while(k.hasNext())
+			{
+				String name = k.next();
+				if(!name.endsWith(".dispose.xsl")) {
+					try {
+						File f;
+						if(outputDirectory == null) f = new File(name);
+						else f = new File(outputDirectory,name);
+						Source source = new StreamSource(f);
+						source.setSystemId(name);
+						Transformer transformer= transFact.newTransformer(source);
+						transformer.hashCode();
+					} catch(Exception e) {
+						System.out.println("error while validating result file " + name);
+						throw e;
+					}
+				}
 			}
 		}
 		catch (DexterHaltException e)

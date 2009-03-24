@@ -8,13 +8,14 @@ Valid options are listed below.  Long and short options behave identically.
  -m, --method=xml|hmtl|text * specify the method in the XSLT output element.   Default: html
  -e, --encoding=<string>    * specify the encoding used throughout the production  Default: UTF-8
  -t, --mime-type=<string>   * specify the media-type in the XSLT output element. Default: text/html
- -r, --resolve-entities     * resolve entity references in source. Default: preserve entities
+ -r, --resolve-entities     * resolve entity references in source. Default: preserve references
  -i, --indent=yes|no        * specify the indent attribute in the output element. Default: no
  -o, --directory=<path>     * specify an output directory. Default: use source directory
- -c, --suppress-comments    * filter all user comments out of the stylesheet  
  -x, --transform=<xsl-file> <xml-data> * use file xsl-file to transform file xml-data
- -p, --properties=<filename> * override the built-in properties
- -d, --define=<key>=<value> * explicitly override a single property; may be specified multiple times
- -v, --version              * print version and copyright information.
+ -p, --properties=<filename> * load additional properties; may be specified multiple times
+ -d, --define=<key>=<value> * define a single property; may be specified multiple times
  -M, --macros               * list all currently defined macros
+ -C, --suppress-comments    * filter all user comments out of the stylesheet  
+ -v, --version              * print version and copyright information.
  -h, --help                 * print this screen and exit
+

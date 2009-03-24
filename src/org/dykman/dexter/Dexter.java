@@ -90,7 +90,11 @@ public class Dexter
 	public Dexter(String encoding, Properties properties)
 	{
 		this.encoding = encoding;
-		initializeProperties(properties == null ? loadBuiltInProperties() : properties);
+		Properties p = loadBuiltInProperties();
+		if(properties != null) {
+			p.putAll(properties);
+		}
+		initializeProperties(p);
 		init();
 	}
 
