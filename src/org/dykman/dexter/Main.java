@@ -110,9 +110,8 @@ public class Main
 					indent = go.getOptarg();
 				break;
 				case 'p' :
-					File userProperties = null;
 					try {
-						userProperties = new File(go.getOptarg());
+						File userProperties = userProperties = new File(go.getOptarg());
 						if(!userProperties.canRead()) {
 							throw new DexterHaltException("unable to read properties file: " + userProperties.getName());
 						}
@@ -188,18 +187,7 @@ public class Main
 				System.exit(0);
 			}
 
-			Dexter dexter;
-			
-			if(userProperties == null) {
-				dexter = new Dexter(encoding);
-			}
-			else {
-				Properties p = new Properties();
-				InputStream in = new FileInputStream(userProperties);
-				p.load(in);
-				in.close();
-				dexter = new Dexter(encoding,p);
-			}
+			Dexter dexter = new Dexter(encoding,dexterProps);
 			
 			if(displayMacros) {
 				dexter.baseResolver.getPropertiesMatching("macro");
