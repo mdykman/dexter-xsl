@@ -53,7 +53,7 @@ public class Main
 	{
 		
 		int argp = 0;
-		LongOpt[] opts = new LongOpt[14];
+		LongOpt[] opts = new LongOpt[15];
 		opts[0] = new LongOpt("mime-type",LongOpt.REQUIRED_ARGUMENT,null,'t');
 		opts[1] = new LongOpt("method",LongOpt.REQUIRED_ARGUMENT,null,'m');
 		opts[2] = new LongOpt("properties",LongOpt.REQUIRED_ARGUMENT,null,'p');
@@ -68,16 +68,17 @@ public class Main
 		opts[11] = new LongOpt("transform",LongOpt.REQUIRED_ARGUMENT,null,'x');
 		opts[12] = new LongOpt("macros",LongOpt.NO_ARGUMENT,null,'M');
 		opts[13] = new LongOpt("skip-validation",LongOpt.NO_ARGUMENT,null,'V');
+		opts[14] = new LongOpt("no-media-type",LongOpt.NO_ARGUMENT,null,'T');
 		
-		Getopt go = new Getopt("dexter",args,"m::o::p::e::i::t::d::x::hvrCMV",opts,false);
+		Getopt go = new Getopt("dexter",args,"m::o::p::e::i::t::d::x::hvrCMVT",opts,false);
 		int s;
 		while((s = go.getopt()) != -1)
 		{
 			switch(s)
 			{
-				case 'M':
-					displayMacros = true;
-				break;
+			case 'M':
+				displayMacros = true;
+			break;
 				case 'V':
 					checkValidity = false;
 				break;
@@ -103,6 +104,9 @@ public class Main
 				case 't' :
 					mediaType = go.getOptarg();
 				break;
+				case 'T' :
+					mediaType = null;
+				break;
 				case 'm' :
 					method = go.getOptarg();
 					break;
@@ -122,14 +126,12 @@ public class Main
 				break;
 				case 'd' :
 					String ps = go.getOptarg();
-					if(ps.indexOf('=') != -1)
-					{
+					if(ps.indexOf('=') != -1) {
 						String b[] = ps.split("[=]",2);
 						String v = b.length > 1 ? b[1] : "";
 						System.setProperty(b[0], v);
 					}
-					else
-					{
+					else {
 						throw new DexterException("invalid property definition: " + ps);
 					}
 				break;
@@ -206,7 +208,7 @@ public class Main
 			}
 			dexter.setPropigateComments(propComments);
 			
-			dexter.setMediaType(mediaType);
+			if(mediaType != null) dexter.setMediaType(mediaType);
 			dexter.setMethod(method);
 			dexter.setIndent(indent.equals("yes"));
 
@@ -250,6 +252,7 @@ public class Main
 						transformer.hashCode();
 					} catch(Exception e) {
 						System.out.println("error while validating result file " + name);
+						e.printStackTrace(System.out);
 						throw e;
 					}
 				}

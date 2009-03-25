@@ -45,10 +45,12 @@ public class CaseDescriptor extends BlockDescriptor
 						buffer.append('!');
 						t = t.substring(1);
 					}
-					buffer.append(PathDescriptor.dequalify(path, t));
+					
+					t = mapPath(t);
+					dequalify(path, t);
+					buffer.append(t);
 					char c = PathDescriptor.nextOf(values[j],p, new char[] { ' ' , '|' });
-					if(c != 0)
-					{
+					if(c != 0) {
 						buffer.append(c);
 						p = values[j].indexOf(c, p)+1;
 					}

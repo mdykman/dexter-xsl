@@ -133,10 +133,10 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		--pathc;
 	}
 
-	public void mapNode(String []path, String def,boolean disableEscaping)
+	public void mapNode(String []path, String def,boolean disableEscaping, boolean force)
 	{
 		
-		currentNode.appendChild(valueTemplate(path, def));
+		currentNode.appendChild(valueTemplate(path, def, force));
 	}
 
 	/**
@@ -181,19 +181,19 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		currentNode.appendChild(map);
 	}
 	
-	public void mapAttribute(String name, String[] path, String def)
+	public void mapAttribute(String name, String[] path, String def, boolean force)
 	{
 
 		Element element = currentDocument.createElement("xsl:attribute");
 		name = translateName(name);
 		element.setAttribute("name", name);
 
-		element.appendChild(valueTemplate(path, def));
+		element.appendChild(valueTemplate(path, def,force));
 
 		currentNode.appendChild(element);
 	}
 
-	public Element valueTemplate(String[] path, String def)
+	protected Element valueTemplate(String[] path, String def, boolean force)
 	{
 
 
@@ -204,7 +204,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			if (path.length == 1)
 			{
 				attrTest.append(translateXSLPath(path[0]));
-				attrTest.append("/text()");
+//				attrTest.append("/text()");
 			}
 			else for (int i = 0; i < path.length; ++i)
 			{
@@ -219,8 +219,12 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 					{
 						first = false;
 					}
-					attrTest.append(p);
-					attrTest.append("/text()");
+					if(force) {
+						p = "(" + "length(string(" + p + ")) > 0)";
+					} else {
+						attrTest.append(p);
+					}
+//					attrTest.append("/text()");
 				}
 			}
 
@@ -515,7 +519,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		Element output = document.createElement("xsl:output");
 		output.setAttribute("encoding", encoding);
 		output.setAttribute("indent", indent);
-		output.setAttribute("media-type", mediaType);
+		if(mediaType != null) output.setAttribute("media-type", mediaType);
 		output.setAttribute("method", method);
 
 		style.appendChild(output);

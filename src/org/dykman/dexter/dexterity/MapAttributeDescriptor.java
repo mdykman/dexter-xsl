@@ -34,17 +34,23 @@ public class MapAttributeDescriptor extends AbstractAttributeDescriptor
 			}
 			String nref = nv[1];
 			
-			
+			boolean force = false;
 			if(nref.startsWith("!"))
 			{
 				nref = nref.substring(1);
+				if(nref.startsWith("!"))
+				{
+					force = true;
+					nref = nref.substring(1);
+					
+				}
 			}
 			else
 			{
 				value = null;
 			}
 
-			sequencer.mapAttribute(nv[0], attributeTemplate(nref),  value);
+			sequencer.mapAttribute(nv[0], attributeTemplate(nref),  value,force);
 		}
 		
 		super.attributes();

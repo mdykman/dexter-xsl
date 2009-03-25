@@ -25,8 +25,8 @@ public interface TransformSequencer
 	public void startNode(String name, int type);
 	public void endNode();
 
-	public void mapAttribute(String name,String[] path, String def);
-	public void mapNode(String[] path, String def,boolean disableEscaping);
+	public void mapAttribute(String name,String[] path, String def,boolean force);
+	public void mapNode(String[] path, String def,boolean disableEscaping,boolean force);
 	/**
      * @deprecated Use {@link #copyNodes(String,String,boolean)} instead
      */

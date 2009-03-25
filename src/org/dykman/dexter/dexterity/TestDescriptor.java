@@ -35,8 +35,9 @@ public class TestDescriptor extends PathDescriptor
 				buffer.append('!');
 				t = t.substring(1);
 			}
-			
-			buffer.append(dequalify(path, t));
+			t = mapPath(t);
+			t = dequalify(path, t);
+			buffer.append(t);
 			char c = nextOf(value,p, new char[] { ' ' , '|' });
 			if(c != 0)
 			{
