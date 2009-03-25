@@ -22,9 +22,13 @@ public class MapNodeDescriptor extends PathDescriptor
 	{
 		boolean useDefault = false;
 		boolean disableEscape = false;
-		if(value.startsWith("!"))
-		{
+		boolean force = false;
+		if(value.startsWith("!")) {
 			value = value.substring(1);
+			if(value.startsWith("!")) {
+				force = true;
+				value = value.substring(1);
+			}
 			useDefault = true;
 		}
 
@@ -34,8 +38,7 @@ public class MapNodeDescriptor extends PathDescriptor
 			disableEscape = true;
 		}
 		
-
 		sequencer.mapNode(attributeTemplate(value), 
-				useDefault ? ((Element)element).getTextContent() : null,disableEscape);
+				useDefault ? ((Element)element).getTextContent() : null,disableEscape, force);
 	}
 }

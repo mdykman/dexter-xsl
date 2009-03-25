@@ -41,11 +41,6 @@ public class ConditionalAttributeDescriptor extends AbstractAttributeDescriptor
 			for (int j = 0; j < subx.length; ++j)
 			{
 				String t = subx[j];
-				if(t.startsWith("!"))
-				{
-					buffer.append('!');
-					t = t.substring(1);
-				}
 				t = mapPath(t);
 				buffer.append(dequalify(path, t));
 				char c = nextOf(test,p, new char[] { ' ' , '|' });
@@ -62,7 +57,11 @@ public class ConditionalAttributeDescriptor extends AbstractAttributeDescriptor
 			if(exp.startsWith("!")) exp = exp.substring(1);
 			else  value = null; 
 
-			sequencer.mapAttribute(name, attributeTemplate(exp),  value);
+			exp = mapPath(exp);
+			buffer.append(dequalify(path, exp));
+
+			
+			sequencer.mapAttribute(name, attributeTemplate(exp),  value,false);
 			this.sequencer.endTest();			
 		}
 		
