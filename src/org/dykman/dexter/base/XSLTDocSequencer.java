@@ -16,11 +16,11 @@ import java.util.TreeMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.TransformerFactory;
 
 import org.dykman.dexter.Dexter;
 import org.dykman.dexter.DexterException;
 import org.dykman.dexter.DexterHaltException;
+import org.dykman.dexter.descriptor.CrossPathResolver;
 import org.dykman.dexter.dexterity.DexteritySyntaxException;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
@@ -41,24 +41,26 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 	private String levelCounter = "DexterDepthLevel";
 	private List<String> dexterNamespaces;
-	private TransformerFactory factory;
 	
 	public static final String XSLTEXT = "xsl:text";
 	public static final String XSLVALUEOF = "xsl:value-of";
 	public static final String XSLTEMPLATE = "xsl:template";
 	public static final String XSLFOREACH = "xsl:for-each";
 	public static final String XSLVARIABLE = "xsl:variable";
+	public static final String XSLELEMENT = "xsl:element";
+	
+	
 	private DocumentBuilder builder;
+
+	
 	{
-		factory = TransformerFactory.newInstance();
-		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		dbf.setValidating(false);
 		
 		dbf.setExpandEntityReferences(false);
 		dbf.setCoalescing(true);
 		dbf.setIgnoringComments(false);
-		builder = dbf.newDocumentBuilder();
+//		builder = dbf.newDocumentBuilder();
 	}
 
 	private Map<String, Document> finished = new HashMap<String, Document>();
@@ -86,9 +88,11 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	private String filename;
 	private String encoding;
 
-	public XSLTDocSequencer(Dexter dexter,String name, String encoding) throws Exception
+	public XSLTDocSequencer(Dexter dexter,
+			DocumentBuilder builder, String name, String encoding) throws Exception
 	{
 		super(dexter);
+		this.builder = builder;
 		this.encoding = encoding;
 		this.filename = name;
 	}
@@ -100,13 +104,13 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 	Stack<String> iteratorStack = new Stack<String>();
 
-	public void startIterator(String path)
+	public void startIterator(CrossPathResolver resolver,String path)
 	{
 		StringBuffer sb = new StringBuffer();
 		String[] pp = path.split("[|]");
 		for(int i = 0; i < pp.length; ++i)
 		{
-			sb.append(translateXSLPath(pp[i]));
+		sb.append(translateXSLPath(resolver,pp[i]));
 			
 			if(i+1 < pp.length) sb.append("|");
 		}
@@ -133,23 +137,29 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		--pathc;
 	}
 
-	public void mapNode(String []path, String def,boolean disableEscaping, boolean force)
+	public void mapNode(
+			CrossPathResolver resolver, 
+			String []path, 
+			String def,
+			boolean disableEscaping, 
+			boolean force)
 	{
 		
-		currentNode.appendChild(valueTemplate(path, def, force));
+		currentNode.appendChild(valueTemplate(resolver,path, def, force));
 	}
 
 	/**
      * @deprecated Use {@link #copyNodes(String,String,boolean)} instead
      */
-    public void copyNodes(String path, String def)
+    public void copyNodes(CrossPathResolver resolver,String path, String def)
     {
-        copyNodes(path, def, true);
+        copyNodes(resolver,path, def, true);
     }
 
-	public void copyNodes(String path, String def, boolean children)
+	public void copyNodes(CrossPathResolver resolver,String path, String def, boolean children)
 	{
-		path = translateXSLPath(path);
+//		System.out.println(" coming from " + getClass().getName());
+		path = translateXSLPath(resolver,path);
 
 		Element map;
 		Element valueOf = currentDocument.createElement("xsl:copy-of");
@@ -181,36 +191,35 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		currentNode.appendChild(map);
 	}
 	
-	public void mapAttribute(String name, String[] path, String def, boolean force)
+	public void mapAttribute(CrossPathResolver resolver,String name, String[] path, String def, boolean force)
 	{
 
 		Element element = currentDocument.createElement("xsl:attribute");
 		name = translateName(name);
 		element.setAttribute("name", name);
 
-		element.appendChild(valueTemplate(path, def,force));
+		element.appendChild(valueTemplate(resolver,path, def,force));
 
 		currentNode.appendChild(element);
 	}
 
-	protected Element valueTemplate(String[] path, String def, boolean force)
+	protected Element valueTemplate(
+		CrossPathResolver resolver, String[] path, String def, boolean force)
 	{
-
-
 		if (def != null || path.length > 1)
 		{
 			StringBuffer attrTest = new StringBuffer();
 			boolean first = true;
 			if (path.length == 1)
 			{
-				attrTest.append(translateXSLPath(path[0]));
-//				attrTest.append("/text()");
+				attrTest.append(translateXSLPath(resolver,path[0]));
 			}
 			else for (int i = 0; i < path.length; ++i)
 			{
 				if (i % 2 != 0)
 				{
-					String p = path[i] = translateXSLPath(path[i]);
+					String p = translateXSLPath(
+							resolver,path[i]);
 					if (!first)
 					{
 						attrTest.append(" and ");
@@ -224,7 +233,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 					} else {
 						attrTest.append(p);
 					}
-//					attrTest.append("/text()");
 				}
 			}
 
@@ -236,7 +244,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			if(path.length == 1)
 			{
 				Element valueOf = currentDocument.createElement(XSLVALUEOF);
-				valueOf.setAttribute("select", translateXSLPath(path[0]));
+	//			System.out.println(" coming from valueTemplate 3");
+				valueOf.setAttribute("select", translateXSLPath(resolver,path[0]));
 				when.appendChild(valueOf);
 				
 			} 
@@ -249,7 +258,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 				else
 				{
 					Element valueOf = currentDocument.createElement(XSLVALUEOF);
-					valueOf.setAttribute("select", translateXSLPath(path[i]));
+					valueOf.setAttribute("select", translateXSLPath(resolver,path[i]));
 					when.appendChild(valueOf);
 				}
 			}
@@ -261,13 +270,11 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		else
 		{
 			Element valueOf = currentDocument.createElement(XSLVALUEOF);
-			valueOf.setAttribute("select", translateXSLPath(path[0]));
+	//		System.out.println(" coming from valueTemplate 5");
+			valueOf.setAttribute("select", translateXSLPath(resolver,path[0]));
 			return valueOf;
 		}
 	}
-
-	
-	
 
 	public void setAttribute(String key, String value)
 	{
@@ -295,10 +302,10 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		currentNode.appendChild(element);
 	}
 
-	public void startTest(String tests)
+	public void startTest(CrossPathResolver resolver, String tests)
 	{
 		Element element = currentDocument.createElement("xsl:if");
-		element.setAttribute("test", generateXSLTest(tests));
+		element.setAttribute("test", generateXSLTest(resolver,tests));
 		currentNode.appendChild(element);
 		pushNode(element);
 	}
@@ -320,13 +327,13 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		popNode();
 	}
 
-	public void startCase(String tests)
+	public void startCase(CrossPathResolver resolver,String tests)
 	{
 		Element element = null;
 		if (tests.length() > 0)
 		{
 			element = currentDocument.createElement("xsl:when");
-			element.setAttribute("test", this.generateXSLTest(tests));
+			element.setAttribute("test", generateXSLTest(resolver,tests));
 		}
 		else
 		{
@@ -341,39 +348,29 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		popNode();
 	}
 
-	public void startSubdoc(String altDoc, String name, String match,
+	public void startSubdoc(CrossPathResolver resolver,String altDoc, String name, String match,
 	      boolean keepSubDoc)
 	{
 		String fn = altDoc == null ? filename + '-' + name : altDoc;
 		String tn = fn.replaceAll("[^a-zA-Z0-9]","-");
-		match = this.translateXSLPath(match);
 
 		Element element = currentDocument.createElement("xsl:include");
 		element.setAttribute("href", fn + ".xsl");
-// put the include at the top of the current document
+
 		NodeList ch = currentDocument.getElementsByTagName(XSLTEMPLATE);
 		Node output = ch.item(0);
 		currentStylesheet.insertBefore(element, output);
+		currentNode.appendChild(createExternalTemplateCall(resolver,match,tn));
 
-		Element call = currentDocument.createElement("xsl:call-template");
-		call.setAttribute("name", tn);
-		currentNode.appendChild(call);
-
-		Document document = createStub(null,tn);
-		if (altDoc != null)
-		{
-			name = name + ".dispose";
-		}
+		Document document = createStub(resolver,match,tn);
+		if (altDoc != null)	name = name + ".dispose";
 		pushDoc(document, name);
 		
 // create the main entry point template to handle cases where it is invoked independently
 		Element template = currentDocument.createElement(XSLTEMPLATE);
 		template.setAttribute("match", "/");
+		template.appendChild(createExternalTemplateCall(resolver,match,tn));
 
-		call = currentDocument.createElement("xsl:call-template");
-		call.setAttribute("name", tn);
-		template.appendChild(call);
-// insert the top level before the names template		
 		ch = currentDocument.getElementsByTagName(XSLTEMPLATE);
 		output = ch.item(0);
 		currentStylesheet.insertBefore(template, output);
@@ -405,14 +402,14 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		{
 			case Node.DOCUMENT_NODE:
 			{
-				Document document = createStub("/");
+				Document document = createStub(null,"/");
 				pushDoc(document, filename);
 //				pushNode(document);
 			}
 			break;
 			case Node.ELEMENT_NODE:
 			{
-				Element el = currentDocument.createElement("xsl:element");
+				Element el = currentDocument.createElement(XSLELEMENT);
 				el.setAttribute("name", name);
 				currentNode.appendChild(el);
 				pushNode(el);
@@ -497,10 +494,32 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		}
 	}
 
-	protected Document createStub(String match) {
-		return createStub(match, null);
+	protected Document createStub(CrossPathResolver resolver,String match) {
+		return createStub(resolver,match, null);
 	}
-	protected Document createStub(String match,String name)
+
+	protected Element createExternalTemplateCall(CrossPathResolver resolver,String match,String name) {
+		
+		String trmatch = translateXSLPath(resolver, match);
+		Element choose = currentDocument.createElement("xsl:choose");
+		Element when = currentDocument.createElement("xsl:when");
+		when.setAttribute("test", trmatch);
+		Element apply = currentDocument.createElement("xsl:apply-templates");
+		apply.setAttribute("select", trmatch);
+		apply.setAttribute("mode", name);
+		when.appendChild(apply);
+		choose.appendChild(when);
+
+		Element otherwise = currentDocument.createElement("xsl:otherwise");
+		Element call = currentDocument.createElement("xsl:call-template");
+		call.setAttribute("name", name);
+		otherwise.appendChild(call);
+		choose.appendChild(otherwise);
+		
+		return choose;
+	}
+	
+	protected Document createStub(CrossPathResolver resolver,String match,String name)
 	{
 		DOMImplementation impl = builder.getDOMImplementation();
 		DocumentType dt = impl.createDocumentType("stylesheet", null, 
@@ -532,6 +551,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		}
 		if(name != null) {
 			template.setAttribute("name", name);
+			template.setAttribute("mode", name);
 			style.appendChild(template);
 		}
 
@@ -748,12 +768,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 				throw new DexteritySyntaxException(
 						"unrecognized attribute specified in dexter namespace: `" 
 						+ name + "'");
-		}
-
-		if(name.indexOf('!') != -1)
-		{
-			String[] b = name.split("[!]");
-			result = b[0] + ':' + b[1];
 		}
 		return result;
 	}

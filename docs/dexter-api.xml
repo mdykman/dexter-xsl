@@ -135,7 +135,7 @@ http://www.opensource.org/licences/artistic-license.php</copyright>
  dexter.a.each=org.dykman.dexter.dexterity.SelectDescriptor 
  dexter.a.attr=org.dykman.dexter.dexterity.MapAttributeDescriptor 
  dexter.a.value=org.dykman.dexter.dexterity.MapNodeDescriptor
- dexter.a.ccpy=org.dykman.dexter.dexterity.CopyNodeDescriptor 
+ dexter.a.ccpy=org.dykman.dexter.dexterity.CopyElementDescriptor 
  dexter.a.sub=org.dykman.dexter.dexterity.SubdocDescriptor 
  dexter.a.uniq=org.dykman.dexter.dexterity.UniqAttrDescriptor
  dexter.a.ghost=org.dykman.dexter.dexterity.GhostDescriptor 

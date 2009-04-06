@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.xml.parsers.DocumentBuilder;
+
 import org.dykman.dexter.base.DocumentEditor;
 import org.dykman.dexter.base.PropertyResolver;
 import org.dykman.dexter.base.XSLTDocSequencer;
@@ -40,6 +42,7 @@ public class Dexter
 	static Set<File> outputFile = new HashSet<File>();
 
 	protected Document inputDocument;
+	protected DocumentBuilder builder;
 	public static String DEXTER_VERSION = "dexter-0.2.4-beta";
 	public static String DEXTER_COPYRIGHT = "copyright (c) 2007-2009 Michael Dykman"; 
 	private String propertyPath = null;
@@ -66,20 +69,6 @@ public class Dexter
 	private Map<String, String> blocks = new HashMap<String, String>();
 
 	private boolean propigateComments = true;
-	/**
-	 * construct a Dexter object with default encoding and properties
-	 */
-	public Dexter()
-	{
-		this("UTF-8",null);
-	}
-	/**
-	 * construct a Dexter object with specified encoding and default properties
-	 */
-	public Dexter(String encoding)
-	{
-		this(encoding, null);
-	}
 
 	public String[] namespaces() {
 		return modulesMap.keySet().toArray(new String[modulesMap.size()]);
@@ -87,9 +76,10 @@ public class Dexter
 	/**
 	 * construct a Dexter object with specified encoding and properties
 	 */
-	public Dexter(String encoding, Properties properties)
+	public Dexter(String encoding, Properties properties, DocumentBuilder builder)
 	{
 		this.encoding = encoding;
+		this.builder = builder;
 		Properties p = loadBuiltInProperties();
 		if(properties != null) {
 			p.putAll(properties);
@@ -307,12 +297,12 @@ public class Dexter
 	}
 	
 	
-	public Map<String, Document> generateXSLT(String filename,Document document) throws Exception
+	public Map<String, Document> generateXSLT(String filename,Document document) 
+		throws Exception
 	{
 		Element docel = document.getDocumentElement();
 		Iterator<String> it = modulesMap.keySet().iterator();
-		while(it.hasNext())
-		{
+		while(it.hasNext()) {
 			String mod = it.next();
 			String ns = modulesMap.get(mod).getProperty("namespace");
 			String nsspec = "xmlns:" + ns;
@@ -322,7 +312,8 @@ public class Dexter
 		scanDocument(document);
 		Descriptor descriptor = marshall(document, this);
 
-		XSLTDocSequencer sequencer = new XSLTDocSequencer(this,filename, encoding);
+		XSLTDocSequencer sequencer = new XSLTDocSequencer(
+				this,builder,filename, encoding);
 		sequencer.setDexterNamespaces(dexterNamespaces);
 		sequencer.setIdNames(idNames);
 		sequencer.setIndent(indent);
@@ -646,10 +637,18 @@ public class Dexter
 	}
 
 	public static Descriptor marshallNode(Node node,Dexter dexter) {
+//		if(node.getNodeType() == Node.ELEMENT_NODE) {
+//			System.out.println("  marshall: element " + node.getNodeName());
+//			if("script".equalsIgnoreCase(node.getNodeName())) {
+//				Element el = (Element) node;
+//				System.out.print(el.getTextContent() + "  ");
+//			}
+//		}
 	   	Descriptor descriptor = new NodeDescriptor(node);
 	   	List<NodeSpecifier> list = (List<NodeSpecifier>) node
 	   	      .getUserData(DexterityConstants.DEXTER_SPECIFIERS);
 	   	if (list != null) {
+//			System.out.print(list.size() + " NodeSpecifiers");
 	   		Iterator<NodeSpecifier> it = list.iterator();
 	   		TransformDescriptor td;
 	   		while (it.hasNext()) {
@@ -657,6 +656,7 @@ public class Dexter
 	   			descriptor = td = specifier.enclose(descriptor);
 	   		}
 	   	}
+//System.out.println();
 	   	return descriptor;
 	}
 
