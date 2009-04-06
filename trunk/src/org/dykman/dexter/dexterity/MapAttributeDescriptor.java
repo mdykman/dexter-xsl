@@ -6,6 +6,7 @@
 
 package org.dykman.dexter.dexterity;
 
+import org.dykman.dexter.descriptor.CrossPathResolver;
 import org.dykman.dexter.descriptor.Descriptor;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -50,7 +51,9 @@ public class MapAttributeDescriptor extends AbstractAttributeDescriptor
 				value = null;
 			}
 
-			sequencer.mapAttribute(nv[0], attributeTemplate(nref),  value,force);
+			sequencer.mapAttribute(
+					new CrossPathResolver(this),
+					nv[0], valueTemplateParams(nref),  value,force);
 		}
 		
 		super.attributes();

@@ -6,6 +6,7 @@
 
 package org.dykman.dexter.dexterity;
 
+import org.dykman.dexter.descriptor.CrossPathResolver;
 import org.dykman.dexter.descriptor.Descriptor;
 import org.dykman.dexter.descriptor.PathDescriptor;
 
@@ -27,25 +28,23 @@ public class TestDescriptor extends PathDescriptor
 		if (path == null)
 			path = "/";
 		int p = 0;
-		for (int j = 0; j < tests.length; ++j)
-		{
+		for (int j = 0; j < tests.length; ++j) {
 			String t = tests[j];
-			if(t.startsWith("!"))
-			{
+			if(t.startsWith("!")) {
 				buffer.append('!');
 				t = t.substring(1);
 			}
-			t = mapPath(t);
-			t = dequalify(path, t);
+//			t = repath(t);
 			buffer.append(t);
 			char c = nextOf(value,p, new char[] { ' ' , '|' });
-			if(c != 0)
-			{
+			if(c != 0) {
 				buffer.append(c);
 				p = value.indexOf(c, p)+1;
 			}
 		}
-		this.sequencer.startTest(buffer.toString());
+		CrossPathResolver resolver = new CrossPathResolver(this);
+		this.sequencer.startTest(resolver,value);
+//		this.sequencer.startTest(buffer.toString());
 	}
 
 	@Override

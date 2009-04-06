@@ -7,6 +7,7 @@
 package org.dykman.dexter.dexterity;
 
 import org.dykman.dexter.descriptor.BlockDescriptor;
+import org.dykman.dexter.descriptor.CrossPathResolver;
 import org.dykman.dexter.descriptor.PathDescriptor;
 
 public class CaseDescriptor extends BlockDescriptor
@@ -23,9 +24,10 @@ public class CaseDescriptor extends BlockDescriptor
 	{
 		for (int i = 0; i < block.length; ++i)
 		{
+			CrossPathResolver resolver = new CrossPathResolver(this);
 			if(values[i] == null || values[i].length() == 0)
 			{
-				sequencer.startCase("");
+				sequencer.startCase(resolver,"");
 			}
 			else
 			{
@@ -45,18 +47,16 @@ public class CaseDescriptor extends BlockDescriptor
 						buffer.append('!');
 						t = t.substring(1);
 					}
-					
-					t = mapPath(t);
-					dequalify(path, t);
 					buffer.append(t);
+//					buffer.append(repath(t));
 					char c = PathDescriptor.nextOf(values[j],p, new char[] { ' ' , '|' });
 					if(c != 0) {
 						buffer.append(c);
 						p = values[j].indexOf(c, p)+1;
 					}
 				}
-				
-				sequencer.startCase(buffer.toString());
+//				CrossPathResolver resolver = new CrossPathResolver(this);
+				sequencer.startCase(resolver, buffer.toString());
 			}
 			sequencer.runDescriptor(descriptors[i]);
 			this.sequencer.endCase();

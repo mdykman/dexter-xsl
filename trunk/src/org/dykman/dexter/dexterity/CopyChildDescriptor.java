@@ -6,6 +6,7 @@
 
 package org.dykman.dexter.dexterity;
 
+import org.dykman.dexter.descriptor.CrossPathResolver;
 import org.dykman.dexter.descriptor.Descriptor;
 import org.dykman.dexter.descriptor.PathDescriptor;
 import org.w3c.dom.Element;
@@ -26,10 +27,9 @@ public class CopyChildDescriptor extends PathDescriptor
 			value = value.substring(1);
 			useDefault = true;
 		}
-		
-		String nref = mapPath(getPath(),value);
-//		String p = getIteratorContext();
-		sequencer.copyNodes(dequalify(getIteratorContext(), nref), 
-				useDefault ? ((Element)element).getTextContent() : null, true);
+
+		CrossPathResolver resolver = new CrossPathResolver(this);
+		sequencer.copyNodes(resolver,value, 
+			useDefault ? ((Element)element).getTextContent() : null, true);
 	}
 }

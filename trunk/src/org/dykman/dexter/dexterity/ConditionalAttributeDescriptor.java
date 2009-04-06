@@ -1,5 +1,6 @@
 package org.dykman.dexter.dexterity;
 
+import org.dykman.dexter.descriptor.CrossPathResolver;
 import org.dykman.dexter.descriptor.Descriptor;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -19,13 +20,15 @@ public class ConditionalAttributeDescriptor extends AbstractAttributeDescriptor
 		// TODO  do I need this?		
 		if (path == null) path = "/";
 
+//System.out.println("cattr arg:" + value);		
 		int ntests = tests.length;
 		for(int i = 0; i < ntests; i+=2)
 		{
 			String [] nv = tests[i].split(DexterityConstants.ATTR_SEP,2);
 			String name = nv[0];
-			String test = nv[1];
-			String exp = tests[i+1];
+			String exp = nv[1];
+			String test = tests[i+1];
+//System.out.println("cattr exp name=" + name + ", exp=" + exp + ", test=" + test);		
 
 			String value = null;
 			Node a = attr.getNamedItem(name);
@@ -41,8 +44,7 @@ public class ConditionalAttributeDescriptor extends AbstractAttributeDescriptor
 			for (int j = 0; j < subx.length; ++j)
 			{
 				String t = subx[j];
-				t = mapPath(t);
-				buffer.append(dequalify(path, t));
+				buffer.append(t);
 				char c = nextOf(test,p, new char[] { ' ' , '|' });
 				if(c != 0)
 				{
@@ -50,18 +52,17 @@ public class ConditionalAttributeDescriptor extends AbstractAttributeDescriptor
 					p = value.indexOf(c, p)+1;
 				}
 			}
-			
-			this.sequencer.startTest(buffer.toString());			
-			
+			CrossPathResolver resolver = new CrossPathResolver(this);
+			this.sequencer.startTest(resolver,buffer.toString());			
 			
 			if(exp.startsWith("!")) exp = exp.substring(1);
 			else  value = null; 
 
-			exp = mapPath(exp);
-			buffer.append(dequalify(path, exp));
+			buffer.append(exp);
 
-			
-			sequencer.mapAttribute(name, attributeTemplate(exp),  value,false);
+			sequencer.mapAttribute(
+					new CrossPathResolver(this),
+					name, valueTemplateParams(exp),  value,false);
 			this.sequencer.endTest();			
 		}
 		

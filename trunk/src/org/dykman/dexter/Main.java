@@ -189,7 +189,7 @@ public class Main
 				System.exit(0);
 			}
 
-			Dexter dexter = new Dexter(encoding,dexterProps);
+			Dexter dexter = new Dexter(encoding,dexterProps,builder);
 			
 			if(displayMacros) {
 				dexter.baseResolver.getPropertiesMatching("macro");

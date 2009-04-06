@@ -66,12 +66,12 @@ public class OptionEditor extends AbstractDocumentEditor
 		if(args.length > 3) {
 			if(sep == null) {
 				a = document.createAttribute(dexterity + ":cattr");
-				v = "selected:" + args[3] + " .!str:true";
+				v = "selected:.!str:true "  + args[3];
 				a.setValue(v);
 				attr.setNamedItem(a);
 			} else {
 				a = document.createAttribute(dexterity + ":cattrs");
-				v = sep + "selected:" + args[3] + sep + ".!str:true";
+				v = sep + "selected:.!str:true" + sep  + args[3];
 				a.setValue(v);
 				attr.setNamedItem(a);
 			}
