@@ -24,6 +24,10 @@ public class MapNodeDescriptor extends PathDescriptor
 		boolean useDefault = false;
 		boolean disableEscape = false;
 		boolean force = false;
+		if(value.startsWith("~")) {
+			value = value.substring(1);
+			disableEscape = true;
+		}
 		if(value.startsWith("!")) {
 			value = value.substring(1);
 			if(value.startsWith("!")) {
@@ -40,6 +44,6 @@ public class MapNodeDescriptor extends PathDescriptor
 		}
 		CrossPathResolver resolver = new CrossPathResolver(this);
 		sequencer.mapNode(resolver, valueTemplateParams(value), 
-				useDefault ? ((Element)element).getTextContent() : null,disableEscape, force);
+				useDefault ? ((Element)element).getTextContent() : null,force,disableEscape);
 	}
 }

@@ -36,6 +36,12 @@ public class MapAttributeDescriptor extends AbstractAttributeDescriptor
 			String nref = nv[1];
 			
 			boolean force = false;
+			boolean disableEscape = false;
+			if(nref.startsWith("~")) {
+				disableEscape = true;
+				nref = nref.substring(1);
+			}
+			
 			if(nref.startsWith("!"))
 			{
 				nref = nref.substring(1);
@@ -43,7 +49,6 @@ public class MapAttributeDescriptor extends AbstractAttributeDescriptor
 				{
 					force = true;
 					nref = nref.substring(1);
-					
 				}
 			}
 			else
@@ -53,7 +58,7 @@ public class MapAttributeDescriptor extends AbstractAttributeDescriptor
 
 			sequencer.mapAttribute(
 					new CrossPathResolver(this),
-					nv[0], valueTemplateParams(nref),  value,force);
+					nv[0], valueTemplateParams(nref),  value,force,disableEscape);
 		}
 		
 		super.attributes();
