@@ -55,14 +55,23 @@ public class ConditionalAttributeDescriptor extends AbstractAttributeDescriptor
 			CrossPathResolver resolver = new CrossPathResolver(this);
 			this.sequencer.startTest(resolver,buffer.toString());			
 			
-			if(exp.startsWith("!")) exp = exp.substring(1);
+			boolean force = false;
+			boolean disable_escape = false;
+			
+			if(exp.startsWith("!")) {
+				exp = exp.substring(1);
+				if(exp.startsWith("!")) {
+					force = true;
+					exp = exp.substring(1);
+				}
+			}
 			else  value = null; 
 
 			buffer.append(exp);
 
-			sequencer.mapAttribute(
-					new CrossPathResolver(this),
-					name, valueTemplateParams(exp),  value,false);
+			sequencer.mapAttribute(resolver, name, 
+					valueTemplateParams(exp),  value,force,disable_escape);
+			
 			this.sequencer.endTest();			
 		}
 		

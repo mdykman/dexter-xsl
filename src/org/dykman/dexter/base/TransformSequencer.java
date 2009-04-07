@@ -18,7 +18,7 @@ public interface TransformSequencer
 
 	public void runDescriptor(Descriptor descriptor);
 	public Node getCurrentNode();
-	public Node getTextExpression(String key, String value);
+//	public Node getTextExpression(String key, String value);
 	public String translateXSLPath(CrossPathResolver resolver,String p);
 	public void setIdNames(java.util.List<String> names);
 	public Element textContainer(String content);
@@ -31,13 +31,14 @@ public interface TransformSequencer
 			String name,
 			String[] path, 
 			String def,
-			boolean force);
+			boolean force,
+			boolean disable_escape);
 	public void mapNode(
 			CrossPathResolver resolver, 
 			String []path, 
 			String def,
-			boolean disableEscaping, 
-			boolean force);
+			boolean force,
+			boolean disable_escape);
 	/**
      * @deprecated Use {@link #copyNodes(String,String,boolean)} instead
      */

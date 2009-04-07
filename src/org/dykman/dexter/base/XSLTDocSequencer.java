@@ -6,13 +6,14 @@
 
 package org.dykman.dexter.base;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -110,8 +111,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		String[] pp = path.split("[|]");
 		for(int i = 0; i < pp.length; ++i)
 		{
-		sb.append(translateXSLPath(resolver,pp[i]));
-			
+			sb.append(translateXSLPath(resolver,pp[i]));
 			if(i+1 < pp.length) sb.append("|");
 		}
 		path = sb.toString();
@@ -141,11 +141,9 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			CrossPathResolver resolver, 
 			String []path, 
 			String def,
-			boolean disableEscaping, 
-			boolean force)
-	{
-		
-		currentNode.appendChild(valueTemplate(resolver,path, def, force));
+			boolean force,
+			boolean disable_escape) {
+		currentNode.appendChild(valueTemplate(resolver,path, def, force,disable_escape));
 	}
 
 	/**
@@ -191,48 +189,89 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		currentNode.appendChild(map);
 	}
 	
-	public void mapAttribute(CrossPathResolver resolver,String name, String[] path, String def, boolean force)
+	public void mapAttribute(CrossPathResolver resolver,
+			String name, String[] path, String def, boolean force, boolean disable_escape)
 	{
 
 		Element element = currentDocument.createElement("xsl:attribute");
 		name = translateName(name);
 		element.setAttribute("name", name);
 
-		element.appendChild(valueTemplate(resolver,path, def,force));
+		element.appendChild(valueTemplate(resolver,path, def,force,disable_escape));
 
 		currentNode.appendChild(element);
 	}
 
+	Pattern functiondesc = Pattern.compile("^([a-zA-Z][a-zA-Z0-9_-]+[(])(.*)");
+
+	protected String getInnerExpresion(String path) {
+		Matcher matcher = functiondesc.matcher(path);
+		if(matcher.matches()) {
+			String m = matcher.group(1);
+			return getInnerExpresion(path.substring(m.length()));
+		} else {
+			int n = path.indexOf(')');
+			if(n != -1) {
+				return path.substring(0,n);
+			} else {
+				return path;
+			}
+		}
+		
+	}
+	
+	protected Element callTemplateEvaluator(
+			CrossPathResolver resolver, String path, boolean disableEscaping) {
+		Matcher matcher = functiondesc.matcher(path);
+		if(matcher.matches()) {
+			String s = matcher.group(1);
+			String nn = s.substring(0,s.length() - 1);
+			
+			Element caller = currentDocument.createElement("xsl:call-template");
+			caller.setAttribute("name",nn);
+			
+			Element p1 = currentDocument.createElement("with-param");
+			p1.setAttribute("name",nn);
+			currentStylesheet.appendChild(dexter.loadTemplate(nn));
+			p1.appendChild(callTemplateEvaluator(
+					resolver,matcher.group(2),disableEscaping));
+			caller.appendChild(p1);
+			
+			return caller;
+		} else {
+			Element valueOf = currentDocument.createElement("xsl:value-of");
+			int n = path.indexOf(')');
+			if(n != -1) {
+				path = path.substring(0,n);
+			}
+			valueOf.setAttribute("select", translateXSLPath(resolver, path));
+			if(disableEscaping) {
+				valueOf.setAttribute("disable-output-escaping", "yes");;
+			}
+			return valueOf;
+		}
+	}
+
 	protected Element valueTemplate(
-		CrossPathResolver resolver, String[] path, String def, boolean force)
+		CrossPathResolver resolver, String[] path, String def, boolean force, boolean disable_escape)
 	{
-		if (def != null || path.length > 1)
-		{
+		if (def != null || path.length > 1) {
 			StringBuffer attrTest = new StringBuffer();
 			boolean first = true;
-			if (path.length == 1)
-			{
-				attrTest.append(translateXSLPath(resolver,path[0]));
-			}
-			else for (int i = 0; i < path.length; ++i)
-			{
-				if (i % 2 != 0)
-				{
-					String p = translateXSLPath(
-							resolver,path[i]);
-					if (!first)
-					{
-						attrTest.append(" and ");
-					}
-					else
-					{
-						first = false;
-					}
-					if(force) {
-						p = "(" + "length(string(" + p + ")) > 0)";
-					} else {
-						attrTest.append(p);
-					}
+			if (path.length == 1) {
+				String p = getInnerExpresion(path[0]);
+				p = translateXSLPath(resolver,p);
+				if(force) p = "(" + "length(string(" + p + ")) > 0)";
+				attrTest.append(p);
+			} else for (int i = 0; i < path.length; ++i) {
+				if (i % 2 != 0) {
+					String p = getInnerExpresion(path[i]);
+					 p = translateXSLPath(resolver,p);
+					if (!first) attrTest.append(" and ");
+					else first = false;
+					
+					if(force) p = "(" + "length(string(" + p + ")) > 0)";
+					attrTest.append(p);
 				}
 			}
 
@@ -241,36 +280,29 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			when.setAttribute("test", attrTest.toString());
 			choose.appendChild(when);
 			// if path.length > 1, then we alternating literals and paths
-			if(path.length == 1)
-			{
-				Element valueOf = currentDocument.createElement(XSLVALUEOF);
-	//			System.out.println(" coming from valueTemplate 3");
-				valueOf.setAttribute("select", translateXSLPath(resolver,path[0]));
+			if(path.length == 1) {
+				Element valueOf = callTemplateEvaluator(
+						resolver,path[0],disable_escape);
 				when.appendChild(valueOf);
-				
 			} 
-			else for (int i = 0; i < path.length; ++i)
-			{
-				if (i % 2 == 0) 
-				{
-					when.appendChild(textContainer(path[i]));
-				}
-				else
-				{
-					Element valueOf = currentDocument.createElement(XSLVALUEOF);
-					valueOf.setAttribute("select", translateXSLPath(resolver,path[i]));
+			else for (int i = 0; i < path.length; ++i) {
+				if (i % 2 == 0)  {
+					if(path[i].length() > 0) {
+						when.appendChild(textContainer(path[i]));
+					}
+				} else {
+					Element valueOf = callTemplateEvaluator(
+						resolver,path[i],disable_escape);
 					when.appendChild(valueOf);
 				}
 			}
+
 			Element otherwise = currentDocument.createElement("xsl:otherwise");
 			otherwise.appendChild(textContainer(def == null ? "" : def));
 			choose.appendChild(otherwise);
 			return choose;
-		}
-		else
-		{
+		} else {
 			Element valueOf = currentDocument.createElement(XSLVALUEOF);
-	//		System.out.println(" coming from valueTemplate 5");
 			valueOf.setAttribute("select", translateXSLPath(resolver,path[0]));
 			return valueOf;
 		}
@@ -577,7 +609,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		 };
 		blockComment(element, TAG);
 	}
-
+/*
 	public Node getTextExpression(String key, String value)
 	{
 		Map<String, DocumentFragment> vt = valMap.get(key);
@@ -606,7 +638,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			return tmp;
 		}
 	}
-
+*/
 	protected DocumentFragment processIdentityValueTemplate(String key,
 	      String value)
 	{
@@ -648,8 +680,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	public Element textContainer(Document document, String content)
 	{
 		Element element = document.createElement(XSLTEXT);
-		CDATASection cd = document.createCDATASection(content);
-		element.appendChild(cd);
+		element.setTextContent(content);
 		return element;
 	}
 

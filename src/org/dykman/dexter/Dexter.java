@@ -33,9 +33,13 @@ import org.dykman.dexter.descriptor.NodeDescriptor;
 import org.dykman.dexter.descriptor.TransformDescriptor;
 import org.dykman.dexter.dexterity.DexterityConstants;
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.traversal.DocumentTraversal;
+import org.w3c.dom.traversal.NodeFilter;
+import org.w3c.dom.traversal.NodeIterator;
 
 public class Dexter
 {
@@ -70,9 +74,14 @@ public class Dexter
 
 	private boolean propigateComments = true;
 
+	
+	private Document templateLibrary;
+	
+	
 	public String[] namespaces() {
 		return modulesMap.keySet().toArray(new String[modulesMap.size()]);
 	}
+	
 	/**
 	 * construct a Dexter object with specified encoding and properties
 	 */
@@ -86,6 +95,144 @@ public class Dexter
 		}
 		initializeProperties(p);
 		init();
+		loadTemplateLibrary(p.getProperty("dexter.lib.templates"));
+	}
+
+	private void loadTemplateLibrary(String name) {
+		try {
+			templateLibrary = builder.parse(Dexter.class.getResourceAsStream(name));
+		} catch(Exception e) {
+			throw new DexterException("error loading library" + e.getMessage());
+		}
+	}
+
+	public DocumentFragment loadTemplateRecurse(
+			Element template,
+			Set<String> templatesLoaded) {
+		DocumentTraversal dt = (DocumentTraversal) templateLibrary;
+
+		Set<String> modes = new HashSet<String>();
+		DocumentFragment fragment = templateLibrary.createDocumentFragment();
+		String nm = template.getAttribute("name");
+		String md = template.getAttribute("mode");
+		String k = nm + "-" + (md == null ? "dexter-nomode" : md);
+		if(! templatesLoaded.contains(k)) {
+			templatesLoaded.add(k);
+			fragment.appendChild(template.cloneNode(true));
+		// get a list of all modes referred to
+			NodeIterator ii = dt.createNodeIterator(template, 
+				NodeFilter.FILTER_ACCEPT, 
+				new ModeFilter(), false);
+			Node oo;
+			while((oo = ii.nextNode()) != null) {
+				Element ee = (Element) oo;
+				modes.add(ee.getAttribute("mode"));
+			}
+			for(String mm : modes) {
+				// get a list of all modes referred to
+				NodeIterator jj = dt.createNodeIterator(templateLibrary, 
+						NodeFilter.FILTER_ACCEPT, 
+						new ModeTemplateFilter(mm), false);
+				
+				Node pp;
+				while((pp = jj.nextNode()) != null) {
+					fragment.appendChild(
+						loadTemplateRecurse((Element) pp, templatesLoaded));
+				}
+	 		}
+		}
+		return fragment;
+	}
+	public DocumentFragment loadTemplate(String name) {
+		DocumentTraversal dt = (DocumentTraversal)templateLibrary;
+		NodeIterator it = dt.createNodeIterator(templateLibrary, 
+				NodeFilter.FILTER_ACCEPT, 
+			new TemplateFilter(name,null), false);
+		
+		DocumentFragment fragment = templateLibrary.createDocumentFragment();
+		Node nn;
+		Set<String> templatesLoaded = new HashSet<String>();
+		
+		while((nn = it.nextNode())!= null) {
+			fragment.appendChild(
+				loadTemplateRecurse((Element)nn, templatesLoaded));
+		}
+		return fragment;
+	}
+	
+	static class TemplateFilter implements NodeFilter {
+		public String name;
+		public String mode;
+		public TemplateFilter(String name, String mode) {
+			this.name = name;
+			this.mode = mode;
+		}
+	
+		public short acceptNode(Node n) {
+			if(n instanceof Element) {
+				Element el = (Element) n;
+				if("xsl:template".equals(el.getNodeName())) {
+					String s = el.getAttribute("name");
+					if(s != null && s.equals(name)) {
+						if(mode == null) return FILTER_ACCEPT;
+						if(mode.equals(el.getAttribute("mode"))) {
+							return FILTER_ACCEPT;
+						}
+					}
+				}
+			}
+			return NodeFilter.FILTER_REJECT;
+		}
+	}
+
+	static class ModeTemplateFilter implements NodeFilter {
+		public String mode;
+		public ModeTemplateFilter(String mode) {
+			this.mode = mode;
+		}
+	
+		public short acceptNode(Node n) {
+			if(n instanceof Element) {
+				Element el = (Element) n;
+				if("xsl:template".equals(el.getNodeName())) {
+					String s = el.getAttribute("mode");
+					if(s != null && s.equals(mode)) {
+						if(mode == null) return FILTER_ACCEPT;
+					}
+				}
+			}
+			return NodeFilter.FILTER_REJECT;
+		}
+	}
+	
+	static class ModeFilter implements NodeFilter {
+		public short acceptNode(Node n) {
+			if(n instanceof Element) {
+				Element el = (Element) n;
+				if(el.getAttribute("mode") != null) {
+					return FILTER_ACCEPT;
+				}
+			}
+			return NodeFilter.FILTER_REJECT;
+		}
+	}
+
+	static class CallTemplateFilter implements NodeFilter {
+		public String name;
+		public String mode;
+		public CallTemplateFilter() {
+			this.name = name;
+			this.mode = mode;
+		}
+	
+		public short acceptNode(Node n) {
+			if(n instanceof Element) {
+				Element el = (Element) n;
+				if("xsl:call-template".equals(el.getNodeName())) 
+					return FILTER_ACCEPT;
+			}
+			return NodeFilter.FILTER_REJECT;
+		}
 	}
 
 	public Map<String,PropertyResolver> getModules()
@@ -203,8 +350,7 @@ public class Dexter
 	{
 		String v = baseResolver.getProperty("node.id");
 		String[] b = v.split(",");
-		for (int i = 0; i < b.length; ++i)
-		{
+		for (int i = 0; i < b.length; ++i) {
 			idNames.add(b[i]);
 		}
 
@@ -637,18 +783,10 @@ public class Dexter
 	}
 
 	public static Descriptor marshallNode(Node node,Dexter dexter) {
-//		if(node.getNodeType() == Node.ELEMENT_NODE) {
-//			System.out.println("  marshall: element " + node.getNodeName());
-//			if("script".equalsIgnoreCase(node.getNodeName())) {
-//				Element el = (Element) node;
-//				System.out.print(el.getTextContent() + "  ");
-//			}
-//		}
 	   	Descriptor descriptor = new NodeDescriptor(node);
 	   	List<NodeSpecifier> list = (List<NodeSpecifier>) node
 	   	      .getUserData(DexterityConstants.DEXTER_SPECIFIERS);
 	   	if (list != null) {
-//			System.out.print(list.size() + " NodeSpecifiers");
 	   		Iterator<NodeSpecifier> it = list.iterator();
 	   		TransformDescriptor td;
 	   		while (it.hasNext()) {
@@ -656,13 +794,11 @@ public class Dexter
 	   			descriptor = td = specifier.enclose(descriptor);
 	   		}
 	   	}
-//System.out.println();
 	   	return descriptor;
 	}
 
 	public static Descriptor marshall(Node node,Dexter dexter)
 	{
-//		int i = Node.ENTITY_NODE;
 		Descriptor parent = Dexter.marshallNode(node,dexter);
 		Descriptor c;
 		NodeList children = node.getChildNodes();
