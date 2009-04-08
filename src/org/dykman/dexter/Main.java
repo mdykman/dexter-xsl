@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -207,8 +208,11 @@ public class Main
 			if(displayMacros) {
 				dexter.baseResolver.getPropertiesMatching("macro");
 				System.out.println(" defined macros:");
+				Map<Object,Object> sorted = new TreeMap<Object, Object>(
+						);
+				sorted.putAll(dexter.baseResolver.getPropertiesMatching("macro"));
 				for(Map.Entry<Object, Object> entry : 
-					dexter.baseResolver.getPropertiesMatching("macro").entrySet()) {
+					sorted.entrySet()) {
 					String k = entry.getKey().toString();
 					System.out.print("   " + k);
 					for(int i = 20 -k.length(); i >= 0; --i) {
