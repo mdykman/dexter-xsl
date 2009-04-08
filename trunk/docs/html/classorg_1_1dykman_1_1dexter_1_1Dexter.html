@@ -9,6 +9,7 @@
   <div class="tabs">
     <ul>
       <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&nbsp;Pages</span></a></li>
       <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -30,22 +31,30 @@ Collaboration diagram for org.dykman.dexter.Dexter:</div>
 <div class="dynsection">
 <p><center><img src="classorg_1_1dykman_1_1dexter_1_1Dexter__coll__graph.png" border="0" usemap="#org_8dykman_8dexter_8Dexter__coll__map" alt="Collaboration graph"></center>
 <map name="org_8dykman_8dexter_8Dexter__coll__map">
-<area shape="rect" href="interfaceorg_1_1dykman_1_1dexter_1_1base_1_1PropertyResolver.html" title="{org.dykman.dexter.base.PropertyResolver\n||+ getProperty()\l+ setProperty()\l}" alt="" coords="267,5,587,107"></map>
+<area shape="rect" href="interfaceorg_1_1dykman_1_1dexter_1_1base_1_1PropertyResolver.html" title="{org.dykman.dexter.base.PropertyResolver\n||+ getProperty()\l+ getProperty()\l+ setProperty()\l+ getPropertiesMatching()\l}" alt="" coords="267,5,587,141"></map>
 <center><font size="2">[<a href="graph_legend.html">legend</a>]</font></center></div>
 
 <p>
 <a href="classorg_1_1dykman_1_1dexter_1_1Dexter-members.html">List of all members.</a><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#890afaeb96dc37db7d91c99c89ba0194">Dexter</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">String[]&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#9c3b639929d3f4b93450e92aafccb2b8">namespaces</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#510c6b79363ee9ac0e8aa014d2325b72">Dexter</a> (String encoding)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#39eec964a0997d377dd9e8e3c580065b">Dexter</a> (String encoding, Properties properties, DocumentBuilder <a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#6722d2c29df1f0e9f48ef2aaab188235">builder</a>)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#82097ae18e927f42e8ed818976f42bb0">Dexter</a> (String encoding, Properties properties)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#5e604b1764685f25c54889c9a1cc8e39">addTemplate</a> (Element template)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">DocumentFragment&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#99f76f85fb7c3e1b5a2cc10e9c882b21">loadTemplateRecurse</a> (Element template, Set&lt; String &gt; templatesLoaded)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#3ae64faa9563b902170100c16153216c">loadTemplate</a> (Element stylesheet, String name)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">Map&lt; String, <a class="el" href="interfaceorg_1_1dykman_1_1dexter_1_1base_1_1PropertyResolver.html">PropertyResolver</a> &gt;&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#43050d0158edd1b6d068d6801f908e08">getModules</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">String&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#b4bdc3eb74de8dd3e3654e61abef3d2e">getEntity</a> (String key)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">String&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#9139b8be5702a67265e67a71f6aef74c">getProperty</a> (String module, String key)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">String&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#9c578beda04becb2d5b9c7cd49d041ba">getProperty</a> (String key)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#e5561c9965cc2b26fad096a920656d8c">init</a> ()</td></tr>
 
@@ -93,7 +102,7 @@ Collaboration diagram for org.dykman.dexter.Dexter:</div>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#b950e932c46c7cb09e8a89baf6113751">reportInternalError</a> (String msg, Exception ex)</td></tr>
 
 <tr><td colspan="2"><br><h2>Static Public Attributes</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">static String&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#4364b37b6e9d757c26dd87c6936e8bdb">DEXTER_VERSION</a> = &quot;dexter-0.2.3-beta&quot;</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static String&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#4364b37b6e9d757c26dd87c6936e8bdb">DEXTER_VERSION</a> = &quot;dexter-0.3.0-beta&quot;</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static String&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#3ec1cbc914f3427f8cfccb38ec39b977">DEXTER_COPYRIGHT</a> = &quot;copyright (c) 2007-2009 Michael Dykman&quot;</td></tr>
 
@@ -106,6 +115,8 @@ Collaboration diagram for org.dykman.dexter.Dexter:</div>
 
 <tr><td colspan="2"><br><h2>Protected Attributes</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">Document&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#cfccf56686ff15361c02bc84cbdf90c4">inputDocument</a></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">DocumentBuilder&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#6722d2c29df1f0e9f48ef2aaab188235">builder</a></td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">Map&lt; Object, Object &gt;&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#04dcbbe55834939e7168044e29a65e71">userData</a> = new HashMap&lt;Object, Object&gt;()</td></tr>
 
@@ -123,48 +134,18 @@ Collaboration diagram for org.dykman.dexter.Dexter:</div>
 <tr><td colspan="2"><br><h2>Static Package Attributes</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static Set&lt; File &gt;&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#dd314e428cae68e4b455bd2019ba4c53">outputFile</a> = new HashSet&lt;File&gt;()</td></tr>
 
+<tr><td colspan="2"><br><h2>Classes</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">class &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter_1_1CallTemplateFilter.html">CallTemplateFilter</a></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">class &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter_1_1ModeFilter.html">ModeFilter</a></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">class &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter_1_1ModeTemplateFilter.html">ModeTemplateFilter</a></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">class &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter_1_1TemplateFilter.html">TemplateFilter</a></td></tr>
+
 </table>
 <hr><h2>Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" name="890afaeb96dc37db7d91c99c89ba0194"></a><!-- doxytag: member="org::dykman::dexter::Dexter::Dexter" ref="890afaeb96dc37db7d91c99c89ba0194" args="()" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">org.dykman.dexter.Dexter.Dexter           </td>
-          <td>(</td>
-          <td class="paramname">          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-construct a <a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html">Dexter</a> object with default encoding and properties 
-</div>
-</div><p>
-<a class="anchor" name="510c6b79363ee9ac0e8aa014d2325b72"></a><!-- doxytag: member="org::dykman::dexter::Dexter::Dexter" ref="510c6b79363ee9ac0e8aa014d2325b72" args="(String encoding)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">org.dykman.dexter.Dexter.Dexter           </td>
-          <td>(</td>
-          <td class="paramtype">String&nbsp;</td>
-          <td class="paramname"> <em>encoding</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-construct a <a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html">Dexter</a> object with specified encoding and default properties 
-</div>
-</div><p>
-<a class="anchor" name="82097ae18e927f42e8ed818976f42bb0"></a><!-- doxytag: member="org::dykman::dexter::Dexter::Dexter" ref="82097ae18e927f42e8ed818976f42bb0" args="(String encoding, Properties properties)" -->
+<a class="anchor" name="39eec964a0997d377dd9e8e3c580065b"></a><!-- doxytag: member="org::dykman::dexter::Dexter::Dexter" ref="39eec964a0997d377dd9e8e3c580065b" args="(String encoding, Properties properties, DocumentBuilder builder)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -178,7 +159,13 @@ construct a <a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html">Dex
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">Properties&nbsp;</td>
-          <td class="paramname"> <em>properties</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>properties</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">DocumentBuilder&nbsp;</td>
+          <td class="paramname"> <em>builder</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -195,14 +182,147 @@ construct a <a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html">Dex
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dynsection">
-<p><center><img src="classorg_1_1dykman_1_1dexter_1_1Dexter_82097ae18e927f42e8ed818976f42bb0_cgraph.png" border="0" usemap="#classorg_1_1dykman_1_1dexter_1_1Dexter_82097ae18e927f42e8ed818976f42bb0_cgraph_map" alt=""></center>
-<map name="classorg_1_1dykman_1_1dexter_1_1Dexter_82097ae18e927f42e8ed818976f42bb0_cgraph_map">
+<p><center><img src="classorg_1_1dykman_1_1dexter_1_1Dexter_39eec964a0997d377dd9e8e3c580065b_cgraph.png" border="0" usemap="#classorg_1_1dykman_1_1dexter_1_1Dexter_39eec964a0997d377dd9e8e3c580065b_cgraph_map" alt=""></center>
+<map name="classorg_1_1dykman_1_1dexter_1_1Dexter_39eec964a0997d377dd9e8e3c580065b_cgraph_map">
 <area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#e5561c9965cc2b26fad096a920656d8c" title="org.dykman.dexter.Dexter.init" alt="" coords="315,5,549,32"><area shape="rect" href="interfaceorg_1_1dykman_1_1dexter_1_1base_1_1PropertyResolver.html#3de06537c866ffc0907c7be72b56acaf" title="org.dykman.dexter.base.PropertyResolver.getProperty" alt="" coords="597,5,1005,32"></map>
 </div>
 
 </div>
 </div><p>
 <hr><h2>Member Function Documentation</h2>
+<a class="anchor" name="9c3b639929d3f4b93450e92aafccb2b8"></a><!-- doxytag: member="org::dykman::dexter::Dexter::namespaces" ref="9c3b639929d3f4b93450e92aafccb2b8" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">String [] org.dykman.dexter.Dexter.namespaces           </td>
+          <td>(</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+<p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dynsection">
+<p><center><img src="classorg_1_1dykman_1_1dexter_1_1Dexter_9c3b639929d3f4b93450e92aafccb2b8_icgraph.png" border="0" usemap="#classorg_1_1dykman_1_1dexter_1_1Dexter_9c3b639929d3f4b93450e92aafccb2b8_icgraph_map" alt=""></center>
+<map name="classorg_1_1dykman_1_1dexter_1_1Dexter_9c3b639929d3f4b93450e92aafccb2b8_icgraph_map">
+<area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1didi_1_1FormCompletionEditor.html#3dd038e332b0f08dbffdc41f699007ec" title="org.dykman.dexter.didi.FormCompletionEditor.edit" alt="" coords="357,5,744,32"><area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1didi_1_1FlashTagEditor.html#79e5da85169b9c8e2c82694c8716beb9" title="org.dykman.dexter.didi.FlashTagEditor.edit" alt="" coords="388,56,713,83"></map>
+</div>
+
+</div>
+</div><p>
+<a class="anchor" name="5e604b1764685f25c54889c9a1cc8e39"></a><!-- doxytag: member="org::dykman::dexter::Dexter::addTemplate" ref="5e604b1764685f25c54889c9a1cc8e39" args="(Element template)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void org.dykman.dexter.Dexter.addTemplate           </td>
+          <td>(</td>
+          <td class="paramtype">Element&nbsp;</td>
+          <td class="paramname"> <em>template</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="99f76f85fb7c3e1b5a2cc10e9c882b21"></a><!-- doxytag: member="org::dykman::dexter::Dexter::loadTemplateRecurse" ref="99f76f85fb7c3e1b5a2cc10e9c882b21" args="(Element template, Set&lt; String &gt; templatesLoaded)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">DocumentFragment org.dykman.dexter.Dexter.loadTemplateRecurse           </td>
+          <td>(</td>
+          <td class="paramtype">Element&nbsp;</td>
+          <td class="paramname"> <em>template</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Set&lt; String &gt;&nbsp;</td>
+          <td class="paramname"> <em>templatesLoaded</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+<p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dynsection">
+<p><center><img src="classorg_1_1dykman_1_1dexter_1_1Dexter_99f76f85fb7c3e1b5a2cc10e9c882b21_icgraph.png" border="0" usemap="#classorg_1_1dykman_1_1dexter_1_1Dexter_99f76f85fb7c3e1b5a2cc10e9c882b21_icgraph_map" alt=""></center>
+<map name="classorg_1_1dykman_1_1dexter_1_1Dexter_99f76f85fb7c3e1b5a2cc10e9c882b21_icgraph_map">
+<area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#3ae64faa9563b902170100c16153216c" title="org.dykman.dexter.Dexter.loadTemplate" alt="" coords="424,31,736,57"><area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1base_1_1XSLTDocSequencer.html#560b4a553b0b7867576661b904d2ce80" title="org.dykman.dexter.base.XSLTDocSequencer.callTemplateEvaluator" alt="" coords="785,31,1289,57"><area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1base_1_1XSLTDocSequencer.html#421c6058683bc52c84ca7b9ff8c16f06" title="org.dykman.dexter.base.XSLTDocSequencer.valueTemplate" alt="" coords="1340,31,1791,57"><area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1base_1_1XSLTDocSequencer.html#2b916af0099481345c847059157cd0d2" title="org.dykman.dexter.base.XSLTDocSequencer.mapAttribute" alt="" coords="1840,5,2280,32"><area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1base_1_1XSLTDocSequencer.html#afca6a4d91fdae44c206538ddd5f8bdc" title="org.dykman.dexter.base.XSLTDocSequencer.mapNode" alt="" coords="1852,56,2268,83"></map>
+</div>
+
+</div>
+</div><p>
+<a class="anchor" name="3ae64faa9563b902170100c16153216c"></a><!-- doxytag: member="org::dykman::dexter::Dexter::loadTemplate" ref="3ae64faa9563b902170100c16153216c" args="(Element stylesheet, String name)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void org.dykman.dexter.Dexter.loadTemplate           </td>
+          <td>(</td>
+          <td class="paramtype">Element&nbsp;</td>
+          <td class="paramname"> <em>stylesheet</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&nbsp;</td>
+          <td class="paramname"> <em>name</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+<p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dynsection">
+<p><center><img src="classorg_1_1dykman_1_1dexter_1_1Dexter_3ae64faa9563b902170100c16153216c_cgraph.png" border="0" usemap="#classorg_1_1dykman_1_1dexter_1_1Dexter_3ae64faa9563b902170100c16153216c_cgraph_map" alt=""></center>
+<map name="classorg_1_1dykman_1_1dexter_1_1Dexter_3ae64faa9563b902170100c16153216c_cgraph_map">
+<area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#99f76f85fb7c3e1b5a2cc10e9c882b21" title="org.dykman.dexter.Dexter.loadTemplateRecurse" alt="" coords="367,5,735,32"></map>
+</div>
+
+<p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dynsection">
+<p><center><img src="classorg_1_1dykman_1_1dexter_1_1Dexter_3ae64faa9563b902170100c16153216c_icgraph.png" border="0" usemap="#classorg_1_1dykman_1_1dexter_1_1Dexter_3ae64faa9563b902170100c16153216c_icgraph_map" alt=""></center>
+<map name="classorg_1_1dykman_1_1dexter_1_1Dexter_3ae64faa9563b902170100c16153216c_icgraph_map">
+<area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1base_1_1XSLTDocSequencer.html#560b4a553b0b7867576661b904d2ce80" title="org.dykman.dexter.base.XSLTDocSequencer.callTemplateEvaluator" alt="" coords="367,31,871,57"><area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1base_1_1XSLTDocSequencer.html#421c6058683bc52c84ca7b9ff8c16f06" title="org.dykman.dexter.base.XSLTDocSequencer.valueTemplate" alt="" coords="921,31,1372,57"><area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1base_1_1XSLTDocSequencer.html#2b916af0099481345c847059157cd0d2" title="org.dykman.dexter.base.XSLTDocSequencer.mapAttribute" alt="" coords="1421,5,1861,32"><area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1base_1_1XSLTDocSequencer.html#afca6a4d91fdae44c206538ddd5f8bdc" title="org.dykman.dexter.base.XSLTDocSequencer.mapNode" alt="" coords="1433,56,1849,83"></map>
+</div>
+
+</div>
+</div><p>
 <a class="anchor" name="43050d0158edd1b6d068d6801f908e08"></a><!-- doxytag: member="org::dykman::dexter::Dexter::getModules" ref="43050d0158edd1b6d068d6801f908e08" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -219,15 +339,6 @@ Here is the call graph for this function:</div>
 <div class="memdoc">
 
 <p>
-
-<p>
-<div class="dynheader">
-Here is the caller graph for this function:</div>
-<div class="dynsection">
-<p><center><img src="classorg_1_1dykman_1_1dexter_1_1Dexter_43050d0158edd1b6d068d6801f908e08_icgraph.png" border="0" usemap="#classorg_1_1dykman_1_1dexter_1_1Dexter_43050d0158edd1b6d068d6801f908e08_icgraph_map" alt=""></center>
-<map name="classorg_1_1dykman_1_1dexter_1_1Dexter_43050d0158edd1b6d068d6801f908e08_icgraph_map">
-<area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1base_1_1BaseTransformSequencer.html#b92f3ede71470e51ad1f4e2148a45c60" title="org.dykman.dexter.base.BaseTransformSequencer.createPathFunction" alt="" coords="351,132,879,159"><area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1base_1_1BaseTransformSequencer.html#8f7a45fe0ed3965331652a673304ae06" title="org.dykman.dexter.base.BaseTransformSequencer.translateXSLPath" alt="" coords="928,132,1440,159"><area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1base_1_1XSLTDocSequencer.html#13b2ceaa0aa9c2f331edb83b90868ebe" title="org.dykman.dexter.base.XSLTDocSequencer.copyChildren" alt="" coords="1523,5,1963,32"><area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1base_1_1BaseTransformSequencer.html#1b77730267094540703edd64a43f00c8" title="org.dykman.dexter.base.BaseTransformSequencer.generateXSLTest" alt="" coords="1488,56,1997,83"><area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1base_1_1XSLTDocSequencer.html#74eff40f6f7dfcb76c14bae7494a6283" title="org.dykman.dexter.base.XSLTDocSequencer.mapAttribute" alt="" coords="1523,107,1963,133"><area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1base_1_1XSLTDocSequencer.html#7188f8ff206c741538f72ffb7ed1c630" title="org.dykman.dexter.base.XSLTDocSequencer.mapNode" alt="" coords="1535,157,1951,184"><area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1base_1_1XSLTDocSequencer.html#92e16bd18725cdcbdf2a73ae26b523a2" title="org.dykman.dexter.base.XSLTDocSequencer.startIterator" alt="" coords="1528,208,1957,235"><area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1base_1_1XSLTDocSequencer.html#80fd27d04a174e66c1a244b700d32d8f" title="org.dykman.dexter.base.XSLTDocSequencer.startSubdoc" alt="" coords="1528,259,1957,285"></map>
-</div>
 
 </div>
 </div><p>
@@ -269,6 +380,73 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div><p>
+<a class="anchor" name="9139b8be5702a67265e67a71f6aef74c"></a><!-- doxytag: member="org::dykman::dexter::Dexter::getProperty" ref="9139b8be5702a67265e67a71f6aef74c" args="(String module, String key)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">String org.dykman.dexter.Dexter.getProperty           </td>
+          <td>(</td>
+          <td class="paramtype">String&nbsp;</td>
+          <td class="paramname"> <em>module</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&nbsp;</td>
+          <td class="paramname"> <em>key</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+<p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dynsection">
+<p><center><img src="classorg_1_1dykman_1_1dexter_1_1Dexter_9139b8be5702a67265e67a71f6aef74c_cgraph.png" border="0" usemap="#classorg_1_1dykman_1_1dexter_1_1Dexter_9139b8be5702a67265e67a71f6aef74c_cgraph_map" alt=""></center>
+<map name="classorg_1_1dykman_1_1dexter_1_1Dexter_9139b8be5702a67265e67a71f6aef74c_cgraph_map">
+<area shape="rect" href="interfaceorg_1_1dykman_1_1dexter_1_1base_1_1PropertyResolver.html#3de06537c866ffc0907c7be72b56acaf" title="org.dykman.dexter.base.PropertyResolver.getProperty" alt="" coords="349,5,757,32"></map>
+</div>
+
+</div>
+</div><p>
+<a class="anchor" name="9c578beda04becb2d5b9c7cd49d041ba"></a><!-- doxytag: member="org::dykman::dexter::Dexter::getProperty" ref="9c578beda04becb2d5b9c7cd49d041ba" args="(String key)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">String org.dykman.dexter.Dexter.getProperty           </td>
+          <td>(</td>
+          <td class="paramtype">String&nbsp;</td>
+          <td class="paramname"> <em>key</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+<p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dynsection">
+<p><center><img src="classorg_1_1dykman_1_1dexter_1_1Dexter_9c578beda04becb2d5b9c7cd49d041ba_cgraph.png" border="0" usemap="#classorg_1_1dykman_1_1dexter_1_1Dexter_9c578beda04becb2d5b9c7cd49d041ba_cgraph_map" alt=""></center>
+<map name="classorg_1_1dykman_1_1dexter_1_1Dexter_9c578beda04becb2d5b9c7cd49d041ba_cgraph_map">
+<area shape="rect" href="interfaceorg_1_1dykman_1_1dexter_1_1base_1_1PropertyResolver.html#3de06537c866ffc0907c7be72b56acaf" title="org.dykman.dexter.base.PropertyResolver.getProperty" alt="" coords="349,5,757,32"></map>
+</div>
+
+</div>
+</div><p>
 <a class="anchor" name="e5561c9965cc2b26fad096a920656d8c"></a><!-- doxytag: member="org::dykman::dexter::Dexter::init" ref="e5561c9965cc2b26fad096a920656d8c" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -301,7 +479,7 @@ Here is the caller graph for this function:</div>
 <div class="dynsection">
 <p><center><img src="classorg_1_1dykman_1_1dexter_1_1Dexter_e5561c9965cc2b26fad096a920656d8c_icgraph.png" border="0" usemap="#classorg_1_1dykman_1_1dexter_1_1Dexter_e5561c9965cc2b26fad096a920656d8c_icgraph_map" alt=""></center>
 <map name="classorg_1_1dykman_1_1dexter_1_1Dexter_e5561c9965cc2b26fad096a920656d8c_icgraph_map">
-<area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#82097ae18e927f42e8ed818976f42bb0" title="org.dykman.dexter.Dexter.Dexter" alt="" coords="289,5,548,32"></map>
+<area shape="rect" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#39eec964a0997d377dd9e8e3c580065b" title="org.dykman.dexter.Dexter.Dexter" alt="" coords="289,5,548,32"></map>
 </div>
 
 </div>
@@ -1187,12 +1365,27 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div><p>
+<a class="anchor" name="6722d2c29df1f0e9f48ef2aaab188235"></a><!-- doxytag: member="org::dykman::dexter::Dexter::builder" ref="6722d2c29df1f0e9f48ef2aaab188235" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">DocumentBuilder <a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#6722d2c29df1f0e9f48ef2aaab188235">org.dykman.dexter.Dexter.builder</a><code> [protected]</code>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+</div>
+</div><p>
 <a class="anchor" name="4364b37b6e9d757c26dd87c6936e8bdb"></a><!-- doxytag: member="org::dykman::dexter::Dexter::DEXTER_VERSION" ref="4364b37b6e9d757c26dd87c6936e8bdb" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">String <a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#4364b37b6e9d757c26dd87c6936e8bdb">org.dykman.dexter.Dexter.DEXTER_VERSION</a> = &quot;dexter-0.2.3-beta&quot;<code> [static]</code>          </td>
+          <td class="memname">String <a class="el" href="classorg_1_1dykman_1_1dexter_1_1Dexter.html#4364b37b6e9d757c26dd87c6936e8bdb">org.dykman.dexter.Dexter.DEXTER_VERSION</a> = &quot;dexter-0.3.0-beta&quot;<code> [static]</code>          </td>
         </tr>
       </table>
 </div>
@@ -1310,7 +1503,7 @@ Here is the caller graph for this function:</div>
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>src/org/dykman/dexter/<a class="el" href="Dexter_8java.html">Dexter.java</a></ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Wed Feb 18 00:43:19 2009 for Dexter by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Apr 8 00:55:30 2009 for Dexter by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

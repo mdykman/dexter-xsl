@@ -47,7 +47,7 @@ public class Dexter
 
 	protected Document inputDocument;
 	protected DocumentBuilder builder;
-	public static String DEXTER_VERSION = "dexter-0.2.4-beta";
+	public static String DEXTER_VERSION = "dexter-0.3.0-beta";
 	public static String DEXTER_COPYRIGHT = "copyright (c) 2007-2009 Michael Dykman"; 
 	private String propertyPath = null;
 
@@ -93,16 +93,20 @@ public class Dexter
 		if(properties != null) {
 			p.putAll(properties);
 		}
+		loadTemplateLibrary(p.getProperty("dexter.lib.templates"));
 		initializeProperties(p);
 		init();
-		loadTemplateLibrary(p.getProperty("dexter.lib.templates"));
 	}
 
+	public void addTemplate(Element template) {
+		templateLibrary.adoptNode(template);
+		templateLibrary.appendChild(template);
+	}
 	private void loadTemplateLibrary(String name) {
 		try {
 			templateLibrary = builder.parse(Dexter.class.getResourceAsStream(name));
 		} catch(Exception e) {
-			throw new DexterException("error loading library" + e.getMessage());
+			throw new DexterException("error loading library: " + e.getMessage());
 		}
 	}
 
@@ -119,7 +123,8 @@ public class Dexter
 		if(! templatesLoaded.contains(k)) {
 			templatesLoaded.add(k);
 			fragment.appendChild(template.cloneNode(true));
-		// get a list of all modes referred to
+
+			// fetch list of referenced modes
 			NodeIterator ii = dt.createNodeIterator(template, 
 				NodeFilter.FILTER_ACCEPT, 
 				new ModeFilter(), false);
@@ -133,17 +138,34 @@ public class Dexter
 				NodeIterator jj = dt.createNodeIterator(templateLibrary, 
 						NodeFilter.FILTER_ACCEPT, 
 						new ModeTemplateFilter(mm), false);
-				
 				Node pp;
 				while((pp = jj.nextNode()) != null) {
 					fragment.appendChild(
 						loadTemplateRecurse((Element) pp, templatesLoaded));
 				}
 	 		}
+			
+			ii = dt.createNodeIterator(template, 
+					NodeFilter.FILTER_ACCEPT, 
+					new CallTemplateFilter(), false);
+			while((oo = ii.nextNode()) != null) {
+				Element el = (Element) oo;
+				String n = el.getAttribute("name");
+				NodeIterator it = dt.createNodeIterator(templateLibrary, 
+					NodeFilter.FILTER_ACCEPT, 
+					new TemplateFilter(n,null), false);
+				Element ee;
+				while((ee = (Element) it.nextNode()) != null) {
+					fragment.appendChild(
+							loadTemplateRecurse(ee, templatesLoaded));
+				}
+			}
+			
 		}
 		return fragment;
 	}
-	public DocumentFragment loadTemplate(String name) {
+	public void loadTemplate(Element stylesheet, String name) {
+		
 		DocumentTraversal dt = (DocumentTraversal)templateLibrary;
 		NodeIterator it = dt.createNodeIterator(templateLibrary, 
 				NodeFilter.FILTER_ACCEPT, 
@@ -151,14 +173,20 @@ public class Dexter
 		
 		DocumentFragment fragment = templateLibrary.createDocumentFragment();
 		Node nn;
-		Set<String> templatesLoaded = new HashSet<String>();
+		Set<String> templatesLoaded = (Set<String>) stylesheet.getUserData("external-stylesheets");
+		if(templatesLoaded == null) {
+			templatesLoaded = new HashSet<String>();
+			stylesheet.setUserData("external-stylesheets",templatesLoaded,null);
+		}
 		
 		while((nn = it.nextNode())!= null) {
 			fragment.appendChild(
 				loadTemplateRecurse((Element)nn, templatesLoaded));
 		}
-		return fragment;
+		stylesheet.getOwnerDocument().adoptNode(fragment);
+		stylesheet.appendChild(fragment);
 	}
+	
 	
 	static class TemplateFilter implements NodeFilter {
 		public String name;
@@ -218,11 +246,7 @@ public class Dexter
 	}
 
 	static class CallTemplateFilter implements NodeFilter {
-		public String name;
-		public String mode;
 		public CallTemplateFilter() {
-			this.name = name;
-			this.mode = mode;
 		}
 	
 		public short acceptNode(Node n) {

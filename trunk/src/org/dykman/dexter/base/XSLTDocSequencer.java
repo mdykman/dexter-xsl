@@ -230,9 +230,9 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			Element caller = currentDocument.createElement("xsl:call-template");
 			caller.setAttribute("name",nn);
 			
-			Element p1 = currentDocument.createElement("with-param");
-			p1.setAttribute("name",nn);
-			currentStylesheet.appendChild(dexter.loadTemplate(nn));
+			Element p1 = currentDocument.createElement("xsl:with-param");
+			p1.setAttribute("name","param1");
+			dexter.loadTemplate((Element)currentStylesheet,nn);
 			p1.appendChild(callTemplateEvaluator(
 					resolver,matcher.group(2),disableEscaping));
 			caller.appendChild(p1);
@@ -302,8 +302,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			choose.appendChild(otherwise);
 			return choose;
 		} else {
-			Element valueOf = currentDocument.createElement(XSLVALUEOF);
-			valueOf.setAttribute("select", translateXSLPath(resolver,path[0]));
+			Element valueOf = callTemplateEvaluator(
+					resolver,path[0],disable_escape);
 			return valueOf;
 		}
 	}

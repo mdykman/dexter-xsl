@@ -91,6 +91,9 @@
 				<include name="**/*.class" />
 			</fileset>
 			<fileset dir="../src">
+				<include name="**/*.xsl" />
+			</fileset>
+			<fileset dir="../src">
 				<include name="**/*.properties" />
 			</fileset>
 			<fileset dir="../src">

@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -30,6 +31,11 @@ import javax.xml.transform.stream.StreamSource;
 import org.dykman.dexter.base.DexterEntityResolver;
 import org.dykman.dexter.dexterity.DexteritySyntaxException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.traversal.DocumentTraversal;
+import org.w3c.dom.traversal.NodeFilter;
+import org.w3c.dom.traversal.NodeIterator;
 
 public class Main
 {
@@ -53,7 +59,7 @@ public class Main
 	{
 		
 		int argp = 0;
-		LongOpt[] opts = new LongOpt[15];
+		LongOpt[] opts = new LongOpt[16];
 		opts[0] = new LongOpt("mime-type",LongOpt.REQUIRED_ARGUMENT,null,'t');
 		opts[1] = new LongOpt("method",LongOpt.REQUIRED_ARGUMENT,null,'m');
 		opts[2] = new LongOpt("properties",LongOpt.REQUIRED_ARGUMENT,null,'p');
@@ -69,16 +75,23 @@ public class Main
 		opts[12] = new LongOpt("macros",LongOpt.NO_ARGUMENT,null,'M');
 		opts[13] = new LongOpt("skip-validation",LongOpt.NO_ARGUMENT,null,'V');
 		opts[14] = new LongOpt("no-media-type",LongOpt.NO_ARGUMENT,null,'T');
+		opts[15] = new LongOpt("library",LongOpt.REQUIRED_ARGUMENT,null,'l');
 		
-		Getopt go = new Getopt("dexter",args,"m::o::p::e::i::t::d::x::hvrCMVT",opts,false);
+		Getopt go = new Getopt("dexter",args,"m::l::o::p::e::i::t::d::x::hvrCMVT",opts,false);
 		int s;
+		
+		Set<String> libararySet = new HashSet<String>();
+		
 		while((s = go.getopt()) != -1)
 		{
 			switch(s)
 			{
-			case 'M':
-				displayMacros = true;
-			break;
+				case 'l':
+					libararySet.add(go.getOptarg());
+				break;
+				case 'M':
+					displayMacros = true;
+				break;
 				case 'V':
 					checkValidity = false;
 				break;
@@ -206,6 +219,9 @@ public class Main
 				System.out.println();
 				System.exit(0);
 			}
+			loadLibraryTemplate(dexter,builder,libararySet);
+			
+			
 			dexter.setPropigateComments(propComments);
 			
 			if(mediaType != null) dexter.setMediaType(mediaType);
@@ -309,6 +325,34 @@ public class Main
 		
 		write(doc, writer, encoding);
 		writer.close();
+	}
+
+	private static void loadLibraryTemplate(Dexter dexter,DocumentBuilder builder,Collection<String> libararySet) 
+			throws IOException
+		{
+		for(String s : libararySet) {
+			try
+            {
+				File f = new File(s);
+	            Document document = builder.parse(f);
+	            DocumentTraversal dt = (DocumentTraversal) document;
+	            NodeIterator it = dt.createNodeIterator(document, 
+	            	NodeFilter.FILTER_ACCEPT, new AnyTemplateFilter(), false);
+	            Node n;
+	            while((n = it.nextNode()) != null) {
+	            	dexter.addTemplate((Element)n);
+	            }
+            } catch (Exception e)
+            {
+	            e.printStackTrace();
+            }
+		}
+	}
+	static class AnyTemplateFilter implements NodeFilter {
+		public short acceptNode(Node n) {
+			return "xsl:template".equals(n.getNodeName()) ?  NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+			
+		}
 	}
 
 	protected static void write(Document document, Writer writer, String encoding)
