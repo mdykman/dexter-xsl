@@ -156,21 +156,15 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 	public void copyNodes(CrossPathResolver resolver,String path, String def, boolean children)
 	{
-//		System.out.println(" coming from " + getClass().getName());
-		path = translateXSLPath(resolver,path);
-
-		Element map;
-		Element valueOf = currentDocument.createElement("xsl:copy-of");
-
 		String av = path;
 		if(children) av = path + "/*";
-		valueOf.setAttribute("select",av); 
-
+		Element valueOf = callTemplateEvaluator(resolver, av, "xsl:copy-of",children);
+		Element map;
 		if (def != null)
 		{
 			Element choose = currentDocument.createElement("xsl:choose");
 			Element when = currentDocument.createElement("xsl:when");
-			when.setAttribute("test", path);
+			when.setAttribute("test", translateXSLPath(resolver,path));
 			when.appendChild(valueOf);
 			choose.appendChild(when);
 			map = choose;
@@ -221,7 +215,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	}
 	
 	protected Element callTemplateEvaluator(
-			CrossPathResolver resolver, String path, boolean disableEscaping) {
+			CrossPathResolver resolver, String path, 
+			String evalTag, boolean disableEscaping) {
 		Matcher matcher = functiondesc.matcher(path);
 		if(matcher.matches()) {
 			String s = matcher.group(1);
@@ -234,12 +229,12 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			p1.setAttribute("name","param1");
 			dexter.loadTemplate((Element)currentStylesheet,nn);
 			p1.appendChild(callTemplateEvaluator(
-					resolver,matcher.group(2),disableEscaping));
+					resolver,matcher.group(2),evalTag, disableEscaping));
 			caller.appendChild(p1);
 			
 			return caller;
 		} else {
-			Element valueOf = currentDocument.createElement("xsl:value-of");
+			Element valueOf = currentDocument.createElement(evalTag);
 			int n = path.indexOf(')');
 			if(n != -1) {
 				path = path.substring(0,n);
@@ -282,7 +277,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			// if path.length > 1, then we alternating literals and paths
 			if(path.length == 1) {
 				Element valueOf = callTemplateEvaluator(
-						resolver,path[0],disable_escape);
+						resolver,path[0],"xsl:value-of",disable_escape);
 				when.appendChild(valueOf);
 			} 
 			else for (int i = 0; i < path.length; ++i) {
@@ -292,7 +287,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 					}
 				} else {
 					Element valueOf = callTemplateEvaluator(
-						resolver,path[i],disable_escape);
+						resolver,path[i],"xsl:value-of",disable_escape);
 					when.appendChild(valueOf);
 				}
 			}
@@ -303,7 +298,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			return choose;
 		} else {
 			Element valueOf = callTemplateEvaluator(
-					resolver,path[0],disable_escape);
+					resolver,path[0],"xsl:value-of",disable_escape);
 			return valueOf;
 		}
 	}
