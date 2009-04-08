@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Workastica.com</title>
+<meta name="keywords" content="careers" />
+<meta name="description" content="How do I become a ... when I grow up" />
+<link href="/css/workastica.css" rel="stylesheet" type="text/css" media="all" />
+</head>
+<body>
+<div id="ieCenter">
+<div id="centerContainer">
+<div id="header" dx:sub="/result/siteVars/header">
+	<div id="logo"><span class="valignText">Workastica.com</span></div>
+	<div id="menu">
+		<ul>
+			<li class="first"><a href="#" accesskey="1" title="">Services</a></li>
+			<li><a href="#" accesskey="2" title="">Our Clients</a></li>
+			<li><a href="#" accesskey="3" title="">About Us</a></li>
+			<li><a href="#" accesskey="4" title="">Careers</a></li>
+			<li><a href="#" accesskey="5" title="">Contact Us</a></li>
+		</ul>
+	</div>
+</div>
+
+<div id="page" class="floatleft">
+	<div id="box1" class="entry floatleft box-style1">
+		<div class="floatleft" ><img src="images/homepage03.jpg" alt="" width="584" height="213" /></div>
+	
+		<!-- loged in  -->
+
+		<div id="login" dx:case="/result/Member">
+			<div><h2 class="title">Client Information</h2></div>
+			 <div class="entry leftmargin">
+				<form method="post" action="">
+					<fieldset class="leftmargin">
+						<table dx:env="/result/Member">
+							<tr><td>username:</td><td><span dx:ghost="" dx:value="username">Username Here</span></td></tr>
+							<tr><td>Job Title:</td><td><span dx:ghost="" dx:value="/employment/jobtitle">Position Here</span></td></tr>
+							<tr><td>Marital Status:</td><td><span dx:ghost="" dx:value="/personal/married">N/A</span></td></tr>
+							<tr><td>Last Logged in:</td><td><span dx:ghost="" dx:value="/lastLogged">Log in time</span></td></tr>
+							<tr><td>Unread emails:</td><td><span dx:ghost="" dx:value="/email/numUnread">num emails</span></td></tr>
+							<tr><td>Friends online:</td><td><span dx:ghost="" dx:value="/friends/online">num Friends</span></td></tr>
+							<tr><td><a href="logout">logout</a></td><td><a dx:attr="href:username">profile</a></td></tr>
+						</table>
+						
+					</fieldset>
+				</form>	
+			</div>
+		</div>
+
+		<!-- loged in  -->
+		
+		<!-- NOT loged in  -->
+
+		<div id="login" dx:default="">
+			<div><h2 class="title">Client Login</h2></div>
+			 <div class="entry leftmargin">
+				<form method="post" action="login">
+					<fieldset class="leftmargin">
+						<input type="hidden" name="action" value="login" />
+						<div>username</div>
+						<div><input type="text" name="username" value="" class="input-text" /></div>
+						<div>password</div>
+						<div><input type="password" name="password" value="" class="input-text" /></div>
+						<div>
+							<div><input name="submit" type="submit" class="input-submit" value="Login" /></div>
+							<div>
+								<div><a href="#">Forgot your password?</a></div>
+								<div><a href="register">Register a new Account?</a></div>
+							</div>
+						</div>
+					</fieldset>
+				</form>	
+			</div>
+		</div>
+
+		<!-- NOT loged in  -->
+	</div>
+	<div class="clearboth"></div>
+	<div id="box3">
+		<div id="box4">
+			<ul>
+				<li class="first" dx:each="*/siteVars/mainBoxLinks/*">
+					<h2><span dx:value="MainHeading"></span><div dx:ghost="" dx:value="SubHeading">Resume Builder</div></h2>
+					<p dx:value="para">If you are haviong trouble building your resume, this is the tool for you.</p>
+				</li>
+				<li dx:ignore="">
+					<h2><span></span>General Forum</h2>
+					<p>A good place to get the scoop on the latest trends in Careers</p>
+				</li>
+				<li dx:ignore="">
+					<h2><span></span>Search The Map </h2>
+					<p>How do I become a *** when I grow up?</p>
+				</li>
+			</ul>
+		</div>
+		<div id="box5" dx:env="*/siteVars/featureLink">
+			<h2 dx:value="MainHeading">Find a HeadHunter</h2>
+			<img src="images/homepage06.jpg" alt="" dx:attrs="|src:image/src|alt:image/alt"   width="46" height="46" class="alignleft border" />
+			<h3 dx:value="SubHeading">We can help!</h3>
+			<p dx:value="para">Use this tool to help find a headhunter that specializes in your skills.</p>
+		</div>
+	</div>
+	<div id="content">
+		<!-- search -->
+		<div class="box-style2" id="box6">
+			<div class="entry"><h2>I want to be a(n) <input type="text" name="username" value="" class="input-text" /> when I grow up.</h2></div>
+			<div><p class="more"><a href="#">Search&hellip;</a></p></div>
+		</div>
+		<!-- search -->
+		<!-- calendar -->
+		<div class="box-style3" id="box7">
+			<div><h2 class="title">Upcoming Events</h2></div>
+			<div class="entry">
+				<div dx:each="*/events/*">
+					<p class="date"><span class="month" dx:value="month">Apr</span> <span class="day" dx:value="day">30</span></p>
+					<h3 dx:value="title">Alpha Launch</h3>
+					<p dx:value="desc">Members can now register, set up resume, and search career tree!</p>
+					<p class="spacer">&nbsp;</p>
+				</div>
+				<div dx:ignore="">
+					<p class="date"><span class="month">Aug</span> <span class="day">30</span></p>
+					<h3>Beta Launch.</h3>
+					<p>Headhunters and companies can now join and look for talent</p>
+					<p style="margin: 0px;">&nbsp;</p>
+				</div>
+				<div dx:ignore="">
+					<p class="date"><span class="month">Oct</span> <span class="day">1</span></p>
+					<h3>Soft Launch.</h3>
+					<p>Basic site completed, ready for some traffic.</p>
+					<p style="margin: 0px;">&nbsp;</p>
+				</div>
+			</div>
+			<div><p class="more"><a href="#">See more events:&hellip;</a></p></div>
+		</div>
+		<!-- calendar -->
+		<!-- site Upgrades -->
+		<div class="box-style4" id="box8">
+			<div><h2 class="title">Site Improvements</h2></div>
+			<div class="entry"> 
+				<div dx:each="*/siteImprov/*">
+					<img src="images/homepage09.jpg" alt="" dx:attrs="|src:image/src|alt:image/alt" width="79" height="82" class="alignleft border" />
+					<h3 dx:value="MainHeading">We are going Mobile!</h3>
+					<p vx:value="para">Read how our Gossimer platform supports mobile devices.</p>
+					<p><a href="#" class="link1"><span>Details</span></a></p>
+					<p>&nbsp;</p>
+				</div>
+				<div dx:ignore="">
+					<img src="images/homepage10.jpg" alt="" width="79" height="82" class="alignleft border" />
+					<h3>Customer Support</h3>
+					<p>Our customer service is upgrading from Email support to telephone.</p>
+					<p><a href="#" class="link1"><span>Details</span></a></p>
+					<p>&nbsp;</p>
+				</div>
+			</div>
+			<div><p class="more"><a href="#">See more Upgrades:&hellip;</a></p></div>
+		</div>
+		<!-- site Upgrades -->
+	</div>
+	<div id="sidebar">
+		<div class="box-style3" id="box9">
+			<h2 class="title">Sponsored Links</h2>
+			<div class="entry">
+				<h3>Donec ipsum non pulvin</h3>
+				<p>Cras vitae felis eget mi laoreet cursus. Nunc vehicula est ac sem. Sed mollis consequat massa ut sodales.</p>
+				<h3>Vestibulum eget lacus vitae</h3>
+				<p>Etiam id turpis vel diam congue viverra. Cras vitae felis eget mi laoreet cursus. Nunc vehicula est ac sem.</p>
+				<h3>Aenean sed ante commodo</h3>
+				<p>Morbi convallis tempus magna. Cras pretium. Ut eleifend dolor ac purus molestie consectetuer maecenas interdum.</p>
+				<h3>Nunc vitae eros suscipit</h3>
+				<p>Integer auctor congue magna. Suspendisse enim tellus dictum non adipiscing eget placerat sit amet</p>
+			</div>
+		  <div><p class="more"><a href="#">More links&hellip;</a></p></div>
+		</div>
+	</div>
+</div>
+<div id="footer" class="clearboth">
+	<p dx:value="/result/siteVars/copyright">Copyright (c) 2009 Workastica.com. All rights reserved.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,30 +1,3 @@
-Syntax:  dd:option each-exp content-exp [value-exp] [selected-exp]
-	paths within args 2, 3 and 4 are evaluated in the context established by arg 1
-
-	each-exp : rendered as 'dx:each', defines the set to iterate
-	context-exp : rendered as 'dx:value' defines the content of option tag
-	value-exp (optional) : rendered as i'dx:attr="value:..."' to define explicit value when distinct from human-readable
-	selected-exp (optional) : rendered as 'dx:cattr' test to choose conditional 'selected' attrbiute
-=============  dexter fragment ==================================================
 <select name="thing">
-	<option dd:option="result/pets/pet name id /result/default@!seq:id" />
+	<option dd:option="result/pets/pet name id /result/default!seq:id" />
 </select>
-============== sample data ======================================================
-<result>
-	<default>2</default>
-	<pets>
-		<pet>
-			<id>1</id>
-			<name>dog</name>
-		</pet>
-		<pet>
-			<id>2</id>
-			<name>cat</name>
-		</pet>
-		<pet>
-			<id>3</id>
-			<name>mouse</name>
-		</pet>
-	</pets>
-</result>
-

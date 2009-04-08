@@ -1,0 +1,6 @@
+--2009-03-22 01:01:05--  http://batman.tracy.local/home
+Resolving batman.tracy.local... 99.234.47.46
+Connecting to batman.tracy.local|99.234.47.46|:80... connected.
+HTTP request sent, awaiting response... 500 Internal Server Error
+2009-03-22 01:01:06 ERROR 500: Internal Server Error.
+

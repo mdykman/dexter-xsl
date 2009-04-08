@@ -1,0 +1,19 @@
+<html><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"><title></title><link href="css/front.css" rel="stylesheet" type="text/css"><script src="js/jquery-1.2.6.js" type="text/javascript"></script><script src="js/jquery.gradient.js" type="text/javascript"></script><script src="js/jquery.dimensions.js" type="text/javascript"></script><script src="js/jquery.corner.js" type="text/javascript"></script><script type="text/javascript">
+		$(function() {
+			$('.topContainerClass').gradient({
+				from: 'D7BED5',
+				to: 'FFFFFF',
+				direction: 'vertical'															 
+																			 });
+			$('.featured').corner("10px");
+		});
+		</script></head><body><div class="containerClass" id="container" name="container"><div class="topContainerClass" id="topContainer" name="topContainer"><div class="topImageClass" id="topImage" name="topImage"></div><div class="topLogoClass" id="topLogo" name="topLogo"></div></div><div class="middleContainerClass" id="middleContainer" name="middleContainer"><div class="middleBlurbClass" id="middleBlurb" name="middleBlurb"></div><div class="middleFeaturedClass" id="middleFeatured" name="middleFeatured"><div class="featured" id="featured1" name="featured1"></div><div class="featured" id="featured2" name="featured2"></div><div class="featured" id="featured3" name="featured3"></div><div class="featured" id="featured4" name="featured4"></div></div></div><div class="bottomContainerClass" id="bottomContainer" name="bottomContainer"><div class="bottomLoginClass" id="bottomLogin" name="bottomLogin"><form><span class="loginLabel">	
+							Username: 
+						</span><input class="loginElement" name="user" type="text"><br><span class="loginLabel">
+							Password: 
+						</span><input class="loginElement" name="passwrd" type="password"></form></div><div class="bottomImageClass" id="bottomImage" name="bottomImage"></div></div><div class="textLinksClass" id="textLinks" name="textLinks">|
+				<a class="textLinksText" href="register">register</a> |
+				<a class="textLinksText" href="javascript:void(0)">about us</a> |
+				<a class="textLinksText" href="javascript:void(0)">sitemap</a> |
+				<a class="textLinksText" href="javascript:void(0)">affiliates</a> |
+			</div></div></body></html>

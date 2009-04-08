@@ -4,8 +4,8 @@
 </xsl:output><xsl:template match="/"><xsl:element name="tests"><xsl:text>
 	</xsl:text><xsl:element name="div"><xsl:attribute name="id"><xsl:text>group-1</xsl:text></xsl:attribute><xsl:text>
 		</xsl:text><xsl:element name="div"><xsl:attribute name="id"><xsl:text>test-1</xsl:text></xsl:attribute><xsl:attribute name="name">found</xsl:attribute><xsl:value-of select="data/found/."/></xsl:element><xsl:text>
-		</xsl:text><xsl:element name="div"><xsl:attribute name="id"><xsl:text>test-1</xsl:text></xsl:attribute><xsl:attribute name="name">found</xsl:attribute><xsl:choose><xsl:when test="data/found/."><xsl:text><![CDATA[the value is `]]></xsl:text><xsl:value-of select="data/found/."/><xsl:text><![CDATA[']]></xsl:text></xsl:when><xsl:otherwise><xsl:text/></xsl:otherwise></xsl:choose></xsl:element><xsl:text>
-		</xsl:text><xsl:element name="div"><xsl:attribute name="fakeattribute"><xsl:choose><xsl:when test="data/found/."><xsl:text><![CDATA[the value is `]]></xsl:text><xsl:value-of select="data/found/."/><xsl:text><![CDATA[']]></xsl:text></xsl:when><xsl:otherwise><xsl:text/></xsl:otherwise></xsl:choose></xsl:attribute><xsl:attribute name="id"><xsl:text>test-2</xsl:text></xsl:attribute><xsl:attribute name="name">found</xsl:attribute></xsl:element><xsl:text>
+		</xsl:text><xsl:element name="div"><xsl:attribute name="id"><xsl:text>test-1</xsl:text></xsl:attribute><xsl:attribute name="name">found</xsl:attribute><xsl:choose><xsl:when test="data/found/."><xsl:text>the value is `</xsl:text><xsl:value-of select="data/found/."/><xsl:text>'</xsl:text></xsl:when><xsl:otherwise><xsl:text/></xsl:otherwise></xsl:choose></xsl:element><xsl:text>
+		</xsl:text><xsl:element name="div"><xsl:attribute name="fakeattribute"><xsl:choose><xsl:when test="data/found/."><xsl:text>the value is `</xsl:text><xsl:value-of select="data/found/."/><xsl:text>'</xsl:text></xsl:when><xsl:otherwise><xsl:text/></xsl:otherwise></xsl:choose></xsl:attribute><xsl:attribute name="id"><xsl:text>test-2</xsl:text></xsl:attribute><xsl:attribute name="name">found</xsl:attribute></xsl:element><xsl:text>
 		</xsl:text><xsl:element name="div"><xsl:attribute name="id"><xsl:text>test-3</xsl:text></xsl:attribute><xsl:attribute name="name">valueoffound</xsl:attribute><xsl:value-of select="data/found/./@value"/></xsl:element><xsl:text>
 		</xsl:text><xsl:if test="string(data/found/./@value) = &quot;y&quot;"><xsl:element name="div"><xsl:attribute name="id"><xsl:text>test-4a</xsl:text></xsl:attribute><xsl:attribute name="name">amfound</xsl:attribute></xsl:element></xsl:if><xsl:text>
 		</xsl:text><xsl:if test="string(data/found/./@value) = &quot;n&quot;"><xsl:element name="div"><xsl:attribute name="id"><xsl:text>test-4b</xsl:text></xsl:attribute><xsl:attribute name="name">notfound</xsl:attribute></xsl:element></xsl:if><xsl:text>
@@ -18,7 +18,7 @@
 
 	</xsl:text><xsl:element name="div"><xsl:attribute name="id"><xsl:text>group-2</xsl:text></xsl:attribute><xsl:text>
 			a record
-		</xsl:text><xsl:for-each select="data/record/*"><xsl:variable name="DexterDepthLevel1"><xsl:value-of select="position()"/></xsl:variable><xsl:element name="div"><xsl:choose><xsl:when test="local-name(.) and ."><xsl:text><![CDATA[new record ]]></xsl:text><xsl:value-of select="local-name(.)"/><xsl:text><![CDATA[ = ]]></xsl:text><xsl:value-of select="."/></xsl:when><xsl:otherwise><xsl:text/></xsl:otherwise></xsl:choose></xsl:element></xsl:for-each><xsl:text>
+		</xsl:text><xsl:for-each select="data/record/*"><xsl:variable name="DexterDepthLevel1"><xsl:value-of select="position()"/></xsl:variable><xsl:element name="div"><xsl:choose><xsl:when test="local-name(.) and ."><xsl:text>new record </xsl:text><xsl:value-of select="local-name(.)"/><xsl:text> = </xsl:text><xsl:value-of select="."/></xsl:when><xsl:otherwise><xsl:text/></xsl:otherwise></xsl:choose></xsl:element></xsl:for-each><xsl:text>
 
 	
 		</xsl:text><xsl:element name="div"><xsl:text>
