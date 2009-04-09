@@ -304,6 +304,9 @@ public class Main
 			InputStream in = Dexter.class.getResourceAsStream("help.txt");
 			BufferedReader read = new BufferedReader(new InputStreamReader(in));
 			String  line;
+			System.out.print(Dexter.DEXTER_VERSION);
+			System.out.print(" ");
+			System.out.println(Dexter.DEXTER_COPYRIGHT);
 			while((line = read.readLine())!= null)
 				System.out.println(line);
 		}
