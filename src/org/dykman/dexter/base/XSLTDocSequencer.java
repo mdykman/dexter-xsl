@@ -277,7 +277,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			// if path.length > 1, then we alternating literals and paths
 			if(path.length == 1) {
 				Element valueOf = callTemplateEvaluator(
-						resolver,path[0],"xsl:value-of",disable_escape);
+						resolver,path[0],"xsl:copy-of",disable_escape);
 				when.appendChild(valueOf);
 			} 
 			else for (int i = 0; i < path.length; ++i) {
@@ -287,7 +287,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 					}
 				} else {
 					Element valueOf = callTemplateEvaluator(
-						resolver,path[i],"xsl:value-of",disable_escape);
+						resolver,path[i],"xsl:copy-of",disable_escape);
 					when.appendChild(valueOf);
 				}
 			}
@@ -298,7 +298,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			return choose;
 		} else {
 			Element valueOf = callTemplateEvaluator(
-					resolver,path[0],"xsl:value-of",disable_escape);
+					resolver,path[0],"xsl:copy-of",disable_escape);
 			return valueOf;
 		}
 	}
