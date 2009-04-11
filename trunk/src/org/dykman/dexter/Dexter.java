@@ -114,6 +114,8 @@ public class Dexter
 			Element template,
 			Set<String> templatesLoaded) {
 		DocumentTraversal dt = (DocumentTraversal) templateLibrary;
+		String ni = template.getAttribute("name");
+		String m = template.getAttribute("mode");
 
 		Set<String> modes = new HashSet<String>();
 		DocumentFragment fragment = templateLibrary.createDocumentFragment();
@@ -153,7 +155,7 @@ public class Dexter
 				String n = el.getAttribute("name");
 				NodeIterator it = dt.createNodeIterator(templateLibrary, 
 					NodeFilter.FILTER_ACCEPT, 
-					new TemplateFilter(n,null), false);
+					new TemplateFilter(n), false);
 				Element ee;
 				while((ee = (Element) it.nextNode()) != null) {
 					fragment.appendChild(
@@ -169,7 +171,7 @@ public class Dexter
 		DocumentTraversal dt = (DocumentTraversal)templateLibrary;
 		NodeIterator it = dt.createNodeIterator(templateLibrary, 
 				NodeFilter.FILTER_ACCEPT, 
-			new TemplateFilter(name,null), false);
+			new TemplateFilter(name), false);
 		
 		DocumentFragment fragment = templateLibrary.createDocumentFragment();
 		Node nn;
@@ -190,10 +192,8 @@ public class Dexter
 	
 	static class TemplateFilter implements NodeFilter {
 		public String name;
-		public String mode;
-		public TemplateFilter(String name, String mode) {
+		public TemplateFilter(String name) {
 			this.name = name;
-			this.mode = mode;
 		}
 	
 		public short acceptNode(Node n) {
@@ -202,10 +202,7 @@ public class Dexter
 				if("xsl:template".equals(el.getNodeName())) {
 					String s = el.getAttribute("name");
 					if(s != null && s.equals(name)) {
-						if(mode == null) return FILTER_ACCEPT;
-						if(mode.equals(el.getAttribute("mode"))) {
-							return FILTER_ACCEPT;
-						}
+						return FILTER_ACCEPT;
 					}
 				}
 			}
@@ -224,8 +221,8 @@ public class Dexter
 				Element el = (Element) n;
 				if("xsl:template".equals(el.getNodeName())) {
 					String s = el.getAttribute("mode");
-					if(s != null && s.equals(mode)) {
-						if(mode == null) return FILTER_ACCEPT;
+					if(s != null && s.length() > 0 && s.equals(mode)) {
+						return FILTER_ACCEPT;
 					}
 				}
 			}
@@ -237,7 +234,8 @@ public class Dexter
 		public short acceptNode(Node n) {
 			if(n instanceof Element) {
 				Element el = (Element) n;
-				if(el.getAttribute("mode") != null) {
+				String mm = el.getAttribute("mode");
+				if(mm != null && mm.length()> 0) {
 					return FILTER_ACCEPT;
 				}
 			}
