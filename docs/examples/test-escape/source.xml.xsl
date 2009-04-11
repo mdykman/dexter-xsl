@@ -16,13 +16,20 @@ say it again: </xsl:text><xsl:for-each select="data/names/name"><xsl:variable na
 				<xsl:call-template name="escape-quotes">
 					<xsl:with-param name="param1" select="substring-after($param1,$param2)"/>
 					<xsl:with-param name="param2" select="$param2"/>
+					<xsl:with-param name="param3" select="$param3"/>
 				</xsl:call-template>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:value-of select="$param1"/>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template><xsl:template mode="jstr" name="jstr">
+	</xsl:template><xsl:template name="jstr">
 		<xsl:param name="param1" select="."/>'<xsl:call-template name="escape-quotes">
+				<xsl:with-param name="param1"><xsl:call-template name="escape-quotes">
 				<xsl:with-param name="param1" select="$param1"/>
+				<xsl:with-param name="param2">\</xsl:with-param>
+				<xsl:with-param name="param3">\</xsl:with-param>
+			</xsl:call-template></xsl:with-param>
+				<xsl:with-param name="param2">'</xsl:with-param>
+				<xsl:with-param name="param3">\</xsl:with-param>
 			</xsl:call-template>'</xsl:template></xsl:stylesheet>
