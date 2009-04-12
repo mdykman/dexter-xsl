@@ -143,7 +143,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			String def,
 			boolean force,
 			boolean disable_escape) {
-		currentNode.appendChild(valueTemplate(resolver,path, def, force,disable_escape));
+		currentNode.appendChild(valueTemplate(resolver,path, def, "xsl:value-of",force,disable_escape));
 	}
 
 	/**
@@ -191,7 +191,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		name = translateName(name);
 		element.setAttribute("name", name);
 
-		element.appendChild(valueTemplate(resolver,path, def,force,disable_escape));
+		element.appendChild(valueTemplate(resolver,path, def,"xsl:value-of",force,disable_escape));
 
 		currentNode.appendChild(element);
 	}
@@ -248,7 +248,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	}
 
 	protected Element valueTemplate(
-		CrossPathResolver resolver, String[] path, String def, boolean force, boolean disable_escape)
+		CrossPathResolver resolver, String[] path, String def,
+		String evalTag, boolean force, boolean disable_escape)
 	{
 		if (def != null || path.length > 1) {
 			StringBuffer attrTest = new StringBuffer();
@@ -277,7 +278,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			// if path.length > 1, then we alternating literals and paths
 			if(path.length == 1) {
 				Element valueOf = callTemplateEvaluator(
-						resolver,path[0],"xsl:copy-of",disable_escape);
+						resolver,path[0],evalTag,disable_escape);
 				when.appendChild(valueOf);
 			} 
 			else for (int i = 0; i < path.length; ++i) {
@@ -287,7 +288,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 					}
 				} else {
 					Element valueOf = callTemplateEvaluator(
-						resolver,path[i],"xsl:copy-of",disable_escape);
+						resolver,path[i],evalTag,disable_escape);
 					when.appendChild(valueOf);
 				}
 			}
@@ -298,7 +299,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			return choose;
 		} else {
 			Element valueOf = callTemplateEvaluator(
-					resolver,path[0],"xsl:copy-of",disable_escape);
+					resolver,path[0],evalTag,disable_escape);
 			return valueOf;
 		}
 	}
