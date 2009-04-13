@@ -146,14 +146,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		currentNode.appendChild(valueTemplate(resolver,path, def, "xsl:value-of",force,disable_escape));
 	}
 
-	/**
-     * @deprecated Use {@link #copyNodes(String,String,boolean)} instead
-     */
-    public void copyNodes(CrossPathResolver resolver,String path, String def)
-    {
-        copyNodes(resolver,path, def, true);
-    }
-
 	public void copyNodes(CrossPathResolver resolver,String path, String def, boolean children)
 	{
 		String av = path;
@@ -423,6 +415,19 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			element.setAttribute("doctype-system",dt.getSystemId());
 		}
 	}
+	
+	protected void indentWithWhitespace() {
+		if(! lastWasEntity) {
+			int n = nodeStack.size();
+			StringBuilder sb = new StringBuilder();
+			sb.append("\n");
+			for(int i = 0; i < n; ++i) {
+				sb.append("\t");
+			}
+			currentNode.appendChild(currentDocument.createTextNode(sb.toString()));
+		}
+	}
+	boolean lastWasEntity = false;
 	public void startNode(String name, int type)
 	{
 		nodeTypes[nodeLevel++] = (short) type;
@@ -433,27 +438,34 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 				Document document = createStub(null,"/");
 				pushDoc(document, filename);
 //				pushNode(document);
+				lastWasEntity = false;
 			}
 			break;
 			case Node.ELEMENT_NODE:
 			{
+				indentWithWhitespace();
 				Element el = currentDocument.createElement(XSLELEMENT);
 				el.setAttribute("name", name);
 				currentNode.appendChild(el);
 				pushNode(el);
+				lastWasEntity = false;
 			}
 			break;
 			case Node.TEXT_NODE:
 			{
+				indentWithWhitespace();
 				Element el = currentDocument.createElement(XSLTEXT);
 				el.setTextContent(name);
 				currentNode.appendChild(el);
+				lastWasEntity = false;
 			}
 			break;
 			case Node.CDATA_SECTION_NODE:
 			{
+				indentWithWhitespace();
 				CDATASection cd = currentDocument.createCDATASection(name);
 				currentNode.appendChild(cd);
+				lastWasEntity = false;
 			}
 			break;
 			case Node.ENTITY_NODE:
@@ -462,16 +474,19 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			{
 				Node n = translateEntityReference(name);
 				currentNode.appendChild(n);
+				lastWasEntity = true;
 			}
 			break;
 
 			case Node.COMMENT_NODE:
 			{
+				indentWithWhitespace();
 				if(dexter.isPropigateComments())
 				{
 					Comment comment = currentDocument.createComment(name);
 					currentNode.appendChild(comment);
 				}
+				lastWasEntity = false;
 			}
 			break;
 			default:
@@ -479,6 +494,26 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 				Dexter.reportInternalError("FATAL: encountered  an unhandle node type: " + type, null);
 				throw new DexterHaltException("internal exception - unhandled node type: " + type);
 			}
+		}
+	}
+
+	public void endNode()
+	{
+		short type = nodeTypes[--nodeLevel];
+
+		if(false)
+		{
+			throw new RuntimeException();
+		}
+
+		switch (type)
+		{
+			case Node.DOCUMENT_NODE:
+				popStylesheet();
+				popDoc();
+			case Node.ELEMENT_NODE:
+				popNode();
+			break;
 		}
 	}
 
@@ -500,26 +535,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		}
 		ent.put(ref, val);
 		return  currentDocument.createTextNode("&" + ref + ';');
-	}
-
-	public void endNode()
-	{
-		short type = nodeTypes[--nodeLevel];
-
-		if(false)
-		{
-			throw new RuntimeException();
-		}
-
-		switch (type)
-		{
-			case Node.DOCUMENT_NODE:
-				popStylesheet();
-				popDoc();
-			case Node.ELEMENT_NODE:
-				popNode();
-			break;
-		}
 	}
 
 	protected Document createStub(CrossPathResolver resolver,String match) {
@@ -582,6 +597,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			template.setAttribute("mode", name);
 			style.appendChild(template);
 		}
+//		style.appendChild(document.createTextNode("\n"));
 
 		pushNode(template);
 		return document;
