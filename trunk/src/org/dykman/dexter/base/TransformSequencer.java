@@ -39,10 +39,6 @@ public interface TransformSequencer
 			String def,
 			boolean force,
 			boolean disable_escape);
-	/**
-     * @deprecated Use {@link #copyNodes(String,String,boolean)} instead
-     */
-    public void copyNodes(CrossPathResolver resolver,String path, String def);
 
 	public void copyNodes(
 			CrossPathResolver resolver,
@@ -50,6 +46,7 @@ public interface TransformSequencer
 			String def, 
 			boolean children);
 	
+     
 	public void startSubdoc(CrossPathResolver resolver,String altDoc,String name,String match,boolean keep);
 	public void endSubdoc();
 	
