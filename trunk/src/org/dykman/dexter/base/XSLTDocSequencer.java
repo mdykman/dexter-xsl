@@ -143,7 +143,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			String def,
 			boolean force,
 			boolean disable_escape) {
-		currentNode.appendChild(valueTemplate(resolver,path, def, "xsl:value-of",force,disable_escape));
+		currentNode.appendChild(
+				valueTemplate(resolver,path, def, "xsl:value-of",force,disable_escape));
 	}
 
 	public void copyNodes(CrossPathResolver resolver,String path, String def, boolean children)
@@ -188,7 +189,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		currentNode.appendChild(element);
 	}
 
-	Pattern functiondesc = Pattern.compile("^([a-zA-Z][a-zA-Z0-9_-]+[(])(.*)");
+	Pattern functiondesc = Pattern.compile("^([a-zA-Z][a-zA-Z0-9._-]+[(])(.*)");
 
 	protected String getInnerExpresion(String path) {
 		Matcher matcher = functiondesc.matcher(path);
@@ -218,10 +219,20 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			caller.setAttribute("name",nn);
 			
 			Element p1 = currentDocument.createElement("xsl:with-param");
+			
+			
+			
 			p1.setAttribute("name","param1");
+			path = matcher.group(2);
+			int n = path.indexOf(')');
+			if(n != -1) {
+				path = path.substring(0,n);
+			}
+			
+			p1.setAttribute("select", translateXSLPath(resolver, path));
 			dexter.loadTemplate((Element)currentStylesheet,nn);
-			p1.appendChild(callTemplateEvaluator(
-					resolver,matcher.group(2),evalTag, disableEscaping));
+//			p1.appendChild(callTemplateEvaluator(
+//					resolver,matcher.group(2),evalTag, disableEscaping));
 			caller.appendChild(p1);
 			
 			return caller;

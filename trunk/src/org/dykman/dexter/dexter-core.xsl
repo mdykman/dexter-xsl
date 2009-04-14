@@ -38,54 +38,77 @@
  		</xsl:if> 
 	</xsl:for-each>
 </xsl:template>
-<xsl:template name="jsstr" >
-	<xsl:param name="param1" select="."/>'<xsl:call-template name="escape-quotes">
-			<xsl:with-param name="param1" ><xsl:call-template name="escape-quotes">
-			<xsl:with-param name="param1" select="$param1" />
-			<xsl:with-param name="param2" >\</xsl:with-param>
-			<xsl:with-param name="param3" >\</xsl:with-param>
-		</xsl:call-template></xsl:with-param>
-			<xsl:with-param name="param2" >'</xsl:with-param>
-			<xsl:with-param name="param3" >\</xsl:with-param>
-		</xsl:call-template>'</xsl:template>
 
-
-
-<xsl:template name="jshash">
-	<xsl:param name="param1" ><xsl:copy-of select="." /></xsl:param>
-	<xsl:apply-templates select="$param1" mode="jshash" />
+<xsl:template name="js.data">
+	<xsl:choose>
+		<xsl:when test="local-name(*[1]) and local-name(*[1]) = local-name(*[2])">
+			<xsl:call-template name="js.list" >
+				<xsl:with-param name="param1" select="." />
+			</xsl:call-template>
+		</xsl:when>
+		<xsl:when test="*">
+			<xsl:call-template name="js.hash" >
+				<xsl:with-param name="param1" select="." />
+			</xsl:call-template>
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:call-template name="js.scalar" />
+		</xsl:otherwise>
+	</xsl:choose>
 </xsl:template>
 
+<xsl:template name="js.scalar" >
+	<xsl:choose>
+		<xsl:when test="string(number(.)) = 'NaN'">
+			<xsl:call-template name="js.str" />
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:value-of select="." />
+		</xsl:otherwise>
+	</xsl:choose>
+</xsl:template>
 
-<xsl:template match="*" mode="jshash">
+<xsl:template name="js.str" >
+	<xsl:param name="param1" select="."/>
+	<xsl:text>'</xsl:text>
+	<xsl:call-template name="escape-quotes">
+		<xsl:with-param name="param1" >
+			<xsl:call-template name="escape-quotes">
+				<xsl:with-param name="param1" select="$param1" />
+				<xsl:with-param name="param2" >\</xsl:with-param>
+				<xsl:with-param name="param3" >\</xsl:with-param>
+			</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="param2" >'</xsl:with-param>
+		<xsl:with-param name="param3" >\</xsl:with-param>
+	</xsl:call-template>
+	<xsl:text>'</xsl:text>
+</xsl:template>
+
+<xsl:template name="js.list">
+	<xsl:param name="param1" select="."/>
+	<xsl:text>[ </xsl:text>
+	<xsl:for-each select="*" >
+		<xsl:call-template name="js.data"/>
+ 		<xsl:if test="position()!=last()" >
+ 			<xsl:text>, </xsl:text>
+ 		</xsl:if>
+	</xsl:for-each>
+	<xsl:text>] </xsl:text>
+</xsl:template>
+
+<xsl:template name="js.hash">
+	<xsl:param name="param1"  select="." />
 	<xsl:text>{ </xsl:text>
 	<xsl:for-each select="*" >
 		<xsl:value-of select="local-name(.)" />
 		<xsl:text>:</xsl:text>
-		<xsl:choose>
-			<xsl:when test="*">
-			<!-- 
-				<xsl:call-template name="jshash" >
-					<xsl:with-param name="param1">
-						<xsl:copy-of select="document(.)" />
-					</xsl:with-param>
-				</xsl:call-template>
-			 -->
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:call-template name="jsstr" />
-			</xsl:otherwise>
-		</xsl:choose>
+		<xsl:call-template name="js.data" />
  		<xsl:if test="position()!=last()" >
  			<xsl:text>, </xsl:text>
  		</xsl:if>
 	</xsl:for-each>
 	<xsl:text> }</xsl:text>
 </xsl:template>
-
-<xsl:template match="text()" mode="jshash">
-	<xsl:call-template name="jsstr" />
-</xsl:template>
-
 
 </xsl:stylesheet>
