@@ -269,7 +269,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 					if (!first) attrTest.append(" and ");
 					else first = false;
 					
-					if(force) p = "(" + "length(string(" + p + ")) > 0)";
+					if(force) p = "(" + "string-length(string(" + p + ")) > 0)";
 					attrTest.append(p);
 				}
 			}
