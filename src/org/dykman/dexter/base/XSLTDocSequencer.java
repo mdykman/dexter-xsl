@@ -401,10 +401,10 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		Element template = currentDocument.createElement(XSLTEMPLATE);
 		template.setAttribute("match", "/");
 		template.appendChild(createExternalTemplateCall(resolver,match,tn));
-
 		ch = currentDocument.getElementsByTagName(XSLTEMPLATE);
 		output = ch.item(0);
 		currentStylesheet.insertBefore(template, output);
+		currentStylesheet.insertBefore(currentDocument.createTextNode("\n"), output);
 	}
 
 	public void endSubdoc()
@@ -608,7 +608,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			template.setAttribute("mode", name);
 			style.appendChild(template);
 		}
-//		style.appendChild(document.createTextNode("\n"));
+		style.appendChild(document.createTextNode("\n"));
 
 		pushNode(template);
 		return document;
