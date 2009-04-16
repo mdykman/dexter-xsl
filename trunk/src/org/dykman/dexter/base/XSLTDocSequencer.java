@@ -260,7 +260,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			if (path.length == 1) {
 				String p = getInnerExpresion(path[0]);
 				p = translateXSLPath(resolver,p);
-				if(force) p = "(" + "length(string(" + p + ")) > 0)";
+				if(force) p = "(" + "string-length(string(" + p + ")) > 0)";
 				attrTest.append(p);
 			} else for (int i = 0; i < path.length; ++i) {
 				if (i % 2 != 0) {
@@ -491,9 +491,9 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 			case Node.COMMENT_NODE:
 			{
-				indentWithWhitespace();
 				if(dexter.isPropigateComments())
 				{
+					indentWithWhitespace();
 					Comment comment = currentDocument.createComment(name);
 					currentNode.appendChild(comment);
 				}
