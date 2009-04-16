@@ -40,15 +40,8 @@
 </xsl:template>
 
 <xsl:template name="json">
-	<xsl:param name="param1" />
-	<xsl:call-template name="js.data">
-		<xsl:with-param name="param1" select="$param1" />
-	</xsl:call-template>
-</xsl:template>
-
-<xsl:template name="js.data">
-	<xsl:param name="param1" />
-	<xsl:apply-templates select="." mode="js.data"/>
+	<xsl:param name="param1" select="." />
+	<xsl:apply-templates select="$param1" mode="js.data"/>
 </xsl:template>
 
 <xsl:template name="js.inner-data" mode="js.data" match="*">
