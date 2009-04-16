@@ -39,8 +39,25 @@
 	</xsl:for-each>
 </xsl:template>
 
+<xsl:template name="json">
+	<xsl:param name="param1" />
+	<xsl:call-template name="js.data">
+		<xsl:with-param name="param1" select="$param1" />
+	</xsl:call-template>
+</xsl:template>
+
 <xsl:template name="js.data">
+	<xsl:param name="param1" />
+	<xsl:apply-templates select="." mode="js.data"/>
+</xsl:template>
+
+<xsl:template name="js.inner-data" mode="js.data" match="*">
 	<xsl:choose>
+		<xsl:when test="last() = 1 and item">
+			<xsl:call-template name="js.list" >
+				<xsl:with-param name="param1" select="." />
+			</xsl:call-template>
+		</xsl:when>
 		<xsl:when test="local-name(*[1]) and local-name(*[1]) = local-name(*[2])">
 			<xsl:call-template name="js.list" >
 				<xsl:with-param name="param1" select="." />
@@ -89,7 +106,7 @@
 	<xsl:param name="param1" select="."/>
 	<xsl:text>[ </xsl:text>
 	<xsl:for-each select="*" >
-		<xsl:call-template name="js.data"/>
+		<xsl:call-template name="js.inner-data"/>
  		<xsl:if test="position()!=last()" >
  			<xsl:text>, </xsl:text>
  		</xsl:if>
@@ -103,7 +120,7 @@
 	<xsl:for-each select="*" >
 		<xsl:value-of select="local-name(.)" />
 		<xsl:text>:</xsl:text>
-		<xsl:call-template name="js.data" />
+		<xsl:call-template name="js.inner-data" />
  		<xsl:if test="position()!=last()" >
  			<xsl:text>, </xsl:text>
  		</xsl:if>
