@@ -67,4 +67,7 @@ public interface TransformSequencer
 
 	public void startTest(CrossPathResolver resolver,String tests);
 	public void endTest();
+	public void appendText(String s);
+	public void appendText(String s,boolean escape) ;
+
 }

@@ -82,7 +82,7 @@ public abstract class BaseTransformSequencer implements TransformSequencer
 			return generateXSLTest(resolver,ands);
 		} else
 		{
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < ors.length; ++i)
 			{
 				String[] ands = ors[i].split(" ");
@@ -98,7 +98,7 @@ public abstract class BaseTransformSequencer implements TransformSequencer
 
 	protected String generateXSLTest(CrossPathResolver resolver,String[] tests)
 	{
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		if (tests.length > 0)
 		{
 			for (int i = 0; i < tests.length; ++i)
@@ -124,8 +124,7 @@ public abstract class BaseTransformSequencer implements TransformSequencer
 					buffer.append(" and ");
 				}
 			}
-		} else
-		{
+		} else {
 			throw new DexteritySyntaxException("null test!?");
 		}
 		return buffer.toString().trim();
@@ -162,9 +161,7 @@ public abstract class BaseTransformSequencer implements TransformSequencer
 
 	public String translateXSLPath(CrossPathResolver resolver, String p)
 	{
-//		System.out.println("  INCOOMING TO translateXSLPath: " + p);
-		// scanning for macros?
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 
 		String name = null;
 		// might have to remove one or two of these
@@ -207,7 +204,7 @@ public abstract class BaseTransformSequencer implements TransformSequencer
 
 	private String rawXSLPath(String p)
 	{
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		String[] el = p.split("/");
 		for (int i = 0; i < el.length; ++i)
 		{

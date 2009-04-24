@@ -197,7 +197,7 @@ public class NodeNavigator
 
 	public static String toString(Node node)
 	{
-		StringBuffer buffer = new StringBuffer("Node: ");
+		StringBuilder buffer = new StringBuilder("Node: ");
 		buffer.append(node.getNodeName() + " (" + node.getNodeType() + " ");
 		NamedNodeMap attr = node.getAttributes();
 		if (attr != null)

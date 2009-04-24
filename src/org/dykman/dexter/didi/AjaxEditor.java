@@ -20,7 +20,7 @@ public abstract class AjaxEditor extends AbstractDocumentEditor
 {
 	public static final String PARAMS = "DIDI_PARAMS";
 //	static Element scratch = null;
-//	static StringBuffer sb = new StringBuffer();
+//	static StringBuilder sb = new StringBuilder();
 
 	public Element getScriptNode()
 	{

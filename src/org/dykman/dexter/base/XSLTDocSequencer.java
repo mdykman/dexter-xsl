@@ -107,7 +107,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 	public void startIterator(CrossPathResolver resolver,String path)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		String[] pp = path.split("[|]");
 		for(int i = 0; i < pp.length; ++i)
 		{
@@ -151,7 +151,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	{
 		String av = path;
 		if(children) av = path + "/*";
-		Element valueOf = callTemplateEvaluator(resolver, av, "xsl:copy-of",children);
+		Element valueOf = callTemplateEvaluator(resolver, av, "xsl:copy-of",false);
 		Element map;
 		if (def != null)
 		{
@@ -255,7 +255,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		String evalTag, boolean force, boolean disable_escape)
 	{
 		if (def != null || path.length > 1) {
-			StringBuffer attrTest = new StringBuffer();
+			StringBuilder attrTest = new StringBuilder();
 			boolean first = true;
 			if (path.length == 1) {
 				String p = getInnerExpresion(path[0]);
@@ -391,6 +391,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		NodeList ch = currentDocument.getElementsByTagName(XSLTEMPLATE);
 		Node output = ch.item(0);
 		currentStylesheet.insertBefore(element, output);
+		currentStylesheet.insertBefore(
+				currentDocument.createTextNode("\n"), output);
 		currentNode.appendChild(createExternalTemplateCall(resolver,match,tn));
 
 		Document document = createStub(resolver,match,tn);
@@ -428,17 +430,22 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	}
 	
 	protected void indentWithWhitespace() {
+		indentWithWhitespace(0);
+	}
+		protected void indentWithWhitespace(int m) {
 		if(! lastWasEntity) {
-			int n = nodeStack.size();
+			int n = nodeStack.size() + m;
 			StringBuilder sb = new StringBuilder();
-			sb.append("\n");
+//			sb.append("\n");
 			for(int i = 0; i < n; ++i) {
 				sb.append("\t");
 			}
 			currentNode.appendChild(currentDocument.createTextNode(sb.toString()));
 		}
 	}
+
 	boolean lastWasEntity = false;
+
 	public void startNode(String name, int type)
 	{
 		nodeTypes[nodeLevel++] = (short) type;
@@ -448,7 +455,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			{
 				Document document = createStub(null,"/");
 				pushDoc(document, filename);
-//				pushNode(document);
 				lastWasEntity = false;
 			}
 			break;
@@ -458,6 +464,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 				Element el = currentDocument.createElement(XSLELEMENT);
 				el.setAttribute("name", name);
 				currentNode.appendChild(el);
+				currentNode.appendChild(currentDocument.createTextNode("\n"));
 				pushNode(el);
 				lastWasEntity = false;
 			}
@@ -468,6 +475,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 				Element el = currentDocument.createElement(XSLTEXT);
 				el.setTextContent(name);
 				currentNode.appendChild(el);
+				currentNode.appendChild(currentDocument.createTextNode("\n"));
 				lastWasEntity = false;
 			}
 			break;
@@ -476,6 +484,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 				indentWithWhitespace();
 				CDATASection cd = currentDocument.createCDATASection(name);
 				currentNode.appendChild(cd);
+				currentNode.appendChild(currentDocument.createTextNode("\n"));
 				lastWasEntity = false;
 			}
 			break;
@@ -483,8 +492,13 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 				// TODO: this is screwed up for this case, I am sure...
 			case Node.ENTITY_REFERENCE_NODE:
 			{
+
+				indentWithWhitespace();
 				Node n = translateEntityReference(name);
-				currentNode.appendChild(n);
+				Element el = currentDocument.createElement(XSLTEXT);
+				el.appendChild(n);
+				currentNode.appendChild(el);
+				currentNode.appendChild(currentDocument.createTextNode("\n"));
 				lastWasEntity = true;
 			}
 			break;
@@ -496,6 +510,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 					indentWithWhitespace();
 					Comment comment = currentDocument.createComment(name);
 					currentNode.appendChild(comment);
+					currentNode.appendChild(currentDocument.createTextNode("\n"));
 				}
 				lastWasEntity = false;
 			}
@@ -524,6 +539,13 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 				popDoc();
 			case Node.ELEMENT_NODE:
 				popNode();
+				if(type!= Node.DOCUMENT_NODE) { 
+					currentNode.appendChild(currentDocument.createTextNode("\n"));
+				}
+			default : 
+				if(type!= Node.DOCUMENT_NODE) { 
+					indentWithWhitespace(-1);
+				}
 			break;
 		}
 	}
@@ -596,18 +618,21 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		output.setAttribute("method", method);
 
 		style.appendChild(output);
+		style.appendChild(document.createTextNode("\n"));
+		
 		tagTemplate(output);
 
 		Element template = document.createElement(XSLTEMPLATE);
+		template.appendChild(document.createTextNode("\n"));
+
 		if(match != null) {
 			template.setAttribute("match", match);
-			style.appendChild(template);
 		}
 		if(name != null) {
 			template.setAttribute("name", name);
 			template.setAttribute("mode", name);
-			style.appendChild(template);
 		}
+		style.appendChild(template);
 		style.appendChild(document.createTextNode("\n"));
 
 		pushNode(template);
@@ -628,40 +653,12 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	private void tagTemplate(Element element)
 	{
 		String[] TAG = new String[] {
-				" generated by dexter from `" + filename + "'  ",
+				" generated by "  +  Dexter.DEXTER_VERSION 
+					+ " (" + Dexter.DEXTER_COPYRIGHT+ ") from `" + filename + "'  ",
 		 };
 		blockComment(element, TAG);
 	}
-/*
-	public Node getTextExpression(String key, String value)
-	{
-		Map<String, DocumentFragment> vt = valMap.get(key);
-		if (vt != null && vt.containsKey(value))
-		{
-			Node n = vt.get(value);
-			return n.cloneNode(true);
-		}
-		else
-		{
-			// send back a placeholder and file for auto-replacement
-			Element tmp = currentDocument.createElement("DEXTERTEMP");
-			Map<String, List<Element>> im = replacementMap.get(key);
-			if (im == null)
-			{
-				im = new HashMap<String, List<Element>>();
-				replacementMap.put(key, im);
-			}
-			List<Element> elst = im.get(value);
-			if (elst == null)
-			{
-				elst = new ArrayList<Element>();
-				im.put(value, elst);
-			}
-			elst.add(tmp);
-			return tmp;
-		}
-	}
-*/
+
 	protected DocumentFragment processIdentityValueTemplate(String key,
 	      String value)
 	{
@@ -824,5 +821,13 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 						+ name + "'");
 		}
 		return result;
+	}
+	public void appendText(String s) {
+		appendText(s, false);
+	}
+	public void appendText(String s,boolean escape) {
+		Element el = currentDocument.createElement("xsl:text");
+		if(escape) el.setAttribute("disable-output-escaping", "yes");
+		currentNode.appendChild(currentDocument.createTextNode(s));
 	}
 }

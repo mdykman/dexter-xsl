@@ -11,7 +11,7 @@ public class TextFunction implements PathFunction
 
 	public String apply(String path, String arg)
 	{
-		StringBuffer sb = new StringBuffer(path);
+		StringBuilder sb = new StringBuilder(path);
 		if(path.length() > 0 &&
 			path.charAt(path.length() - 1) != '/')
 		{

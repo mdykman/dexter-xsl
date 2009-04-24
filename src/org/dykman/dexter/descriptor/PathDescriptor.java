@@ -96,11 +96,11 @@ System.out.println(p[i] + " =>> " + args[i]);
 	}
 
 	public static String mapPath(String root, String path) {
-	   	StringBuffer buffer;
+	   	StringBuilder buffer;
 	   	if (path.startsWith("/")) {
-	   		buffer = new StringBuffer(path);
+	   		buffer = new StringBuilder(path);
 	   	} else {
-	   		buffer = new StringBuffer(root == null ? "/" : root);
+	   		buffer = new StringBuilder(root == null ? "/" : root);
 	   		if (!path.startsWith(":")) {
 	   			if (root != null && !root.endsWith("/")) {
 	   				buffer.append('/');

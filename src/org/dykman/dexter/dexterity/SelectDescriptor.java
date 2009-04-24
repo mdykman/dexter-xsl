@@ -22,13 +22,8 @@ public class SelectDescriptor extends PathDescriptor
 	{
 		sequencer.startIterator(new CrossPathResolver(this),value);
 		String path = mapPath(value);
-//System.out.println("value in:" + value + " path out:" + path);		
 		setPath(path);
-		setIteratorContext(path);
-//		String ic = getIteratorContext();
-//		path = dequalify(ic, value);
-//		String ic = getIteratorContext();
-		
+		setIteratorContext(path);		
 	}
 
 	@Override

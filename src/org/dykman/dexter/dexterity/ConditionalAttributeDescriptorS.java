@@ -13,7 +13,7 @@ public class ConditionalAttributeDescriptorS extends
 	@Override
 	protected String[] getTests() {
 		if(value.length() > 0 ) {
-			StringBuffer buffer = new StringBuffer();
+			StringBuilder buffer = new StringBuilder();
 			buffer.append('[').append(value.substring(0, 1)).append(']');
 			return value.substring(1).split(buffer.toString());
 		}

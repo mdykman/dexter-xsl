@@ -21,7 +21,7 @@ public class TestDescriptor extends PathDescriptor
 	@Override
 	public void beforeNode()
 	{
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		String[] tests = value.split("[ |]");
 		String path = getMeta(DexterityConstants.ITER_CONTEXT);
 // TODO  do I need this?		
