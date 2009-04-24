@@ -31,7 +31,7 @@ public class CaseDescriptor extends BlockDescriptor
 			}
 			else
 			{
-				StringBuffer buffer = new StringBuffer();
+				StringBuilder buffer = new StringBuilder();
 				String[] tests = values[i].split("[ |]");
 				String path = getMeta(DexterityConstants.ITER_CONTEXT);
 				

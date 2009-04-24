@@ -20,6 +20,7 @@ public class GhostDescriptor extends NodeTransformDescriptor
 	@Override
 	public void start()
 	{
+		if(!applyToChildren) beforeNode();
 	}
 	@Override 
 	public void attributes()
@@ -28,5 +29,6 @@ public class GhostDescriptor extends NodeTransformDescriptor
 	@Override 
 	public void end()
 	{
+		if(!applyToChildren) afterNode();
 	}
 }

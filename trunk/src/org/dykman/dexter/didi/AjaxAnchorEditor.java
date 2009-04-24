@@ -67,7 +67,7 @@ public class AjaxAnchorEditor extends AjaxEditor
 		{
 			method = "get";
 		}
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("   didi_ajax.handler_").append(id)
 			.append(" = didi_ajax.create_handler(\n      '")
 			.append(value).append("','")

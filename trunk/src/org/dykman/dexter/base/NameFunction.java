@@ -11,7 +11,7 @@ public class NameFunction implements PathFunction
 
 	public String apply(String path, String arg)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		
 		sb.append("local-name(").append(path).append(")");
 		return sb.toString();	

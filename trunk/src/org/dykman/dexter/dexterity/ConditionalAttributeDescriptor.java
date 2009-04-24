@@ -37,7 +37,7 @@ public class ConditionalAttributeDescriptor extends AbstractAttributeDescriptor
 				value = a.getNodeValue();
 				attr.removeNamedItem(name);
 			}
-			StringBuffer buffer = new StringBuffer();
+			StringBuilder buffer = new StringBuilder();
 			String[] subx = test.split("[ |]");
 
 			int p = 0;

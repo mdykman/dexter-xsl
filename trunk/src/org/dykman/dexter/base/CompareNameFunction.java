@@ -11,7 +11,7 @@ public class CompareNameFunction extends NameFunction
 
 	public String apply(String path, String arg)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		
 		sb.append(super.apply(path, null))
 			.append("=\"").append(arg).append("\"");

@@ -36,7 +36,7 @@ class HackWriter extends Writer
 	public void writeDocType()
 		throws IOException
 	{
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 
 		if(preserveEntities && entities != null && entities.size() > 0)
 		{
