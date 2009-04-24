@@ -99,8 +99,8 @@ public class Dexter
 	}
 
 	public void addTemplate(Element template) {
-		templateLibrary.adoptNode(template);
-		templateLibrary.appendChild(template);
+		templateLibrary.getDocumentElement().appendChild(
+				templateLibrary.adoptNode( template.cloneNode(true)));
 	}
 	private void loadTemplateLibrary(String name) {
 		try {
