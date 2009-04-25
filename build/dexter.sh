@@ -15,6 +15,13 @@ MAIN_CLASS=org.dykman.dexter.Main
 DEXTER_JAR=$DEXTER_HOME/build/dexter.jar
 GETOPT_JAR=$DEXTER_HOME/lib/gnu-getopt.jar
 
-CLASSPATH=$DEXTER_JAR:$GETOPT_JAR
+SAXON_PATH=""
+for j in `find saxon -name '*.jar'`; do
+	SAXON_PATH=$SAXON_PATH:$j
+done;
 
-${JAVA} -cp ${CLASSPATH} ${MAIN_CLASS} $@
+CLASSPATH=$DEXTER_JAR:$GETOPT_JAR:$SAXON_PATH
+
+JAVA_OPTS=-Djavax.xml.transform.TransformerFactory=net.sf.saxon.TransformerFactoryImpl
+
+${JAVA} $JAVA_OPTS -cp ${CLASSPATH} ${MAIN_CLASS} $@

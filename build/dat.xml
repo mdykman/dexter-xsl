@@ -1,0 +1,15 @@
+<data>
+	<person>
+		<first>Peter</first>
+		<middle type="optional">Carson</middle>
+		<last>Jones</last>
+	</person>
+	<person>
+		<first>Sally</first>
+		<middle>Louise</middle>
+		<else>
+			<thing>Christian</thing>
+		</else>
+		<last>O'Reilly</last>
+	</person>
+</data>
