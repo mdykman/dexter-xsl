@@ -104,7 +104,8 @@ public class Dexter
 	}
 	private void loadTemplateLibrary(String name) {
 		try {
-			templateLibrary = builder.parse(Dexter.class.getResourceAsStream(name));
+			templateLibrary = builder.parse(getClass()
+				.getResourceAsStream(name));
 		} catch(Exception e) {
 			throw new DexterException("error loading library: " + e.getMessage());
 		}
@@ -114,8 +115,6 @@ public class Dexter
 			Element template,
 			Set<String> templatesLoaded) {
 		DocumentTraversal dt = (DocumentTraversal) templateLibrary;
-		String ni = template.getAttribute("name");
-		String m = template.getAttribute("mode");
 
 		Set<String> modes = new HashSet<String>();
 		DocumentFragment fragment = templateLibrary.createDocumentFragment();

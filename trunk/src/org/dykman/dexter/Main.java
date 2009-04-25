@@ -225,7 +225,6 @@ public class Main
 			}
 			loadLibraryTemplate(dexter,builder,libararySet);
 			
-			
 			dexter.setPropigateComments(propComments);
 			
 			if(mediaType != null) dexter.setMediaType(mediaType);
@@ -249,34 +248,29 @@ public class Main
 							putToDisk(name, docs.get(name));
 						}
 					}
+					if(checkValidity)
+					{
+						k = docs.keySet().iterator();
+						String name = k.next();
+						while(k.hasNext())
+						{
+							File f;
+							if(outputDirectory == null) f = new File(name);
+							else f = new File(outputDirectory,name);
+							Source source = new StreamSource(f);
+							source.setSystemId(name);
+							Transformer transformer= transFact.newTransformer(source);
+							transformer.hashCode();
+						}
+					}
 				}
 				catch(Exception e) {
-					System.out.println("error while processing source file `" + fn + "'");
-					throw e;
+					System.out.print("error while processing source file `" + fn + "'");
+					System.out.println(e.getMessage());
 				}
 				++argp;
 			}
 			
-			Iterator<String> k = docs.keySet().iterator();
-			if(checkValidity && docs != null) while(k.hasNext())
-			{
-				String name = k.next();
-				if(!name.endsWith(".dispose.xsl")) {
-					try {
-						File f;
-						if(outputDirectory == null) f = new File(name);
-						else f = new File(outputDirectory,name);
-						Source source = new StreamSource(f);
-						source.setSystemId(name);
-						Transformer transformer= transFact.newTransformer(source);
-						transformer.hashCode();
-					} catch(Exception e) {
-						System.out.println("error while validating result file " + name);
-						e.printStackTrace(System.out);
-						throw e;
-					}
-				}
-			}
 		}
 		catch (DexterHaltException e)
 		{
