@@ -29,7 +29,7 @@ Running the command
 {{{
 dexter.sh source.xml
 }}}
-produces 3 stylesheets: `source.xml.xsl`,  `source.xml-yyy.xsl`  and `source.xml-zzz.xsl`.  Applying source.xml.xsl to data.xml produces
+produces 3 stylesheets: `source.xml.xsl`,  `source.xml-yyy.xsl`  and `source.xml-zzz.xsl`.  Applying `source.xml.xsl` to `data.xml` produces
 {{{
 <xxx>
         <www>stuff-data</www>
