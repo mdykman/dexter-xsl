@@ -1,6 +1,6 @@
 #demonstrating Dexter's basic features
 
-*data,xml*
+*data.xml*
 {{{
 <data>
         <found value="y" >I found it</found>
