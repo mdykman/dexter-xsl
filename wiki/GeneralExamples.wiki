@@ -53,7 +53,7 @@ running the command
 dexter.sh source.xml
 }}}
 
-produces the stylesheet source.xml.xsl.  Applying that template to data.xml produces
+produces the stylesheet `source.xml.xsl`.  Applying that template to data.xml produces
 
 {{{
 <tests>
