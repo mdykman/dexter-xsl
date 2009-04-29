@@ -43,8 +43,6 @@ import org.w3c.dom.traversal.NodeIterator;
 
 public class Dexter
 {
-	static Set<File> outputFile = new HashSet<File>();
-
 	protected Document inputDocument;
 	protected DocumentBuilder builder;
 	public static String DEXTER_VERSION = "dexter-0.3.0-beta";
@@ -56,8 +54,6 @@ public class Dexter
 	private String indent = "no";
 	private String method = "html";
 	private String mediaType = "text/html";
-
-	protected Map<Object, Object> userData = new HashMap<Object, Object>();
 
 	protected PropertyResolver baseResolver; 
 	protected PropertyResolver entityResolver; 
@@ -74,9 +70,7 @@ public class Dexter
 
 	private boolean propigateComments = true;
 
-	
 	private Document templateLibrary;
-	
 	
 	public String[] namespaces() {
 		return modulesMap.keySet().toArray(new String[modulesMap.size()]);
@@ -102,6 +96,7 @@ public class Dexter
 		templateLibrary.getDocumentElement().appendChild(
 				templateLibrary.adoptNode( template.cloneNode(true)));
 	}
+
 	private void loadTemplateLibrary(String name) {
 		try {
 			templateLibrary = builder.parse(getClass()
@@ -325,6 +320,9 @@ public class Dexter
 		Properties result = null;
 		InputStream in = null;
 		
+
+		System.out.println("name = " + name);			
+		
 		if(propertyPath != null)
 		{
 			String[] pp = propertyPath.split("[" + File.pathSeparatorChar + "]");
@@ -340,8 +338,8 @@ public class Dexter
 		}
 		if(in == null)
 		{
-			String cp;
-			cp = "/modules/" + name;
+			String cp = "/modules/" + name;
+System.out.println("loading properties from " + cp);			
 			in = getClass().getResourceAsStream(cp);
 			if(in == null)
 			{
