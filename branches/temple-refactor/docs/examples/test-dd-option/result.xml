@@ -1,0 +1,3 @@
+<select name="pet">
+	<option>choose a pet</option><option>dog</option><option>cat</option><option>mouse</option>
+</select>

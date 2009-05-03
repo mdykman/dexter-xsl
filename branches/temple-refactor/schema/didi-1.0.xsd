@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+  elementFormDefault="qualified">
+  <xs:annotation>
+  	<xs:appinfo>http://code.google.com/p/dexter-xsl</xs:appinfo>
+  	<xs:documentation>XHTLM-specific processing attributes</xs:documentation>
+  </xs:annotation>
+  <xs:attribute name="meta" type="xs:normalizedString">
+   <xs:annotation>
+   <xs:documentation>embed meta data into the HTML output specified descriptor file</xs:documentation>
+   </xs:annotation>
+  </xs:attribute>  
+  <xs:attribute name="data" type="xs:normalizedString"/>
+    
+  <xs:attribute name="option" type="xs:normalizedString">
+     <xs:annotation>
+   <xs:documentation>define HTML SELECT options</xs:documentation>
+   </xs:annotation>
+  </xs:attribute> 
+   
+  <xs:attribute name="options" type="xs:normalizedString"/>  
+</xs:schema>

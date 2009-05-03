@@ -1,0 +1,114 @@
+<div id="resumeBuilder" class="floatleft">
+	<script type="text/javascript" src="/js/resumeBuilder.js" ></script>
+	<div id="resumeBuilderMenu" class="floatleft">
+		<div class="resumeBuilderMenuItem">Resume Basics</div>
+		<div class="resumeBuilderMenuItem">Skills</div>
+		<div class="resumeBuilderMenuItem">Employment</div>
+		<div class="resumeBuilderMenuItem">Education</div>
+		<div class="resumeBuilderMenuItem">Volunteer</div>
+		<div class="resumeBuilderMenuItem">Hobbies</div>
+		<div class="resumeBuilderMenuItem">References</div>
+		<div id="resumeBuilderStats">
+			Stats
+		</div>
+	</div>
+	<div id="resumeBuilderWorkSpace" class="floatleft" dx:env="/result/Resume">
+		<form>
+			<div >
+				<fieldset >
+					<legend>Resume Visibility</legend>
+					<div class="floatleft leftmargin" ><span title="Only you may View this resume">Private</span>: <input type="radio" name="permiss" value="pri" /></div>
+					<div class="floatleft leftmargin"><span title="Only your friends may View this resume">Protected</span>: <input type="radio" name="permiss" value="pro" /></div>
+					<div class="floatleft leftmargin"><span title="Everyone may View this resume">Public</span>: <input type="radio" name="permiss" value="pub" /></div>
+					<div class="clearboth"></div>
+					<div>Date Created: <span dx:ghost="">Insert Date</span></div>
+					<div>Date Updated: <span dx:ghost="">Insert Date</span></div>
+				</fieldset>
+			</div>
+		</form>
+		<form>
+			<div>
+				<fieldset >
+					<legend>Contact Info</legend>
+					<table>
+						<tr>
+							<td align="right" title="if blank, we will just use your real first and last name.">
+								<label for="rsName">Display Name</label>
+								<input type="text" id="rsName" dx:attr="value:rsName" />
+							</td>
+						</tr>
+						<tr>
+							<td align="right">
+								<label for="showContact" >Display Contact Info</label>
+								<input type="checkbox" onclick="return checkDisabled(this, this.form);" id="showContact"  dx:cattr="checked:showContact!eq:y .!str:true" />
+							</td>
+						</tr>
+						<tr>
+							<td align="right">
+								<label for="rsStrAddr" >Street Address:</label>
+								<input type="text" id="rsStrAddr" dx:attr="value:rsStrAddr" dx:cattr="disabled:showContact!eq:n .!str:true"  />
+							</td>
+						</tr>
+						<tr>
+							<td align="right">
+								<label for="rsCity" >City:</label>
+								<input type="text" id="rsCity" dx:attr="value:rsCity" dx:cattr="disabled:showContact!eq:n .!str:true" />
+							</td>
+						</tr>
+						<tr>
+							<td align="right">
+								<label for="rsState" >State:</label>
+								<input type="text" id="rsState" dx:attr="value:rsState" dx:cattr="disabled:showContact!eq:n .!str:true" />
+							</td>
+						</tr>
+						<tr>
+							<td align="right">
+								<label for="rsZip" >Zip:</label>
+								<input type="text" id="rsZip" dx:attr="value:rsZip" dx:cattr="disabled:showContact!eq:n .!str:true" />
+							</td>
+						</tr>
+						<tr>
+							<td align="right">
+								<label for="rsphone" >Phone:</label>
+								<input type="text" id="rsphone" dx:attr="value:rsphone" dx:cattr="disabled:showContact!eq:n .!str:true" />
+							</td>
+						</tr>
+						<tr>
+							<td align="right">
+								<label for="rsemail" >Email:</label>
+								<input type="text" id="rsemail" dx:attr="value:rsemail" dx:cattr="disabled:showContact!eq:n .!str:true" />
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><button>Update</button></td>
+						</tr>
+					</table>		
+				</fieldset>
+			</div>
+		</form>
+		<form>
+			<div>
+				<fieldset >
+					<legend>Resume Headings</legend>
+					<table>
+						<tr>
+							<td>
+								<label for="rsUserDesc" >Objective:</label>
+								<textarea id="rsUserDesc"></textarea>
+							</td>
+							</tr>
+							<tr>
+							<td>
+								<label for="rsSummaryOfQual" >Objective:</label>
+								<textarea id="rsSummaryOfQual"></textarea>
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><button>Update</button></td>
+						</tr>
+					</table>		
+				</fieldset>
+			</div>
+		</form>
+	</div>
+</div>

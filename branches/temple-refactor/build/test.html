@@ -1,0 +1,27 @@
+<html>
+<head>
+<script type='text/javascript' src='/didi.js'></script>
+
+<script type='text/javascript' >
+function testme() {
+	var myData = {}
+	Didi.Ajax.updateContent('inner','/rq/groovy/y',myData,false);
+}
+
+</script>
+
+</head>
+<body>
+javascript container
+<a href="javascript:void(0)" onclick="return testme()">click</a>
+<div id="inner" dx:sub="/">
+	<div> inner content </div>
+	<div dx:text="*/thing">replace me</div>
+	<script type='text/javascript' >
+		alert('ding');
+	</script>
+<div>this says nothing</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	elementFormDefault="qualified">
+	<xs:annotation>
+  		<xs:appinfo>http://code.google.com/p/dexter-xsl</xs:appinfo>
+		<xs:documentation>validates Dexter tranformation attributes</xs:documentation>
+	</xs:annotation>
+
+	<xs:attribute name="env" type="xs:normalizedString">
+		<xs:annotation>
+			<xs:documentation>sets the default path for the scope of the element</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+
+	<xs:attribute name="value" type="xs:normalizedString">
+		<xs:annotation>
+			<xs:documentation>replace the content of the current element with the text context of the datapath expression</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:attribute name="ccpy" type="xs:normalizedString">
+		<xs:annotation>
+			<xs:documentation>replace the content of the current element with the set of all child nodes of the datapath expression</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+
+	<xs:attribute name="if" type="xs:normalizedString" >
+		<xs:annotation>
+			<xs:documentation>conditionally render the node based expression evaluations</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	
+	<xs:attribute name="case" type="xs:normalizedString"  >
+		<xs:annotation>
+			<xs:documentation>
+			expressions for  chain of elements are conditionally evaluated; the first to return true 
+			causes that node to be exsively evaluated</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	
+	<xs:attribute name="default" type="xs:normalizedString"  >
+		<xs:annotation>
+			<xs:documentation>
+evaluates always-true expression when used to define a fallback for a 'case' chain
+			</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	
+	<xs:attribute name="each" type="xs:normalizedString" >
+	<xs:annotation>
+		<xs:documentation>
+		repeat the source node for every node found in the data path expression
+		</xs:documentation>
+	</xs:annotation>
+	</xs:attribute>
+
+	<xs:attribute name="ignore" type="xs:normalizedString">
+		<xs:annotation>
+			<xs:documentation>ignore this node, it's children and all associated productions during XSL generation</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+
+	<xs:attribute name="uniq" type="xs:normalizedString" >
+		<xs:annotation>
+			<xs:documentation>
+keep generated attributes unique across across a document
+			</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:attribute name="sub" type="xs:normalizedString" >
+		<xs:annotation>
+			<xs:documentation>
+generate a seperate stylesheet representing the current element and include it into the top-level stylesheet
+			</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	
+	<xs:attribute name="ghost" type="xs:normalizedString">
+		<xs:annotation>
+			<xs:documentation>replace this node with the set of it's children after all operations on the node are exavulated</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+
+	<xs:attribute name="attr" type="xs:normalizedString">
+		<xs:annotation>
+			<xs:documentation>a sequcence of space-delimited attribute-assgnment expressions</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+
+	<xs:attribute name="attrs" type="xs:normalizedString">
+		<xs:annotation>
+			<xs:documentation>a sequcence of space-delimited attribute-assgnment expressions</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+
+	<xs:attribute name="cattr" type="xs:normalizedString">
+		<xs:annotation>
+			<xs:documentation>a sequcence of space-delimited attribute-assgnment expressions</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+
+	<xs:attribute name="cattrs" type="xs:normalizedString">
+		<xs:annotation>
+			<xs:documentation>a sequcence of space-delimited attribute-assgnment expressions</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+
+
+</xs:schema>

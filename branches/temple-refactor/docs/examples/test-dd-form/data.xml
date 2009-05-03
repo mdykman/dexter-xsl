@@ -1,0 +1,13 @@
+<?xml-stylesheet href="source.xml.xsl" type="text/xsl" ?>
+
+<result>
+	<formdata>
+		<first>Michael</first>
+		<last>Dykman</last>
+		<size>tall</size>
+		<adult>yes</adult>
+		<senior>no</senior>
+		<story>this is my story</story>
+		<clicker>press this</clicker>
+	</formdata>
+</result>

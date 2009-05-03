@@ -1,0 +1,11 @@
+<div>
+	<div dx:each="data/names/name" dx:attrs="|onlick:return collect({json(.)});" />
+	---------------------------------------
+	<div dx:each="data/person">
+		first <span dx:text="first" ></span>
+		middle <span dx:text="middle" ></span>
+		last <span dx:text="last" ></span>
+
+	<a href="javascript:void(0)" dx:attr="href:javascript:dosomething({json(.)})" >do something</a>
+</div>
+</div>

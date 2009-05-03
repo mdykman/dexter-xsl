@@ -1,0 +1,31 @@
+ERROR:  'Invalid conversion from 'com.sun.org.apache.xalan.internal.xsltc.dom.SimpleResultTreeImpl' to 'node-set'.'
+unexpected exception
+javax.xml.transform.TransformerException: java.lang.RuntimeException: Invalid conversion from 'com.sun.org.apache.xalan.internal.xsltc.dom.SimpleResultTreeImpl' to 'node-set'.
+	at com.sun.org.apache.xalan.internal.xsltc.trax.TransformerImpl.transform(TransformerImpl.java:717)
+	at com.sun.org.apache.xalan.internal.xsltc.trax.TransformerImpl.transform(TransformerImpl.java:313)
+	at org.dykman.dexter.Main.main(Main.java:198)
+Caused by: java.lang.RuntimeException: Invalid conversion from 'com.sun.org.apache.xalan.internal.xsltc.dom.SimpleResultTreeImpl' to 'node-set'.
+	at com.sun.org.apache.xalan.internal.xsltc.runtime.BasisLibrary.runTimeError(BasisLibrary.java:1496)
+	at com.sun.org.apache.xalan.internal.xsltc.runtime.BasisLibrary.runTimeError(BasisLibrary.java:1504)
+	at com.sun.org.apache.xalan.internal.xsltc.runtime.BasisLibrary.referenceToNodeSet(BasisLibrary.java:975)
+	at source_xml.jshash()
+	at source_xml.template$dot$0()
+	at source_xml.applyTemplates()
+	at source_xml.transform()
+	at com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet.transform(AbstractTranslet.java:602)
+	at com.sun.org.apache.xalan.internal.xsltc.trax.TransformerImpl.transform(TransformerImpl.java:710)
+	... 2 more
+---------
+java.lang.RuntimeException: Invalid conversion from 'com.sun.org.apache.xalan.internal.xsltc.dom.SimpleResultTreeImpl' to 'node-set'.
+	at com.sun.org.apache.xalan.internal.xsltc.runtime.BasisLibrary.runTimeError(BasisLibrary.java:1496)
+	at com.sun.org.apache.xalan.internal.xsltc.runtime.BasisLibrary.runTimeError(BasisLibrary.java:1504)
+	at com.sun.org.apache.xalan.internal.xsltc.runtime.BasisLibrary.referenceToNodeSet(BasisLibrary.java:975)
+	at source_xml.jshash()
+	at source_xml.template$dot$0()
+	at source_xml.applyTemplates()
+	at source_xml.transform()
+	at com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet.transform(AbstractTranslet.java:602)
+	at com.sun.org.apache.xalan.internal.xsltc.trax.TransformerImpl.transform(TransformerImpl.java:710)
+	at com.sun.org.apache.xalan.internal.xsltc.trax.TransformerImpl.transform(TransformerImpl.java:313)
+	at org.dykman.dexter.Main.main(Main.java:198)
+diff: result.xml: No such file or directory

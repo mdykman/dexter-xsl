@@ -1,0 +1,13 @@
+<?xml-stylesheet href="source.xml.xsl" type="text/xsl" ?>
+
+<result>
+	<cat>
+		<stuff>stuff-data</stuff>
+	</cat>
+	<thing1>
+		<stuff>stuff-data1</stuff>
+	</thing1>
+	<thing2>
+		<stuff>stuff-data2</stuff>
+	</thing2>
+</result>
