@@ -16,11 +16,26 @@ public class GhostDescriptor extends NodeTransformDescriptor
 		super(descriptor);
 	}
 	
-	// intercept everything except the children
 	@Override
 	public void start()
 	{
 		if(!applyToChildren) beforeNode();
+	}
+
+	@Override
+	public void children()
+	{
+		if(applyToChildren)
+		{
+			beforeNode();
+		}
+		
+		inner.children();
+		if(applyToChildren)
+		{
+			afterNode();
+		}
+
 	}
 	@Override 
 	public void attributes()

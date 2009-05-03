@@ -6,9 +6,9 @@ digraph G
   rankdir=LR;
   Node1 [label="org.dykman.dexter.base.XSLTDocSequencer.mapAttribute",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
   Node1 -> Node2 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
-  Node2 [label="org.dykman.dexter.base.XSLTDocSequencer.valueTemplate",height=0.2,width=0.4,color="black",URL="$classorg_1_1dykman_1_1dexter_1_1base_1_1XSLTDocSequencer.html#421c6058683bc52c84ca7b9ff8c16f06"];
+  Node2 [label="org.dykman.dexter.base.XSLTDocSequencer.valueTemplate",height=0.2,width=0.4,color="black",URL="$classorg_1_1dykman_1_1dexter_1_1base_1_1XSLTDocSequencer.html#d71cba0825ffe17648a7bce3959d026e"];
   Node2 -> Node3 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
-  Node3 [label="org.dykman.dexter.base.XSLTDocSequencer.callTemplateEvaluator",height=0.2,width=0.4,color="black",URL="$classorg_1_1dykman_1_1dexter_1_1base_1_1XSLTDocSequencer.html#560b4a553b0b7867576661b904d2ce80"];
+  Node3 [label="org.dykman.dexter.base.XSLTDocSequencer.callTemplateEvaluator",height=0.2,width=0.4,color="black",URL="$classorg_1_1dykman_1_1dexter_1_1base_1_1XSLTDocSequencer.html#8fe10459e18d54450d057073006ff135"];
   Node3 -> Node4 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
   Node4 [label="org.dykman.dexter.Dexter.loadTemplate",height=0.2,width=0.4,color="black",URL="$classorg_1_1dykman_1_1dexter_1_1Dexter.html#3ae64faa9563b902170100c16153216c"];
   Node4 -> Node5 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
