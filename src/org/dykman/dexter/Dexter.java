@@ -321,7 +321,7 @@ public class Dexter
 		InputStream in = null;
 		
 
-		System.out.println("name = " + name);			
+//		System.out.println("name = " + name);			
 		
 		if(propertyPath != null)
 		{
@@ -339,7 +339,7 @@ public class Dexter
 		if(in == null)
 		{
 			String cp = "/modules/" + name;
-System.out.println("loading properties from " + cp);			
+//System.out.println("loading properties from " + cp);			
 			in = getClass().getResourceAsStream(cp);
 			if(in == null)
 			{

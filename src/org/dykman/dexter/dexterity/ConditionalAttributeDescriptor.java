@@ -40,6 +40,7 @@ public class ConditionalAttributeDescriptor extends AbstractAttributeDescriptor
 			StringBuilder buffer = new StringBuilder();
 			String[] subx = test.split("[ |]");
 
+			// TODO - think this code does nothigng anymore
 			int p = 0;
 			for (int j = 0; j < subx.length; ++j)
 			{
