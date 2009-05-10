@@ -1,0 +1,6 @@
+<tests>
+	<div src="www.foo.org" class="general" id="test-1" name="found"></div>
+	<div fakeattribute="the value is `the fake string'" id="test-2" name="found"></div>
+	<option id="test-3" name="thing" value="C"></option>
+	<option checked="" id="test-4" name="thing" value="D"></option>
+</tests>
