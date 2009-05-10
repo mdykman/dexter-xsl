@@ -8,13 +8,13 @@
 					<xsl:element name="option">				<xsl:text>choose a pet</xsl:text>
 			</xsl:element>
 
-		<xsl:apply-templates mode="aa14cfb76e145f920" select="/result/pets/pet"/>
+		<xsl:apply-templates mode="abbb6e663f86ef0d1" select="/result/pets/pet"/>
 			<xsl:text>
 </xsl:text>
 		</xsl:element>
 
 	</xsl:template>
-<xsl:template match="/result/pets/pet" mode="aa14cfb76e145f920"><xsl:variable name="DexterDepthLevel1"><xsl:value-of select="position()"/></xsl:variable>				<xsl:element name="option"><xsl:value-of select="."/></xsl:element>
+<xsl:template match="/result/pets/pet" mode="abbb6e663f86ef0d1">				<xsl:element name="option"><xsl:value-of select="."/></xsl:element>
 
 			</xsl:template>
 </xsl:stylesheet>
