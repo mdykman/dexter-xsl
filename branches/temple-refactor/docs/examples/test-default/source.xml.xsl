@@ -5,7 +5,13 @@
 <xsl:template match="/">
 		<xsl:element name="div">			<xsl:text>
 	</xsl:text>
-		<xsl:for-each select="data/person"><xsl:variable name="DexterDepthLevel1"><xsl:value-of select="position()"/></xsl:variable>				<xsl:element name="div">					<xsl:text>
+		<xsl:apply-templates mode="af355a798bec52978" select="data/person"/>
+			<xsl:text>
+</xsl:text>
+		</xsl:element>
+
+	</xsl:template>
+<xsl:template match="data/person" mode="af355a798bec52978"><xsl:variable name="DexterDepthLevel1"><xsl:value-of select="position()"/></xsl:variable>				<xsl:element name="div">					<xsl:text>
 		first </xsl:text>
 									<xsl:element name="span"><xsl:value-of select="first"/></xsl:element>
 
@@ -15,15 +21,11 @@
 
 									<xsl:text>
 		last </xsl:text>
-									<xsl:element name="span"><xsl:choose><xsl:when test="(string-length(string(last)) &gt; 0)"><xsl:value-of select="last"/></xsl:when><xsl:otherwise><xsl:text>Jones</xsl:text></xsl:otherwise></xsl:choose></xsl:element>
+									<xsl:element name="span"><xsl:choose><xsl:when test="(string-length(last) &gt; 0)"><xsl:value-of select="last"/></xsl:when><xsl:otherwise><xsl:text>Jones</xsl:text></xsl:otherwise></xsl:choose></xsl:element>
 
 									<xsl:text>
 	</xsl:text>
 				</xsl:element>
 
-			</xsl:for-each>			<xsl:text>
-</xsl:text>
-		</xsl:element>
-
-	</xsl:template>
+			</xsl:template>
 </xsl:stylesheet>

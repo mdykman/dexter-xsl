@@ -1,0 +1,15 @@
+<tests>
+	<div id="group-2" dx:env="data/record">
+			a record
+		<div dx:each="*" dx:text="new record {local-name()} = {.}">
+		</div>
+
+	
+		<div >
+			<span dx:text="one"></span>
+			<span dx:text="two"></span>
+			<span dx:text="three"></span>
+			<span dx:text="four"></span>
+		</div>
+	</div>
+</tests>

@@ -1,0 +1,6 @@
+<tests dx:env="data" >
+	<div id="test-1" name="found" dx:attr="src:uri class:'general'" />
+	<div id="test-2" name="found" dx:attrs="|fakeattribute:the value is `{fake}'" />
+	<option id="test-3" name="thing" value="C" dx:cattr="checked: test/@value='n'" />
+	<option id="test-4" name="thing" value="D" dx:cattr="checked: test/@value='y'" />
+</tests>

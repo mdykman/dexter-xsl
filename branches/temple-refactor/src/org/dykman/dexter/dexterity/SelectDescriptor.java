@@ -6,7 +6,6 @@
 
 package org.dykman.dexter.dexterity;
 
-import org.dykman.dexter.descriptor.CrossPathResolver;
 import org.dykman.dexter.descriptor.Descriptor;
 import org.dykman.dexter.descriptor.PathDescriptor;
 
@@ -20,7 +19,7 @@ public class SelectDescriptor extends PathDescriptor
 	@Override
 	public void beforeNode()
 	{
-		sequencer.startIterator(new CrossPathResolver(this),value);
+		sequencer.startIterator(value);
 		String path = mapPath(value);
 		setPath(path);
 		setIteratorContext(path);		

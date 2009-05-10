@@ -4,7 +4,7 @@
 </xsl:output>
 <xsl:template match="/"><xsl:choose><xsl:when test="/*/thing2"><xsl:apply-templates mode="source-xml-zzz" select="/*/thing2"/></xsl:when><xsl:otherwise><xsl:call-template name="source-xml-zzz"/></xsl:otherwise></xsl:choose></xsl:template>
 <xsl:template match="/*/thing2" mode="source-xml-zzz" name="source-xml-zzz">
-								<xsl:element name="zzz"><xsl:attribute name="id"><xsl:text>zzz</xsl:text></xsl:attribute><xsl:value-of select="stuff"/></xsl:element>
+								<xsl:element name="zzz"><xsl:attribute name="id"><xsl:text>zzz</xsl:text><xsl:if test="last() &gt; 1">-<xsl:value-of select="generate-id()"/></xsl:if></xsl:attribute><xsl:value-of select="stuff"/></xsl:element>
 
 							</xsl:template>
 </xsl:stylesheet>
