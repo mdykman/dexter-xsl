@@ -1,7 +1,0 @@
-<div>
-	<div dx:each="data/person">
-		first <span dx:text="first" ></span>
-		middle <span dx:text="!middle" >I have no middle name</span>
-		last <span dx:text="!!last" >Jones</span>
-	</div>
-</div>
