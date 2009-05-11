@@ -160,7 +160,7 @@ public class Dexter
 		}
 		return fragment;
 	}
-	public void loadTemplate(Element stylesheet, String name) {
+	public boolean loadTemplate(Element stylesheet, String name) {
 		
 		DocumentTraversal dt = (DocumentTraversal)templateLibrary;
 		NodeIterator it = dt.createNodeIterator(templateLibrary, 
@@ -175,12 +175,15 @@ public class Dexter
 			stylesheet.setUserData("external-stylesheets",templatesLoaded,null);
 		}
 		
+		boolean loaded = false;
 		while((nn = it.nextNode())!= null) {
+			loaded = true;
 			fragment.appendChild(
 				loadTemplateRecurse((Element)nn, templatesLoaded));
 		}
 		stylesheet.getOwnerDocument().adoptNode(fragment);
 		stylesheet.appendChild(fragment);
+		return loaded;
 	}
 	
 	
@@ -281,8 +284,8 @@ public class Dexter
 				String[] mods = ml.split("[,]");
 				for(int i = 0; i < mods.length; ++i)
 				{
-					String fn = mods[i] + ".properties";
-					Properties p = searchProperties(fn);
+//					String fn = mods[i] + ".properties";
+					Properties p = searchProperties(mods[i]);
 					if(p == null)
 					{
 						throw new DexterException("unable to find properties for module " + mods[i]);
@@ -319,16 +322,14 @@ public class Dexter
 	{
 		Properties result = null;
 		InputStream in = null;
-		
-
-//		System.out.println("name = " + name);			
+		String nn = name + ".properties";
 		
 		if(propertyPath != null)
 		{
 			String[] pp = propertyPath.split("[" + File.pathSeparatorChar + "]");
 			for(int i = 0; i < pp.length; ++i)
 			{
-				File f = new File(pp[i],name);
+				File f = new File(pp[i],nn);
 				if(f.exists() && f.canRead())
 				{
 					in = new FileInputStream(f);
@@ -338,12 +339,11 @@ public class Dexter
 		}
 		if(in == null)
 		{
-			String cp = "/modules/" + name;
-//System.out.println("loading properties from " + cp);			
+			String cp = "/modules/" + nn;
 			in = getClass().getResourceAsStream(cp);
 			if(in == null)
 			{
-				cp = "/org/dykman/dexter/modules/" + name;
+				cp = name + "/module.properties";
 				in = getClass().getResourceAsStream(cp);
 			}
 		}

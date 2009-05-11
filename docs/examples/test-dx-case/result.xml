@@ -1,0 +1,5 @@
+<tests>
+		<div cond="true" id="test-1a">only one should show with 42</div>
+		<div cond="true" id="test-2b">only one should show with 43</div>
+
+</tests>

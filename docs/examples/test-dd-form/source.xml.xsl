@@ -19,25 +19,25 @@
 
 					<xsl:text>
 	</xsl:text>
-					<xsl:element name="input"><xsl:if test="string(*/formdata/size) = &quot;tall&quot;"><xsl:attribute name="checked"><xsl:value-of select="&quot;true&quot;"/></xsl:attribute></xsl:if><xsl:attribute name="name">size</xsl:attribute><xsl:attribute name="type">radio</xsl:attribute><xsl:attribute name="value">tall</xsl:attribute></xsl:element>
+					<xsl:element name="input"><xsl:if test="string(*/formdata/size)='tall'"><xsl:attribute name="checked"><xsl:value-of select="true()"/></xsl:attribute></xsl:if><xsl:attribute name="name">size</xsl:attribute><xsl:attribute name="type">radio</xsl:attribute><xsl:attribute name="value">tall</xsl:attribute></xsl:element>
 
 					<xsl:text>tall
 	</xsl:text>
-					<xsl:element name="input"><xsl:if test="string(*/formdata/size) = &quot;short&quot;"><xsl:attribute name="checked"><xsl:value-of select="&quot;true&quot;"/></xsl:attribute></xsl:if><xsl:attribute name="name">size</xsl:attribute><xsl:attribute name="type">radio</xsl:attribute><xsl:attribute name="value">short</xsl:attribute></xsl:element>
+					<xsl:element name="input"><xsl:if test="string(*/formdata/size)='short'"><xsl:attribute name="checked"><xsl:value-of select="true()"/></xsl:attribute></xsl:if><xsl:attribute name="name">size</xsl:attribute><xsl:attribute name="type">radio</xsl:attribute><xsl:attribute name="value">short</xsl:attribute></xsl:element>
 
 					<xsl:text>short </xsl:text>
 					<xsl:element name="br"/>
 
 					<xsl:text>
 	</xsl:text>
-					<xsl:element name="input"><xsl:if test="string(*/formdata/adult) = &quot;yes&quot;"><xsl:attribute name="checked"><xsl:value-of select="&quot;true&quot;"/></xsl:attribute></xsl:if><xsl:attribute name="name">adult</xsl:attribute><xsl:attribute name="type">checkbox</xsl:attribute><xsl:attribute name="value">yes</xsl:attribute></xsl:element>
+					<xsl:element name="input"><xsl:if test="string(*/formdata/adult)='yes'"><xsl:attribute name="checked"><xsl:value-of select="true()"/></xsl:attribute></xsl:if><xsl:attribute name="name">adult</xsl:attribute><xsl:attribute name="type">checkbox</xsl:attribute><xsl:attribute name="value">yes</xsl:attribute></xsl:element>
 
 					<xsl:text>adult </xsl:text>
 					<xsl:element name="br"/>
 
 					<xsl:text>
 	</xsl:text>
-					<xsl:element name="input"><xsl:if test="string(*/formdata/senior) = &quot;yes&quot;"><xsl:attribute name="checked"><xsl:value-of select="&quot;true&quot;"/></xsl:attribute></xsl:if><xsl:attribute name="name">senior</xsl:attribute><xsl:attribute name="type">checkbox</xsl:attribute><xsl:attribute name="value">yes</xsl:attribute></xsl:element>
+					<xsl:element name="input"><xsl:if test="string(*/formdata/senior)='yes'"><xsl:attribute name="checked"><xsl:value-of select="true()"/></xsl:attribute></xsl:if><xsl:attribute name="name">senior</xsl:attribute><xsl:attribute name="type">checkbox</xsl:attribute><xsl:attribute name="value">yes</xsl:attribute></xsl:element>
 
 					<xsl:text>senior </xsl:text>
 					<xsl:element name="br"/>

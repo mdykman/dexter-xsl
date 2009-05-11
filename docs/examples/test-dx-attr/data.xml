@@ -1,0 +1,5 @@
+<data>
+	<uri>www.foo.org</uri>
+	<fake>the fake string</fake>
+	<test value="y" />
+</data>

@@ -6,7 +6,6 @@
 
 package org.dykman.dexter.dexterity;
 
-import org.dykman.dexter.descriptor.CrossPathResolver;
 import org.dykman.dexter.descriptor.Descriptor;
 import org.dykman.dexter.descriptor.PathDescriptor;
 import org.w3c.dom.Element;
@@ -37,13 +36,11 @@ public class MapNodeDescriptor extends PathDescriptor
 			useDefault = true;
 		}
 
-		if(value.startsWith("~"))
-		{
+		if(value.startsWith("~")) {
 			value = value.substring(1);
 			disableEscape = true;
 		}
-		CrossPathResolver resolver = new CrossPathResolver(this);
-		sequencer.mapNode(resolver, valueTemplateParams(value), 
+		sequencer.mapNode(valueTemplateParams(value), 
 				useDefault ? ((Element)element).getTextContent() : null,force,disableEscape);
 	}
 }

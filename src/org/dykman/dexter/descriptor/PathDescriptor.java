@@ -156,9 +156,10 @@ System.out.println(p[i] + " =>> " + args[i]);
 			}
 		}
 		String [] res = list.toArray(new String[list.size()]);
-		for(String v : res) {
+//		for(String v : res) {
 //			System.out.println("end of valueTemplateParams: " + v);
-		}
+//		}
+//System.out.println();
 		return res;
 	}
 }

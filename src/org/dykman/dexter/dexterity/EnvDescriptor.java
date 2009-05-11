@@ -15,11 +15,19 @@ public class EnvDescriptor extends PathDescriptor
 	{
 		super(descriptor);
 	}
+
 	@Override
 	public void start()
 	{
-		setPath(value);
+		sequencer.startSelect(null,value,sequencer.randMode());
 		super.start();
+	}
+
+	@Override
+	public void end()
+	{
+		super.end();
+		sequencer.endSelect();
 	}
 
 }

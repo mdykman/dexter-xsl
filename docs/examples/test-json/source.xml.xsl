@@ -5,38 +5,19 @@
 <xsl:template match="/">
 		<xsl:element name="div">			<xsl:text>
 	</xsl:text>
-		<xsl:for-each select="data/names/name"><xsl:variable name="DexterDepthLevel1"><xsl:value-of select="position()"/></xsl:variable>				<xsl:element name="div"><xsl:attribute name="onlick"><xsl:choose><xsl:when test="."><xsl:text>return collect(</xsl:text><xsl:call-template name="json"><xsl:with-param name="param1" select="."/></xsl:call-template><xsl:text>);</xsl:text></xsl:when><xsl:otherwise><xsl:text/></xsl:otherwise></xsl:choose></xsl:attribute></xsl:element>
-
-			</xsl:for-each>			<xsl:text>
+		<xsl:apply-templates mode="a26d95c575266546c" select="data/names/name"/>
+			<xsl:text>
 	---------------------------------------
 	</xsl:text>
-		<xsl:for-each select="data/person"><xsl:variable name="DexterDepthLevel1"><xsl:value-of select="position()"/></xsl:variable>				<xsl:element name="div">					<xsl:text>
-		first </xsl:text>
-									<xsl:element name="span"><xsl:value-of select="first"/></xsl:element>
-
-									<xsl:text>
-		middle </xsl:text>
-									<xsl:element name="span"><xsl:value-of select="middle"/></xsl:element>
-
-									<xsl:text>
-		last </xsl:text>
-									<xsl:element name="span"><xsl:value-of select="last"/></xsl:element>
-
-									<xsl:text>
-
-	</xsl:text>
-									<xsl:element name="a"><xsl:attribute name="href"><xsl:choose><xsl:when test="."><xsl:text>javascript:dosomething(</xsl:text><xsl:call-template name="json"><xsl:with-param name="param1" select="."/></xsl:call-template><xsl:text>)</xsl:text></xsl:when><xsl:otherwise><xsl:text/></xsl:otherwise></xsl:choose></xsl:attribute>						<xsl:text>do something</xsl:text>
-					</xsl:element>
-
-									<xsl:text>
-</xsl:text>
-				</xsl:element>
-
-			</xsl:for-each>			<xsl:text>
+		<xsl:apply-templates mode="aec76f59205fe86a4" select="data/person"/>
+			<xsl:text>
 </xsl:text>
 		</xsl:element>
 
 	</xsl:template>
+<xsl:template match="data/names/name" mode="a26d95c575266546c">				<xsl:element name="div"><xsl:attribute name="onlick"><xsl:choose><xsl:when test="(.)"><xsl:text>return collect(</xsl:text><xsl:call-template name="json"><xsl:with-param name="param1" select="."/></xsl:call-template><xsl:text>);</xsl:text></xsl:when><xsl:otherwise><xsl:text/></xsl:otherwise></xsl:choose></xsl:attribute></xsl:element>
+
+			</xsl:template>
 <xsl:template name="json">
 	<xsl:param name="param1" select="."/>
 	<xsl:apply-templates mode="js.data" select="$param1"/>
@@ -126,4 +107,27 @@
 			<xsl:value-of select="$param1"/>
 		</xsl:otherwise>
 	</xsl:choose>
-</xsl:template></xsl:stylesheet>
+</xsl:template><xsl:template match="data/person" mode="aec76f59205fe86a4">				<xsl:element name="div">					<xsl:text>
+		first </xsl:text>
+									<xsl:element name="span"><xsl:value-of select="first"/></xsl:element>
+
+									<xsl:text>
+		middle </xsl:text>
+									<xsl:element name="span"><xsl:value-of select="middle"/></xsl:element>
+
+									<xsl:text>
+		last </xsl:text>
+									<xsl:element name="span"><xsl:value-of select="last"/></xsl:element>
+
+									<xsl:text>
+
+	</xsl:text>
+									<xsl:element name="a"><xsl:attribute name="href"><xsl:choose><xsl:when test="(.)"><xsl:text>javascript:dosomething(</xsl:text><xsl:call-template name="json"><xsl:with-param name="param1" select="."/></xsl:call-template><xsl:text>)</xsl:text></xsl:when><xsl:otherwise><xsl:text/></xsl:otherwise></xsl:choose></xsl:attribute>						<xsl:text>do something</xsl:text>
+					</xsl:element>
+
+									<xsl:text>
+</xsl:text>
+				</xsl:element>
+
+			</xsl:template>
+</xsl:stylesheet>
