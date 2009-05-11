@@ -1,0 +1,4 @@
+<tests dx:env="data/found">
+		<div id="test-4a" name="amfound" dx:if="@value = 'y'" />
+		<div id="test-4b" name="notfound" dx:if="@value = 'n'" />
+</tests>

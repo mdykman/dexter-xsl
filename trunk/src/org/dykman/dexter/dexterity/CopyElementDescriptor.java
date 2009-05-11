@@ -6,7 +6,6 @@
 
 package org.dykman.dexter.dexterity;
 
-import org.dykman.dexter.descriptor.CrossPathResolver;
 import org.dykman.dexter.descriptor.Descriptor;
 import org.dykman.dexter.descriptor.PathDescriptor;
 import org.w3c.dom.Element;
@@ -27,8 +26,7 @@ public class CopyElementDescriptor extends PathDescriptor
 			value = value.substring(1);
 			useDefault = true;
 		}
-		CrossPathResolver resolver = new CrossPathResolver(this);
-		sequencer.copyNodes(resolver,value, 
+		sequencer.copyNodes(value, 
 			useDefault ? ((Element)element).getTextContent() : null, false);
 	}
 }

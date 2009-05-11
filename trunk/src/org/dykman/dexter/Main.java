@@ -251,20 +251,21 @@ public class Main
 					if(checkValidity)
 					{
 						k = docs.keySet().iterator();
-						String name = k.next();
 						while(k.hasNext())
 						{
+							String name = k.next();
 							File f;
 							if(outputDirectory == null) f = new File(name);
 							else f = new File(outputDirectory,name);
 							Source source = new StreamSource(f);
-							source.setSystemId(name);
+							source.setSystemId(f.getPath());
 							Transformer transformer= transFact.newTransformer(source);
 							transformer.hashCode();
 						}
 					}
 				}
 				catch(Exception e) {
+					e.printStackTrace(System.out);
 					System.out.print("error while processing source file `" + fn + "'");
 					System.out.println(e.getMessage());
 				}

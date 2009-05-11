@@ -1,0 +1,7 @@
+<xxx>
+	<www>stuff-data</www>
+	<yyy id="yyy">
+		stuff-data1
+		<zzz id="zzz">stuff-data2</zzz>
+	</yyy>
+</xxx>

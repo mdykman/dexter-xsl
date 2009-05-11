@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Stack;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -21,7 +22,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.dykman.dexter.Dexter;
 import org.dykman.dexter.DexterException;
 import org.dykman.dexter.DexterHaltException;
-import org.dykman.dexter.descriptor.CrossPathResolver;
 import org.dykman.dexter.dexterity.DexteritySyntaxException;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
@@ -43,25 +43,40 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	private String levelCounter = "DexterDepthLevel";
 	private List<String> dexterNamespaces;
 	
-	public static final String XSLTEXT = "xsl:text";
-	public static final String XSLVALUEOF = "xsl:value-of";
-	public static final String XSLTEMPLATE = "xsl:template";
-	public static final String XSLFOREACH = "xsl:for-each";
+	public static final String XSLOUTPUT = "xsl:output";
+	public static final String XSLINCLUDE = "xsl:include";
+	public static final String XSLIMPORT = "xsl:import";
 	public static final String XSLVARIABLE = "xsl:variable";
+
+	public static final String XSLTEMPLATE = "xsl:template";
+	public static final String XSLPARAM = "xsl:param";
+	public static final String XSLCALLTEMPLATE = "xsl:call-template";
+	public static final String XSLWITHPARAM = "xsl:with-param";
+	public static final String XSLAPPLYTEMPLATES = "xsl:apply-templates";
+	
+	public static final String XSLTEXT = "xsl:text";
+//public static final String XSLFOREACH = "xsl:for-each";
 	public static final String XSLELEMENT = "xsl:element";
+	public static final String XSLCOPYOF = "xsl:copy-of";
+	public static final String XSLVALUEOF = "xsl:value-of";
+
+	public static final String XSLATTRIBUTE = "xsl:attribute";
 	
-	
+	public static final String XSLIF = "xsl:if";
+	public static final String XSLCHOOSE = "xsl:choose";
+	public static final String XSLWHEN = "xsl:when";
+	public static final String XSLOTHERWISE = "xsl:otherwise";
+
 	private DocumentBuilder builder;
 
 	
-	{
+	static {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		dbf.setValidating(false);
 		
 		dbf.setExpandEntityReferences(false);
 		dbf.setCoalescing(true);
 		dbf.setIgnoringComments(false);
-//		builder = dbf.newDocumentBuilder();
 	}
 
 	private Map<String, Document> finished = new HashMap<String, Document>();
@@ -69,9 +84,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	private Map<String, Map<String, DocumentFragment>> valMap = new HashMap<String, Map<String, DocumentFragment>>();
 	private Map<String, Map<String, List<Element>>> replacementMap = new HashMap<String, Map<String, List<Element>>>();
 
-	private int pathc = 0;
-
-	// output node stack..  a little hacky, a little arbitrary, but simple.
 	private short[] nodeTypes = new short[8092];
 	private int nodeLevel = 0;
 
@@ -84,7 +96,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 	private Document currentDocument;
 	private Node currentNode;
-	private Node currentStylesheet;
+	private Element currentStylesheet;
 
 	private String filename;
 	private String encoding;
@@ -97,6 +109,15 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		this.encoding = encoding;
 		this.filename = name;
 	}
+	
+
+	public Element createTemplate(String name, String match, String mode) {
+		Element template = currentDocument.createElement(XSLTEMPLATE);
+		if(name != null) template.setAttribute("name", name);
+		if(match != null) template.setAttribute("match", match);
+		if(mode != null) template.setAttribute("mode", mode);
+		return template;
+	}
 
 	public void setIdNames(List ids)
 	{
@@ -105,86 +126,74 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 	Stack<String> iteratorStack = new Stack<String>();
 
-	public void startIterator(CrossPathResolver resolver,String path)
+	public void startIterator(String path)
 	{
-		StringBuilder sb = new StringBuilder();
-		String[] pp = path.split("[|]");
-		for(int i = 0; i < pp.length; ++i)
-		{
-			sb.append(translateXSLPath(resolver,pp[i]));
-			if(i+1 < pp.length) sb.append("|");
-		}
-		path = sb.toString();
 		iteratorStack.push(path);
-		Element element = currentDocument.createElement(XSLFOREACH);
-		element.setAttribute("select", path);
-		currentNode.appendChild(element);
+		startSelect(null, path, randMode());
 		
-		Element var = currentDocument.createElement(XSLVARIABLE);
-		var.setAttribute("name", levelCounter + iteratorStack.size());
-		Element vo = currentDocument.createElement(XSLVALUEOF);
-		vo.setAttribute("select", "position()");
-		var.appendChild(vo);
-		element.appendChild(var);
-
-		pushNode(element);
+//		Element var = currentDocument.createElement(XSLVARIABLE);
+//		var.setAttribute("name", levelCounter + iteratorStack.size());
+//		Element vo = currentDocument.createElement(XSLVALUEOF);
+//		vo.setAttribute("select", "position()");
+//		var.appendChild(vo);
+//		currentNode.appendChild(var);
 	}
 
-	public void endIterator()
-	{
-		popNode();
+	public void endIterator() {
+		endSelect();
 		iteratorStack.pop();
-		--pathc;
 	}
 
 	public void mapNode(
-			CrossPathResolver resolver, 
-			String []path, 
-			String def,
-			boolean force,
-			boolean disable_escape) {
-		currentNode.appendChild(
-				valueTemplate(resolver,path, def, "xsl:value-of",force,disable_escape));
+		String[] path, 
+		String def,
+		boolean force,
+		boolean disable_escape) {
+		
+		Element v = valueTemplate(path, def,XSLVALUEOF,force,disable_escape);
+		if(v != null) currentNode.appendChild(v);
 	}
 
-	public void copyNodes(CrossPathResolver resolver,String path, String def, boolean children)
+	public void copyNodes(String path, String def, boolean children)
 	{
 		String av = path;
 		if(children) av = path + "/*";
-		Element valueOf = callTemplateEvaluator(resolver, av, "xsl:copy-of",false);
-		Element map;
-		if (def != null)
-		{
-			Element choose = currentDocument.createElement("xsl:choose");
-			Element when = currentDocument.createElement("xsl:when");
-			when.setAttribute("test", translateXSLPath(resolver,path));
-			when.appendChild(valueOf);
-			choose.appendChild(when);
-			map = choose;
+		Element valueOf = callTemplateEvaluator(av, XSLCOPYOF,false);
+		if(valueOf != null) {
+			Element map;
+			if (def != null)
+			{
+				Element choose = currentDocument.createElement(XSLCHOOSE);
+				Element when = currentDocument.createElement(XSLWHEN);
+				when.setAttribute("test", path);
+				when.appendChild(valueOf);
+				choose.appendChild(when);
+				map = choose;
+			}
+			else {
+				map = valueOf;
+			}
+	
+			if (def != null)
+			{
+				Element otherwise = currentDocument.createElement(XSLOTHERWISE);
+				otherwise.appendChild(currentDocument.createTextNode(def));
+				map.appendChild(otherwise);
+			}
+			currentNode.appendChild(map);
 		}
-		else
-		{
-			map = valueOf;
-		}
-
-		if (def != null)
-		{
-			Element otherwise = currentDocument.createElement("xsl:otherwise");
-			otherwise.appendChild(currentDocument.createTextNode(def));
-			map.appendChild(otherwise);
-		}
-		currentNode.appendChild(map);
 	}
 	
-	public void mapAttribute(CrossPathResolver resolver,
+	public void mapAttribute(
 			String name, String[] path, String def, boolean force, boolean disable_escape)
 	{
 
-		Element element = currentDocument.createElement("xsl:attribute");
+		Element element = currentDocument.createElement(XSLATTRIBUTE);
 		name = translateName(name);
 		element.setAttribute("name", name);
 
-		element.appendChild(valueTemplate(resolver,path, def,"xsl:value-of",force,disable_escape));
+		Element v = valueTemplate(path, def,XSLVALUEOF,force,disable_escape);
+		if(v != null) element.appendChild(v);
 
 		currentNode.appendChild(element);
 	}
@@ -193,65 +202,53 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 	protected String getInnerExpresion(String path) {
 		Matcher matcher = functiondesc.matcher(path);
-		if(matcher.matches()) {
-			String m = matcher.group(1);
-			return getInnerExpresion(path.substring(m.length()));
-		} else {
-			int n = path.indexOf(')');
-			if(n != -1) {
-				return path.substring(0,n);
-			} else {
-				return path;
+		if(matcher.matches()) { 
+	 		String m = matcher.group(1).substring(0, matcher.group(1).length() - 1);
+			if(dexter.loadTemplate(currentStylesheet, m)) {
+				return getInnerExpresion(path.substring(m.length()));
 			}
 		}
+		return path;
 		
 	}
 	
 	protected Element callTemplateEvaluator(
-			CrossPathResolver resolver, String path, 
+			String path, 
 			String evalTag, boolean disableEscaping) {
 		Matcher matcher = functiondesc.matcher(path);
 		if(matcher.matches()) {
 			String s = matcher.group(1);
 			String nn = s.substring(0,s.length() - 1);
-			
-			Element caller = currentDocument.createElement("xsl:call-template");
-			caller.setAttribute("name",nn);
-			
-			Element p1 = currentDocument.createElement("xsl:with-param");
-			
-			
-			
-			p1.setAttribute("name","param1");
-			path = matcher.group(2);
-			int n = path.indexOf(')');
-			if(n != -1) {
-				path = path.substring(0,n);
-			}
-			
-			p1.setAttribute("select", translateXSLPath(resolver, path));
-			dexter.loadTemplate((Element)currentStylesheet,nn);
-//			p1.appendChild(callTemplateEvaluator(
-//					resolver,matcher.group(2),evalTag, disableEscaping));
-			caller.appendChild(p1);
-			
-			return caller;
-		} else {
-			Element valueOf = currentDocument.createElement(evalTag);
-			int n = path.indexOf(')');
-			if(n != -1) {
-				path = path.substring(0,n);
-			}
-			valueOf.setAttribute("select", translateXSLPath(resolver, path));
-			if(disableEscaping) {
-				valueOf.setAttribute("disable-output-escaping", "yes");;
-			}
-			return valueOf;
+
+			if(dexter.loadTemplate(currentStylesheet,nn)) {
+				Element caller = currentDocument.createElement(XSLCALLTEMPLATE);
+				caller.setAttribute("name",nn);
+				
+				Element p1 = currentDocument.createElement(XSLWITHPARAM);
+				p1.setAttribute("name","param1");
+				path = matcher.group(2);
+				int n = path.indexOf(')');
+				if(n != -1) {
+					path = path.substring(0,n);
+				}
+				
+				p1.setAttribute("select", path);
+				caller.appendChild(p1);
+				
+				return caller;
+			} 
 		}
+		Element valueOf = null;
+		if(path.length() > 0) {
+			valueOf = currentDocument.createElement(evalTag);
+			valueOf.setAttribute("select", path);
+			if(disableEscaping) valueOf.setAttribute("disable-output-escaping", "yes");;
+		}
+		return valueOf;
 	}
 
 	protected Element valueTemplate(
-		CrossPathResolver resolver, String[] path, String def,
+		String[] path, String def,
 		String evalTag, boolean force, boolean disable_escape)
 	{
 		if (def != null || path.length > 1) {
@@ -259,13 +256,11 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			boolean first = true;
 			if (path.length == 1) {
 				String p = getInnerExpresion(path[0]);
-				p = translateXSLPath(resolver,p);
-				if(force) p = "(" + "string-length(string(" + p + ")) > 0)";
+				if(force) p = "(" + "string-length(" + p + ") > 0)";
 				attrTest.append(p);
 			} else for (int i = 0; i < path.length; ++i) {
 				if (i % 2 != 0) {
 					String p = getInnerExpresion(path[i]);
-					 p = translateXSLPath(resolver,p);
 					if (!first) attrTest.append(" and ");
 					else first = false;
 					
@@ -274,15 +269,17 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 				}
 			}
 
-			Element choose = currentDocument.createElement("xsl:choose");
-			Element when = currentDocument.createElement("xsl:when");
+			Element choose = currentDocument.createElement(XSLCHOOSE);
+			Element when = currentDocument.createElement(XSLWHEN);
 			when.setAttribute("test", attrTest.toString());
 			choose.appendChild(when);
 			// if path.length > 1, then we alternating literals and paths
 			if(path.length == 1) {
 				Element valueOf = callTemplateEvaluator(
-						resolver,path[0],evalTag,disable_escape);
-				when.appendChild(valueOf);
+						path[0],evalTag,disable_escape);
+				if(valueOf != null) {
+					when.appendChild(valueOf);
+				}
 			} 
 			else for (int i = 0; i < path.length; ++i) {
 				if (i % 2 == 0)  {
@@ -291,19 +288,18 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 					}
 				} else {
 					Element valueOf = callTemplateEvaluator(
-						resolver,path[i],evalTag,disable_escape);
-					when.appendChild(valueOf);
+						path[i],evalTag,disable_escape);
+					if(valueOf != null) when.appendChild(valueOf);
 				}
 			}
 
-			Element otherwise = currentDocument.createElement("xsl:otherwise");
+			Element otherwise = currentDocument.createElement(XSLOTHERWISE);
 			otherwise.appendChild(textContainer(def == null ? "" : def));
 			choose.appendChild(otherwise);
 			return choose;
 		} else {
-			Element valueOf = callTemplateEvaluator(
-					resolver,path[0],evalTag,disable_escape);
-			return valueOf;
+			return callTemplateEvaluator(
+					path[0],evalTag,disable_escape);
 		}
 	}
 
@@ -316,7 +312,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		}
 		else
 		{
-			Element element = currentDocument.createElement("xsl:attribute");
+			Element element = currentDocument.createElement(XSLATTRIBUTE);
 			element.setAttribute("name", key);
 			Text text = currentDocument.createTextNode(value);
 			element.appendChild(text);
@@ -327,16 +323,16 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	public void setIdentityAttribute(String key, String value)
 	{
 		DocumentFragment fragment = processIdentityValueTemplate(key, value);
-		Element element = currentDocument.createElement("xsl:attribute");
+		Element element = currentDocument.createElement(XSLATTRIBUTE);
 		element.setAttribute("name", key);
 		element.appendChild(fragment);
 		currentNode.appendChild(element);
 	}
 
-	public void startTest(CrossPathResolver resolver, String tests)
+	public void startTest(String tests)
 	{
-		Element element = currentDocument.createElement("xsl:if");
-		element.setAttribute("test", generateXSLTest(resolver,tests));
+		Element element = currentDocument.createElement(XSLIF);
+		element.setAttribute("test", tests);
 		currentNode.appendChild(element);
 		pushNode(element);
 	}
@@ -348,27 +344,47 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 	public void startCaseBlock()
 	{
-		Element element = currentDocument.createElement("xsl:choose");
+		Element element = currentDocument.createElement(XSLCHOOSE);
 		currentNode.appendChild(element);
 		pushNode(element);
 	}
 
-	public void endCaseBlock()
-	{
+	public void endCaseBlock() {
 		popNode();
 	}
 
-	public void startCase(CrossPathResolver resolver,String tests)
+	public void startSelect(String name, String match, String mode) {
+		Element template = currentDocument.createElement(XSLTEMPLATE);
+		template.setAttribute("match", match);
+		template.setAttribute("mode", mode);
+		currentStylesheet.appendChild(template);
+		currentStylesheet.appendChild(currentDocument.createTextNode("\n"));
+
+		Element matcher = currentDocument.createElement(XSLAPPLYTEMPLATES);
+		matcher.setAttribute("select", match);
+		matcher.setAttribute("mode", mode);
+		
+		currentNode.appendChild(matcher);
+		currentNode.appendChild(currentDocument.createTextNode("\n"));
+
+		pushNode(template);
+		
+		
+	}
+	public void endSelect() {
+		popNode();
+	}
+	public void startCase(String tests)
 	{
 		Element element = null;
-		if (tests.length() > 0)
+		if (tests != null)
 		{
 			element = currentDocument.createElement("xsl:when");
-			element.setAttribute("test", generateXSLTest(resolver,tests));
+			element.setAttribute("test", tests);
 		}
 		else
 		{
-			element = currentDocument.createElement("xsl:otherwise");
+			element = currentDocument.createElement(XSLOTHERWISE);
 		}
 		currentNode.appendChild(element);
 		pushNode(element);
@@ -379,13 +395,13 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		popNode();
 	}
 
-	public void startSubdoc(CrossPathResolver resolver,String altDoc, String name, String match,
+	public void startSubdoc(String altDoc, String name, String match,
 	      boolean keepSubDoc)
 	{
 		String fn = altDoc == null ? filename + '-' + name : altDoc;
 		String tn = fn.replaceAll("[^a-zA-Z0-9]","-");
 
-		Element element = currentDocument.createElement("xsl:include");
+		Element element = currentDocument.createElement(XSLIMPORT);
 		element.setAttribute("href", fn + ".xsl");
 
 		NodeList ch = currentDocument.getElementsByTagName(XSLTEMPLATE);
@@ -393,16 +409,16 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		currentStylesheet.insertBefore(element, output);
 		currentStylesheet.insertBefore(
 				currentDocument.createTextNode("\n"), output);
-		currentNode.appendChild(createExternalTemplateCall(resolver,match,tn));
+		currentNode.appendChild(createExternalTemplateCall(match,tn));
 
-		Document document = createStub(resolver,match,tn);
+		Document document = createStub(match,tn,tn);
 		if (altDoc != null)	name = name + ".dispose";
 		pushDoc(document, name);
 		
 // create the main entry point template to handle cases where it is invoked independently
 		Element template = currentDocument.createElement(XSLTEMPLATE);
 		template.setAttribute("match", "/");
-		template.appendChild(createExternalTemplateCall(resolver,match,tn));
+		template.appendChild(createExternalTemplateCall(match,tn));
 		ch = currentDocument.getElementsByTagName(XSLTEMPLATE);
 		output = ch.item(0);
 		currentStylesheet.insertBefore(template, output);
@@ -453,7 +469,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		{
 			case Node.DOCUMENT_NODE:
 			{
-				Document document = createStub(null,"/");
+				Document document = createStub("/",null,null);
 				pushDoc(document, filename);
 				lastWasEntity = false;
 			}
@@ -570,24 +586,21 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		return  currentDocument.createTextNode("&" + ref + ';');
 	}
 
-	protected Document createStub(CrossPathResolver resolver,String match) {
-		return createStub(resolver,match, null);
-	}
 
-	protected Element createExternalTemplateCall(CrossPathResolver resolver,String match,String name) {
+	protected Element createExternalTemplateCall(String match,String name) {
 		
-		String trmatch = translateXSLPath(resolver, match);
-		Element choose = currentDocument.createElement("xsl:choose");
-		Element when = currentDocument.createElement("xsl:when");
-		when.setAttribute("test", trmatch);
-		Element apply = currentDocument.createElement("xsl:apply-templates");
-		apply.setAttribute("select", trmatch);
+//		String trmatch = translateXSLPath(match);
+		Element choose = currentDocument.createElement(XSLCHOOSE);
+		Element when = currentDocument.createElement(XSLWHEN);
+		when.setAttribute("test", match);
+		Element apply = currentDocument.createElement(XSLAPPLYTEMPLATES);
+		apply.setAttribute("select", match);
 		apply.setAttribute("mode", name);
 		when.appendChild(apply);
 		choose.appendChild(when);
 
-		Element otherwise = currentDocument.createElement("xsl:otherwise");
-		Element call = currentDocument.createElement("xsl:call-template");
+		Element otherwise = currentDocument.createElement(XSLOTHERWISE);
+		Element call = currentDocument.createElement(XSLCALLTEMPLATE);
 		call.setAttribute("name", name);
 		otherwise.appendChild(call);
 		choose.appendChild(otherwise);
@@ -595,7 +608,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		return choose;
 	}
 	
-	protected Document createStub(CrossPathResolver resolver,String match,String name)
+	protected Document createStub(String match,String name, String mode)
 	{
 		DOMImplementation impl = builder.getDOMImplementation();
 		DocumentType dt = impl.createDocumentType("stylesheet", null, 
@@ -611,7 +624,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		pushStylesheet(style);
 		pushNode(style);
 
-		Element output = document.createElement("xsl:output");
+		Element output = document.createElement(XSLOUTPUT);
 		output.setAttribute("encoding", encoding);
 		output.setAttribute("indent", indent);
 		if(mediaType != null) output.setAttribute("media-type", mediaType);
@@ -625,13 +638,11 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		Element template = document.createElement(XSLTEMPLATE);
 		template.appendChild(document.createTextNode("\n"));
 
-		if(match != null) {
-			template.setAttribute("match", match);
-		}
-		if(name != null) {
-			template.setAttribute("name", name);
-			template.setAttribute("mode", name);
-		}
+		if(match != null) template.setAttribute("match", match);
+		if
+		(name != null) template.setAttribute("name", name);
+		if(mode != null) template.setAttribute("mode", mode);
+
 		style.appendChild(template);
 		style.appendChild(document.createTextNode("\n"));
 
@@ -713,16 +724,15 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		Element element = currentDocument.createElement(XSLTEXT);
 		element.appendChild(currentDocument.createTextNode(value));
 		fragment.appendChild(element);
+		element = currentDocument.createElement(XSLIF);
+		element.setAttribute("test", "last() > 1");
+		fragment.appendChild(element);
 		
-		for (int i = 1; i <= iteratorStack.size(); ++i)
-		{
-			element = currentDocument.createElement(XSLTEXT);
-			element.appendChild(currentDocument.createTextNode("-"));
-			Element vo = currentDocument.createElement(XSLVALUEOF);
-			vo.setAttribute("select", "$" + levelCounter + i);
-			fragment.appendChild(element);
-			fragment.appendChild(vo);
-		}
+		element.appendChild(currentDocument.createTextNode("-"));
+		
+		Element eval  = currentDocument.createElement(XSLVALUEOF);
+		eval.setAttribute("select", "generate-id()");
+		element.appendChild(eval);
 		return fragment;
 	}
 
@@ -826,8 +836,20 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		appendText(s, false);
 	}
 	public void appendText(String s,boolean escape) {
-		Element el = currentDocument.createElement("xsl:text");
+		Element el = currentDocument.createElement(XSLTEXT);
 		if(escape) el.setAttribute("disable-output-escaping", "yes");
 		currentNode.appendChild(currentDocument.createTextNode(s));
 	}
+
+
+	Random rand = new Random();
+	public String randMode()
+    {
+		return "a" + Long.toHexString(rand.nextLong());
+    }
+
+	
+
+
+
 }

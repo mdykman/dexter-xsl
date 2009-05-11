@@ -60,8 +60,8 @@ public class FormCompletionEditor extends AbstractDocumentEditor
 				}
 				newAtt = document.createAttribute(
 					dexterity + ":cattr");
-				String exp = "checked:.!str:true " + value + "/" + fieldname
-					+ "!eq:" + nv;
+				String exp = "checked:true() string(" + value + "/" + fieldname
+					+ ")='" + nv + "'";
 				newAtt.setNodeValue(exp);
 				attr.setNamedItem(newAtt);
 				
@@ -92,7 +92,7 @@ public class FormCompletionEditor extends AbstractDocumentEditor
 						processInput(fieldname, attr, value, dexterity);
 					} else { // apparently, it's a textarea
 						Attr newAtt = document.createAttribute(
-							dexterity + ":value");
+							dexterity + ":text");
 						String exp = value + "/" + fieldname;
 						newAtt.setNodeValue(exp);
 						attr.setNamedItem(newAtt);

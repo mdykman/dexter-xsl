@@ -41,7 +41,7 @@ public class OptionEditor extends AbstractDocumentEditor
 		a.setValue(v);
 		attr.setNamedItem(a);
 		
-		a = document.createAttribute( dexterity + ":value");
+		a = document.createAttribute( dexterity + ":text");
 		if(args.length > 1) {
 			a.setValue(args[1]);
 		} else {
@@ -66,12 +66,12 @@ public class OptionEditor extends AbstractDocumentEditor
 		if(args.length > 3) {
 			if(sep == null) {
 				a = document.createAttribute(dexterity + ":cattr");
-				v = "selected:.!str:true "  + args[3];
+				v = "selected:'true' "  + args[3];
 				a.setValue(v);
 				attr.setNamedItem(a);
 			} else {
 				a = document.createAttribute(dexterity + ":cattrs");
-				v = sep + "selected:.!str:true" + sep  + args[3];
+				v = sep + "selected:'true'" + sep  + args[3];
 				a.setValue(v);
 				attr.setNamedItem(a);
 			}

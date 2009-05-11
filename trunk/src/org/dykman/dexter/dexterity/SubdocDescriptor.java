@@ -7,7 +7,6 @@
 package org.dykman.dexter.dexterity;
 
 import org.dykman.dexter.DexteritySyntaxException;
-import org.dykman.dexter.descriptor.CrossPathResolver;
 import org.dykman.dexter.descriptor.Descriptor;
 import org.dykman.dexter.descriptor.PathDescriptor;
 
@@ -38,8 +37,7 @@ public class SubdocDescriptor extends PathDescriptor
 		}
 //		String path = mapPath(value);
 //		setPath(path);
-		CrossPathResolver resolver = new CrossPathResolver(this);
-		sequencer.startSubdoc(resolver,altDoc,id, value,true);
+		sequencer.startSubdoc(altDoc,id, value,true);
 	}
 
 	@Override

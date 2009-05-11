@@ -1,0 +1,7 @@
+<tests dx:env="data/found">
+		<div id="test-1a" dx:case="@value = 'y'"  cond="true" >only one should show with 42</div>
+		<div id="test-1b" dx:default=""  cond="false" >only one should show with 42</div>
+		<div id="test-2a" dx:case="@value = 'n'" cond="false" >only one should show with 43</div>
+		<div id="test-2b" dx:default="" cond="true"  >only one should show with 43</div>
+
+</tests>
