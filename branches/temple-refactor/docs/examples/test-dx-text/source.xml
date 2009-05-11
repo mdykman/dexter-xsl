@@ -1,0 +1,9 @@
+<tests>
+	<div id="group-1" dx:env="data/found" >
+		<div id="test-1" name="found" dx:text="." >
+		</div>
+		<div id="test-2" name="found" dx:text="the value is `{.}'" />
+		<div id="test-3" name="valueoffound" dx:text="@value" />
+	</div>
+
+</tests>
