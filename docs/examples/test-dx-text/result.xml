@@ -1,7 +1,9 @@
 <tests>
 	<div id="group-1">
-		<div id="test-1" name="found">I found it</div>
-		<div id="test-2" name="found">the value is `I found it'</div>
+		<div id="test-1" name="found">the fake string</div>
+		<div id="test-2" name="found">the value is `the fake string'</div>
+	</div>
+	<div id="group-2">
 		<div id="test-3" name="valueoffound">y</div>
 	</div>
 
