@@ -27,6 +27,10 @@ public interface TransformSequencer
 	public void endSelect();
 	public void startNode(String name, int type);
 	public void endNode();
+	
+	public void startNamedTemplate(String name);
+	public void endNamedTemplate();
+	public void callNamedTemplate(String name);
 
 	public void mapAttribute(
 			String name,

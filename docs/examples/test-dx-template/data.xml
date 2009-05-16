@@ -1,0 +1,22 @@
+<data>
+	<customers>
+		<person>
+			<first>sally</first>
+			<last>jones</last>
+		</person>
+		<person>
+			<first>john</first>
+			<last>smith</last>
+		</person>
+	</customers>
+	<staff>
+		<person>
+			<first>michael</first>
+			<last>nesmith</last>
+		</person>
+		<person>
+			<first>chris</first>
+			<last>rock</last>
+		</person>
+	</staff>
+</data>

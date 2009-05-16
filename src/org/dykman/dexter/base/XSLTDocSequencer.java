@@ -111,14 +111,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	}
 	
 
-	public Element createTemplate(String name, String match, String mode) {
-		Element template = currentDocument.createElement(XSLTEMPLATE);
-		if(name != null) template.setAttribute("name", name);
-		if(match != null) template.setAttribute("match", match);
-		if(mode != null) template.setAttribute("mode", mode);
-		return template;
-	}
-
 	public void setIdNames(List ids)
 	{
 		idNames = ids;
@@ -353,6 +345,25 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		popNode();
 	}
 
+	public void callNamedTemplate(String name) {
+		Element caller = currentDocument.createElement(XSLCALLTEMPLATE);
+		caller.setAttribute("name", name);
+		currentNode.appendChild(caller);
+
+	}
+	public void startNamedTemplate(String name) {
+//		callNamedTemplate(name);
+
+		Element template = currentDocument.createElement(XSLTEMPLATE);
+		template.setAttribute("name", name);
+		currentStylesheet.appendChild(template);
+		currentStylesheet.appendChild(currentDocument.createTextNode("\n"));
+		pushNode(template);
+	}
+
+	public void endNamedTemplate() {
+		popNode();
+	}
 	public void startSelect(String name, String match, String mode) {
 		Element template = currentDocument.createElement(XSLTEMPLATE);
 		template.setAttribute("match", match);
