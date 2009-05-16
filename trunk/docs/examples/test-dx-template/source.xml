@@ -1,0 +1,13 @@
+<html>
+	<body>
+		<div dx:env="data/customers">
+			<div dx:template="persons" dx:each="person">
+				<div dx:text="first">first</div>,
+				<div dx:text="last">last</div>
+			</div>
+		</div>
+		<div dx:env="data/staff">
+			<div dx:call="persons" />
+		</div>
+	</body>
+</html>
