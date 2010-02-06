@@ -5,16 +5,16 @@
 <xsl:template match="/">
 		<xsl:element name="tests">			<xsl:text>
 	</xsl:text>
-		<xsl:apply-templates mode="ac588084136bea1f0" select="data/record"/>
+		<xsl:apply-templates mode="ad050c4a6e1585ecd" select="data/record"/>
 			<xsl:text>
 </xsl:text>
 		</xsl:element>
 
 	</xsl:template>
-<xsl:template match="data/record" mode="ac588084136bea1f0">				<xsl:element name="div"><xsl:attribute name="id"><xsl:text>group-2</xsl:text><xsl:if test="last() &gt; 1">-<xsl:value-of select="generate-id()"/></xsl:if></xsl:attribute>					<xsl:text>
+<xsl:template match="data/record" mode="ad050c4a6e1585ecd">				<xsl:element name="div"><xsl:attribute name="id"><xsl:text>group-2</xsl:text><xsl:if test="last() &gt; 1">-<xsl:value-of select="generate-id()"/></xsl:if></xsl:attribute>					<xsl:text>
 			a record
 		</xsl:text>
-				<xsl:apply-templates mode="a121c48bbf283cded" select="*"/>
+				<xsl:apply-templates mode="ad232aa317fae273b" select="*"/>
 					<xsl:text>
 
 	
@@ -44,7 +44,7 @@
 				</xsl:element>
 
 			</xsl:template>
-<xsl:template match="*" mode="a121c48bbf283cded">						<xsl:element name="div"><xsl:choose><xsl:when test="local-name() and ."><xsl:text>new record </xsl:text><xsl:value-of select="local-name()"/><xsl:text> = </xsl:text><xsl:value-of select="."/></xsl:when><xsl:otherwise><xsl:text/></xsl:otherwise></xsl:choose></xsl:element>
+<xsl:template match="*" mode="ad232aa317fae273b">						<xsl:element name="div"><xsl:choose><xsl:when test="local-name() and ."><xsl:text>new record </xsl:text><xsl:value-of select="local-name()"/><xsl:text> = </xsl:text><xsl:value-of select="."/></xsl:when><xsl:otherwise><xsl:text/></xsl:otherwise></xsl:choose></xsl:element>
 
 					</xsl:template>
 </xsl:stylesheet>

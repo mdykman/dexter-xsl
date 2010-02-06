@@ -5,17 +5,17 @@
 <xsl:template match="/">
 		<xsl:element name="div">			<xsl:text>
 	</xsl:text>
-		<xsl:apply-templates mode="a77a11d5e8c5e7ead" select="data/names/name"/>
+		<xsl:apply-templates mode="aa0cbc5b7c05ccd78" select="data/names/name"/>
 			<xsl:text>
 	---------------------------------------
 	</xsl:text>
-		<xsl:apply-templates mode="a1150bb7812a39ed9" select="data/person"/>
+		<xsl:apply-templates mode="a66a338478eaf475a" select="data/person"/>
 			<xsl:text>
 </xsl:text>
 		</xsl:element>
 
 	</xsl:template>
-<xsl:template match="data/names/name" mode="a77a11d5e8c5e7ead">				<xsl:element name="div"><xsl:attribute name="onlick"><xsl:choose><xsl:when test="(.)"><xsl:text>return collect(</xsl:text><xsl:call-template name="json"><xsl:with-param name="param1" select="."/></xsl:call-template><xsl:text>);</xsl:text></xsl:when><xsl:otherwise><xsl:text/></xsl:otherwise></xsl:choose></xsl:attribute></xsl:element>
+<xsl:template match="data/names/name" mode="aa0cbc5b7c05ccd78">				<xsl:element name="div"><xsl:attribute name="onlick"><xsl:choose><xsl:when test="(.)"><xsl:text>return collect(</xsl:text><xsl:call-template name="json"><xsl:with-param name="param1" select="."/></xsl:call-template><xsl:text>);</xsl:text></xsl:when><xsl:otherwise><xsl:text/></xsl:otherwise></xsl:choose></xsl:attribute></xsl:element>
 
 			</xsl:template>
 <xsl:template name="json">
@@ -107,7 +107,7 @@
 			<xsl:value-of select="$param1"/>
 		</xsl:otherwise>
 	</xsl:choose>
-</xsl:template><xsl:template match="data/person" mode="a1150bb7812a39ed9">				<xsl:element name="div">					<xsl:text>
+</xsl:template><xsl:template match="data/person" mode="a66a338478eaf475a">				<xsl:element name="div">					<xsl:text>
 		first </xsl:text>
 									<xsl:element name="span"><xsl:value-of select="first"/></xsl:element>
 

@@ -55,7 +55,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	public static final String XSLAPPLYTEMPLATES = "xsl:apply-templates";
 	
 	public static final String XSLTEXT = "xsl:text";
-//public static final String XSLFOREACH = "xsl:for-each";
 	public static final String XSLELEMENT = "xsl:element";
 	public static final String XSLCOPYOF = "xsl:copy-of";
 	public static final String XSLVALUEOF = "xsl:value-of";
@@ -122,13 +121,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	{
 		iteratorStack.push(path);
 		startSelect(null, path, randMode());
-		
-//		Element var = currentDocument.createElement(XSLVARIABLE);
-//		var.setAttribute("name", levelCounter + iteratorStack.size());
-//		Element vo = currentDocument.createElement(XSLVALUEOF);
-//		vo.setAttribute("select", "position()");
-//		var.appendChild(vo);
-//		currentNode.appendChild(var);
 	}
 
 	public void endIterator() {
@@ -136,55 +128,53 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		iteratorStack.pop();
 	}
 
-	public void mapNode(
-		String[] path, 
-		String def,
-		boolean force,
-		boolean disable_escape) {
-		
-		Element v = valueTemplate(path, def,XSLVALUEOF,force,disable_escape);
-		if(v != null) currentNode.appendChild(v);
-	}
-
-	public void copyNodes(String path, String def, boolean children)
+	public void copyNodes(PathEval pe, String def, boolean children)
 	{
-		String av = path;
-		if(children) av = path + "/*";
-		Element valueOf = callTemplateEvaluator(av, XSLCOPYOF,false);
-		if(valueOf != null) {
-			Element map;
-			if (def != null)
-			{
-				Element choose = currentDocument.createElement(XSLCHOOSE);
-				Element when = currentDocument.createElement(XSLWHEN);
-				when.setAttribute("test", path);
-				when.appendChild(valueOf);
-				choose.appendChild(when);
-				map = choose;
-			}
-			else {
-				map = valueOf;
-			}
-	
-			if (def != null)
-			{
-				Element otherwise = currentDocument.createElement(XSLOTHERWISE);
-				otherwise.appendChild(currentDocument.createTextNode(def));
-				map.appendChild(otherwise);
-			}
-			currentNode.appendChild(map);
+		String av = pe.path;
+		if(children) av = pe.path + "/*";
+		PathEval ev = new PathEval(av,pe.lookup);
+		Element valueOf = callTemplateEvaluator(ev, XSLCOPYOF);
+
+		Element map;
+		if (def != null) {
+			Element choose = currentDocument.createElement(XSLCHOOSE);
+			Element when = currentDocument.createElement(XSLWHEN);
+			when.setAttribute("test", ev.path);
+			when.appendChild(valueOf);
+			choose.appendChild(when);
+			map = choose;
 		}
+		else {
+			map = valueOf;
+		}
+
+		if (def != null) {
+			Element otherwise = currentDocument.createElement(XSLOTHERWISE);
+			otherwise.appendChild(currentDocument.createTextNode(def));
+			map.appendChild(otherwise);
+		}
+		currentNode.appendChild(map);
 	}
 	
+	public void mapNode(
+			Object[] path, 
+			String def,
+			boolean force,
+			boolean disable_escape) {
+			
+			Element v = valueTemplate(path, def,XSLVALUEOF);
+			if(v != null) currentNode.appendChild(v);
+		}
+
 	public void mapAttribute(
-			String name, String[] path, String def, boolean force, boolean disable_escape)
+			String name, Object[] path, String def, boolean force, boolean disable_escape)
 	{
 
 		Element element = currentDocument.createElement(XSLATTRIBUTE);
 		name = translateName(name);
 		element.setAttribute("name", name);
 
-		Element v = valueTemplate(path, def,XSLVALUEOF,force,disable_escape);
+		Element v = valueTemplate(path, def,XSLVALUEOF);
 		if(v != null) element.appendChild(v);
 
 		currentNode.appendChild(element);
@@ -203,10 +193,46 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		return path;
 		
 	}
-	
+
 	protected Element callTemplateEvaluator(
-			String path, 
-			String evalTag, boolean disableEscaping) {
+			PathEval pp, 
+			String evalTag) {
+		Element cc= scallTemplateEvaluator(pp, evalTag);
+		if(pp.lookup) {
+			// TODO: ensure lookup template in inserted
+			String file = "lookup";
+			String p = pp.path;
+			int n;
+			if((n = p.indexOf(":")) != -1) {
+				if(n != p.indexOf("::")) {
+					String ss[] = p.split("[:]");
+					file = ss[0] ;
+					p = ss[1];
+				}
+			}
+			n = file.indexOf(".");
+			Element lookup = currentDocument.createElement("call-template");
+			lookup.setAttribute("name", "lookup");
+			Element param = currentDocument.createElement("with-param");
+			param.setAttribute("name", "key");
+			param.appendChild(cc);
+			lookup.appendChild(param);
+			
+			// TODO ensure filedata variable is established
+			param = currentDocument.createElement("with-param");
+			param.setAttribute("name", "key");
+			param.setAttribute("select", "$" + file +"data");
+			lookup.appendChild(param);
+			
+			return lookup;
+		}
+		return cc;
+	}
+	
+	protected Element scallTemplateEvaluator(
+			PathEval pp, 
+			String evalTag) {
+		String path = pp.path;
 		Matcher matcher = functiondesc.matcher(path);
 		if(matcher.matches()) {
 			String s = matcher.group(1);
@@ -234,65 +260,52 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		if(path.length() > 0) {
 			valueOf = currentDocument.createElement(evalTag);
 			valueOf.setAttribute("select", path);
-			if(disableEscaping) valueOf.setAttribute("disable-output-escaping", "yes");;
+//			if(pp.disableEscape) valueOf.setAttribute("disable-output-escaping", "yes");;
 		}
 		return valueOf;
 	}
-
+	
 	protected Element valueTemplate(
-		String[] path, String def,
-		String evalTag, boolean force, boolean disable_escape)
+		Object[] path, String def,
+		String evalTag)
 	{
-		if (def != null || path.length > 1) {
-			StringBuilder attrTest = new StringBuilder();
-			boolean first = true;
-			if (path.length == 1) {
-				String p = getInnerExpresion(path[0]);
-				if(force) p = "(" + "string-length(" + p + ") > 0)";
-				attrTest.append(p);
-			} else for (int i = 0; i < path.length; ++i) {
-				if (i % 2 != 0) {
-					String p = getInnerExpresion(path[i]);
-					if (!first) attrTest.append(" and ");
-					else first = false;
-					
-					if(force) p = "(" + "string-length(string(" + p + ")) > 0)";
+		StringBuilder attrTest = new StringBuilder();
+		for(int i = 0; i < path.length; ++i) {
+			if(path[i] instanceof PathEval) {
+				PathEval pe = (PathEval) path[i];
+// removing the force condition..  this means an source node containing no text 
+// will be evalualted as false, same as an absent node 
+//				if(pe.force) {
+					String p = getInnerExpresion(pe.path);
+					p = "(" + "string-length(" + p + ") > 0)";
 					attrTest.append(p);
-				}
+//				}
 			}
+		}
 
-			Element choose = currentDocument.createElement(XSLCHOOSE);
-			Element when = currentDocument.createElement(XSLWHEN);
-			when.setAttribute("test", attrTest.toString());
-			choose.appendChild(when);
-			// if path.length > 1, then we alternating literals and paths
-			if(path.length == 1) {
-				Element valueOf = callTemplateEvaluator(
-						path[0],evalTag,disable_escape);
-				if(valueOf != null) {
-					when.appendChild(valueOf);
-				}
-			} 
-			else for (int i = 0; i < path.length; ++i) {
-				if (i % 2 == 0)  {
-					if(path[i].length() > 0) {
-						when.appendChild(textContainer(path[i]));
-					}
-				} else {
+		Element choose = currentDocument.createElement(XSLCHOOSE);
+		Element when = currentDocument.createElement(XSLWHEN);
+		when.setAttribute("test", attrTest.toString());
+		choose.appendChild(when);
+		for(int i = 0; i < path.length; ++i) {
+			if(path[i] instanceof PathEval) {
+				PathEval pe = (PathEval) path[i];
+//				if(pe.force) {
 					Element valueOf = callTemplateEvaluator(
-						path[i],evalTag,disable_escape);
-					if(valueOf != null) when.appendChild(valueOf);
-				}
+							pe,evalTag);
+					when.appendChild(valueOf);
+//				}
+			} else {
+				when.appendChild(textContainer((String) path[i]));
 			}
+		}
 
+		
 			Element otherwise = currentDocument.createElement(XSLOTHERWISE);
 			otherwise.appendChild(textContainer(def == null ? "" : def));
 			choose.appendChild(otherwise);
 			return choose;
-		} else {
-			return callTemplateEvaluator(
-					path[0],evalTag,disable_escape);
-		}
+		
 	}
 
 	public void setAttribute(String key, String value)

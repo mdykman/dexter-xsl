@@ -1,5 +1,6 @@
 package org.dykman.dexter.dexterity;
 
+import org.dykman.dexter.base.PathEval;
 import org.dykman.dexter.descriptor.Descriptor;
 import org.dykman.dexter.descriptor.PathDescriptor;
 import org.w3c.dom.Element;
@@ -26,7 +27,7 @@ public class CDataDescriptor extends PathDescriptor
 			useDefault = true;
 		}
 		if(value.length() > 0) {
-		sequencer.copyNodes(value, 
+		sequencer.copyNodes(new PathEval(value), 
 				useDefault ? ((Element)element).getTextContent() : null, true);
 		} else {
 			super.children();
