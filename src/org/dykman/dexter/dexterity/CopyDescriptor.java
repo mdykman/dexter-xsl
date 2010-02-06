@@ -6,6 +6,7 @@
 
 package org.dykman.dexter.dexterity;
 
+import org.dykman.dexter.base.PathEval;
 import org.dykman.dexter.descriptor.Descriptor;
 import org.dykman.dexter.descriptor.PathDescriptor;
 
@@ -26,7 +27,7 @@ public class CopyDescriptor extends PathDescriptor
 			useDefault = true;
 		}
 
-		sequencer.copyNodes(value, 
+		sequencer.copyNodes(new PathEval(value), 
 			useDefault ? element.getTextContent() : null, true);
 	}
 }

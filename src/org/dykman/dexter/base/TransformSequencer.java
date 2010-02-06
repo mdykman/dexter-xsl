@@ -34,18 +34,18 @@ public interface TransformSequencer
 
 	public void mapAttribute(
 			String name,
-			String[] path, 
+			Object[] path, 
 			String def,
 			boolean force,
 			boolean disable_escape);
 	public void mapNode(
-			String []path, 
+			Object []path, 
 			String def,
 			boolean force,
 			boolean disable_escape);
 
 	public void copyNodes(
-			String path, 
+			PathEval path, 
 			String def, 
 			boolean children);
 	

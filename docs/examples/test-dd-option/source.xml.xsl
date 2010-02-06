@@ -8,13 +8,13 @@
 					<xsl:element name="option">				<xsl:text>choose a pet</xsl:text>
 			</xsl:element>
 
-		<xsl:apply-templates mode="aa2f9f9910d614adc" select="/result/pets/pet"/>
+		<xsl:apply-templates mode="a41961762c7a3ff26" select="/result/pets/pet"/>
 			<xsl:text>
 </xsl:text>
 		</xsl:element>
 
 	</xsl:template>
-<xsl:template match="/result/pets/pet" mode="aa2f9f9910d614adc">				<xsl:element name="option"><xsl:value-of select="."/></xsl:element>
+<xsl:template match="/result/pets/pet" mode="a41961762c7a3ff26">				<xsl:element name="option"><xsl:value-of select="."/></xsl:element>
 
 			</xsl:template>
 </xsl:stylesheet>

@@ -9,6 +9,7 @@ package org.dykman.dexter.descriptor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dykman.dexter.base.PathEval;
 import org.dykman.dexter.base.TransformSequencer;
 import org.dykman.dexter.dexterity.DexterityConstants;
 
@@ -123,15 +124,11 @@ System.out.println(p[i] + " =>> " + args[i]);
 	}
 	
 
-	protected String[] valueTemplateParams(String value) {
+	protected Object[] valueTemplateParams(String value) {
 //		System.out.println("start of valueTemplateParams: " + value);
-		List<String> list = new ArrayList<String>();
+		List<Object> list = new ArrayList<Object>();
 		if(value.length() == 0) {
-			return new String[]{""};
-		}
-		
-		if(value.startsWith("{")) {
-			list.add("");
+			return new Object[0];
 		}
 		
 		int pc = 0;
@@ -142,7 +139,9 @@ System.out.println(p[i] + " =>> " + args[i]);
 			if(value.charAt(pc) == '{') {
 				int end = value.indexOf('}',pc);
 				String s = value.substring(pc+1, end);
-				list.add(s);
+  // TODO: this is where I should be parsing the flags out
+				PathEval ev = new PathEval(s);
+				list.add(ev);
 				pc = end+1;
 			} else {
 				int end = value.indexOf('{', pc);
