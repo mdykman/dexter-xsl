@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -45,8 +47,8 @@ public class Dexter
 {
 	protected Document inputDocument;
 	protected DocumentBuilder builder;
-	public static String DEXTER_VERSION = "dexter-0.3.0-beta";
-	public static String DEXTER_COPYRIGHT = "copyright (c) 2007-2009 Michael Dykman"; 
+	public static String DEXTER_VERSION = "dexter-0.9-beta";
+	public static String DEXTER_COPYRIGHT = "copyright (c) 2007-2010 Michael Dykman"; 
 	private String propertyPath = null;
 
 	private String encoding;
@@ -71,6 +73,43 @@ public class Dexter
 	private boolean propigateComments = true;
 
 	private Document templateLibrary;
+
+	private static Set<String> XPathFunctionList = new HashSet<String>();
+	static {
+		XPathFunctionList.add("last");
+		XPathFunctionList.add("position");
+		XPathFunctionList.add("count");
+		XPathFunctionList.add("id");
+		XPathFunctionList.add("local-name");
+		XPathFunctionList.add("namespace-uri");
+		XPathFunctionList.add("name");
+
+		XPathFunctionList.add("string");
+		XPathFunctionList.add("concat");
+		XPathFunctionList.add("starts-with");
+		XPathFunctionList.add("contains");
+		XPathFunctionList.add("substring-before");
+		XPathFunctionList.add("substring-after");
+		XPathFunctionList.add("substring");
+		XPathFunctionList.add("string-length");
+		XPathFunctionList.add("nomalize-space");
+		XPathFunctionList.add("translate");
+		
+		
+		XPathFunctionList.add("boolean");
+		XPathFunctionList.add("not");
+		XPathFunctionList.add("true");
+		XPathFunctionList.add("false");
+		XPathFunctionList.add("lang");
+
+		XPathFunctionList.add("number");
+		XPathFunctionList.add("sum");
+		XPathFunctionList.add("floor");
+		XPathFunctionList.add("ceiling");
+		XPathFunctionList.add("round");
+		XPathFunctionList.add("lang");
+		XPathFunctionList.add("lang");
+	}
 	
 	public String[] namespaces() {
 		return modulesMap.keySet().toArray(new String[modulesMap.size()]);
@@ -118,7 +157,9 @@ public class Dexter
 		String k = nm + "-" + (md == null ? "dexter-nomode" : md);
 		if(! templatesLoaded.contains(k)) {
 			templatesLoaded.add(k);
+			fragment.appendChild(fragment.getOwnerDocument().createTextNode("\n"));
 			fragment.appendChild(template.cloneNode(true));
+			fragment.appendChild(fragment.getOwnerDocument().createTextNode("\n"));
 
 			// fetch list of referenced modes
 			NodeIterator ii = dt.createNodeIterator(template, 
@@ -160,6 +201,28 @@ public class Dexter
 		}
 		return fragment;
 	}
+	
+	
+	static Pattern functiondesc = Pattern.compile("^([a-zA-Z][a-zA-Z0-9._-]+)[(](.*)[)]$");
+
+	public static boolean isTemplateCall(String path) {
+		Matcher matcher = functiondesc.matcher(path);
+		return matcher.matches() && ! isXpathFunction(matcher.group(1));
+	}
+	public static String [] parseTemplateCall(String path) {
+		Matcher matcher = functiondesc.matcher(path);
+		if(matcher.matches()) {
+			return new String[] { matcher.group(1),matcher.group(2) };
+		} else {
+			return null;
+		}
+	}
+	
+	public static boolean isXpathFunction(String label) {
+		return XPathFunctionList.contains(label);
+	}
+	
+	
 	public boolean loadTemplate(Element stylesheet, String name) {
 		
 		DocumentTraversal dt = (DocumentTraversal)templateLibrary;
@@ -182,7 +245,9 @@ public class Dexter
 				loadTemplateRecurse((Element)nn, templatesLoaded));
 		}
 		stylesheet.getOwnerDocument().adoptNode(fragment);
+
 		stylesheet.appendChild(fragment);
+//System.out.print(loaded ? "success"  :" fail");		
 		return loaded;
 	}
 	

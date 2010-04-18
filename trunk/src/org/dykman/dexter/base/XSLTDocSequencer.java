@@ -13,8 +13,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
 import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -132,7 +130,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	{
 		String av = pe.path;
 		if(children) av = pe.path + "/*";
-		PathEval ev = new PathEval(av,pe.lookup);
+		PathEval ev = new PathEval(pe,av);
 		Element valueOf = callTemplateEvaluator(ev, XSLCOPYOF);
 
 		Element map;
@@ -157,17 +155,15 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	}
 	
 	public void mapNode(
-			Object[] path, 
-			String def,
-			boolean force,
-			boolean disable_escape) {
+			List<PathEval> path, 
+			String def) {
 			
 			Element v = valueTemplate(path, def,XSLVALUEOF);
 			if(v != null) currentNode.appendChild(v);
 		}
 
 	public void mapAttribute(
-			String name, Object[] path, String def, boolean force, boolean disable_escape)
+			String name, List<PathEval> path, String def)
 	{
 
 		Element element = currentDocument.createElement(XSLATTRIBUTE);
@@ -180,25 +176,32 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		currentNode.appendChild(element);
 	}
 
-	Pattern functiondesc = Pattern.compile("^([a-zA-Z][a-zA-Z0-9._-]+[(])(.*)");
+//	Pattern functiondesc = Pattern.compile("^([a-zA-Z][a-zA-Z0-9._-]+[(].*)");
+//	Pattern functiondesc = Pattern.compile("^([a-zA-Z][a-zA-Z0-9._-]+)[(](.*)[)]$");
 
 	protected String getInnerExpresion(String path) {
-		Matcher matcher = functiondesc.matcher(path);
-		if(matcher.matches()) { 
-	 		String m = matcher.group(1).substring(0, matcher.group(1).length() - 1);
-			if(dexter.loadTemplate(currentStylesheet, m)) {
-				return getInnerExpresion(path.substring(m.length()));
-			}
-		}
+		if(Dexter.isTemplateCall(path)) {
+			String[] parts = Dexter.parseTemplateCall(path);
+			String label = parts[0];
+				if(Dexter.isXpathFunction(label)) {
+					return path;
+				} else if(dexter.loadTemplate(currentStylesheet, label)) {
+					String val = parts[1];
+					if(val.length() == 0) {
+						val = ".";
+					}
+					return val;
+				}
+			} 
 		return path;
+		}
 		
-	}
 
 	protected Element callTemplateEvaluator(
 			PathEval pp, 
 			String evalTag) {
 		Element cc= scallTemplateEvaluator(pp, evalTag);
-		if(pp.lookup) {
+		if(pp.getType() == PathEval.LOOKUP) {
 			// TODO: ensure lookup template in inserted
 			String file = "lookup";
 			String p = pp.path;
@@ -233,22 +236,16 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			PathEval pp, 
 			String evalTag) {
 		String path = pp.path;
-		Matcher matcher = functiondesc.matcher(path);
-		if(matcher.matches()) {
-			String s = matcher.group(1);
-			String nn = s.substring(0,s.length() - 1);
-
-			if(dexter.loadTemplate(currentStylesheet,nn)) {
+		if(Dexter.isTemplateCall(path)) {
+			String[] parts = Dexter.parseTemplateCall(path);
+			String label = parts[0];
+			if(dexter.loadTemplate(currentStylesheet,label)) {
 				Element caller = currentDocument.createElement(XSLCALLTEMPLATE);
-				caller.setAttribute("name",nn);
+				caller.setAttribute("name",label);
 				
 				Element p1 = currentDocument.createElement(XSLWITHPARAM);
 				p1.setAttribute("name","param1");
-				path = matcher.group(2);
-				int n = path.indexOf(')');
-				if(n != -1) {
-					path = path.substring(0,n);
-				}
+				path = parts[1];
 				
 				p1.setAttribute("select", path);
 				caller.appendChild(p1);
@@ -264,48 +261,110 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		}
 		return valueOf;
 	}
+
+	protected String enquote(String s) {
+		StringBuilder sb = new StringBuilder();
+		return sb.append('"').append(s).append('"').toString();
+	}
 	
+	protected String lengthTest(Object s) {
+		StringBuilder sb = new StringBuilder("string-length(");
+		if(s instanceof PathEval) {
+			sb.append(((PathEval) s).path);
+		} else {
+			sb.append(s.toString());
+		}
+		return sb.append(")").toString();
+		
+	}
+
+	protected Element valueTemplateSingle(
+			PathEval path, String def,
+			String evalTag)
+	{
+
+		Element result = null;;
+		if(def != null && def.length() > 0) {
+			result = currentDocument.createElement(XSLIF);
+//			StringBuilder attrTest = new StringBuilder();
+			String p = getInnerExpresion(path.path);
+//			if(path.path.startsWith("{{")) path.lookup = true;
+			result.setAttribute("test" , "string-length(" + p + ")");
+		}  else {
+//System.out.println("I have NO default");
+		}
+		Element content = currentDocument.createElement(XSLVALUEOF);
+		content.setAttribute("select", path.path);
+		if(result == null) result = content;
+		else result.appendChild(content);
+		return result;
+	}
+
 	protected Element valueTemplate(
-		Object[] path, String def,
+			List<PathEval> path, 
+			String def,
 		String evalTag)
 	{
 		StringBuilder attrTest = new StringBuilder();
-		for(int i = 0; i < path.length; ++i) {
-			if(path[i] instanceof PathEval) {
-				PathEval pe = (PathEval) path[i];
-// removing the force condition..  this means an source node containing no text 
-// will be evalualted as false, same as an absent node 
-//				if(pe.force) {
-					String p = getInnerExpresion(pe.path);
-					p = "(" + "string-length(" + p + ") > 0)";
-					attrTest.append(p);
-//				}
-			}
+		int n = path.size();
+		boolean app = false;
+		if(! pureLiteral(path)) for(PathEval pp : path) {
+			if(pp.type == PathEval.XPATH) {
+				if(app) attrTest.append(" and ");
+				String p = getInnerExpresion(pp.path);
+				attrTest.append("string-length(" + p + ")");
+				app = true;
+			}  /*else {
+				System.out.println("STRING: " + pp.toString());
+			} */
+		} else  {
+			valueTemplateSingle(path.get(0), def, evalTag);
 		}
 
-		Element choose = currentDocument.createElement(XSLCHOOSE);
-		Element when = currentDocument.createElement(XSLWHEN);
-		when.setAttribute("test", attrTest.toString());
-		choose.appendChild(when);
-		for(int i = 0; i < path.length; ++i) {
-			if(path[i] instanceof PathEval) {
-				PathEval pe = (PathEval) path[i];
-//				if(pe.force) {
-					Element valueOf = callTemplateEvaluator(
-							pe,evalTag);
-					when.appendChild(valueOf);
-//				}
+		Element choose;
+		if(!pureLiteral(path)) {
+			Element when;
+			if(def != null && def.length() > 0) {
+				choose = currentDocument.createElement(XSLCHOOSE);
+				when = currentDocument.createElement(XSLWHEN);
+				choose.appendChild(when);
 			} else {
-				when.appendChild(textContainer((String) path[i]));
+				when = choose =  currentDocument.createElement(XSLIF);
+			}
+			
+			
+			when.setAttribute("test", attrTest.toString());
+			for(PathEval pe : path) {
+				if(pe.type != PathEval.LITERAL) {
+						Element valueOf = callTemplateEvaluator(
+								pe,evalTag);
+						when.appendChild(valueOf);
+	//				}
+				} else {
+					when.appendChild(textContainer(pe.path));
+				}
+			}
+	
+			if(def != null && def.length() > 0) {
+				Element otherwise = currentDocument.createElement(XSLOTHERWISE);
+				otherwise.appendChild(textContainer(def));
+				choose.appendChild(otherwise);
+			}
+			
+		} else {
+			return callTemplateEvaluator(path.get(0),evalTag);
+		}
+		return choose;
+		
+	}
+	
+	private boolean pureLiteral(List<PathEval> list) {
+		for(PathEval p : list) {
+			if(p.type != PathEval.LITERAL) {
+				return false;
 			}
 		}
-
-		
-			Element otherwise = currentDocument.createElement(XSLOTHERWISE);
-			otherwise.appendChild(textContainer(def == null ? "" : def));
-			choose.appendChild(otherwise);
-			return choose;
-		
+		return true;
 	}
 
 	public void setAttribute(String key, String value)
@@ -369,6 +428,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 		Element template = currentDocument.createElement(XSLTEMPLATE);
 		template.setAttribute("name", name);
+		currentStylesheet.appendChild(currentDocument.createTextNode("\n"));
 		currentStylesheet.appendChild(template);
 		currentStylesheet.appendChild(currentDocument.createTextNode("\n"));
 		pushNode(template);
@@ -381,6 +441,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		Element template = currentDocument.createElement(XSLTEMPLATE);
 		template.setAttribute("match", match);
 		template.setAttribute("mode", mode);
+		currentStylesheet.appendChild(currentDocument.createTextNode("\n"));
 		currentStylesheet.appendChild(template);
 		currentStylesheet.appendChild(currentDocument.createTextNode("\n"));
 
@@ -403,7 +464,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		Element element = null;
 		if (tests != null)
 		{
-			element = currentDocument.createElement("xsl:when");
+			element = currentDocument.createElement(XSLWHEN);
 			element.setAttribute("test", tests);
 		}
 		else
@@ -447,6 +508,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		output = ch.item(0);
 		currentStylesheet.insertBefore(template, output);
 		currentStylesheet.insertBefore(currentDocument.createTextNode("\n"), output);
+		currentStylesheet.insertBefore(currentDocument.createTextNode("\n"), template);
 	}
 
 	public void endSubdoc()
@@ -458,10 +520,20 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		popDoc();
 	}
 
+	protected Element getFirstChildElement(Element parent) {
+		NodeList nl = parent.getChildNodes();
+		for(int i = 0; i < nl.getLength(); ++i) {
+			if(nl.item(i).getNodeType() == Node.ELEMENT_NODE) {
+				return (Element) nl.item(i);
+			}
+		}
+		
+		return null;
+	}
 	public void setDocType(DocumentType dt)
 	{
 		// this should always return the current output element
-		Element element = (Element)currentStylesheet.getFirstChild();
+		Element element = getFirstChildElement(currentStylesheet);
 		element.setAttribute("doctype-public",dt.getPublicId());
 		if(dt.getSystemId() != null)
 		{
@@ -654,6 +726,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		if(mediaType != null) output.setAttribute("media-type", mediaType);
 		output.setAttribute("method", method);
 
+		style.appendChild(document.createTextNode("\n"));
 		style.appendChild(output);
 		style.appendChild(document.createTextNode("\n"));
 		
@@ -667,6 +740,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		(name != null) template.setAttribute("name", name);
 		if(mode != null) template.setAttribute("mode", mode);
 
+		style.appendChild(document.createTextNode("\n"));
 		style.appendChild(template);
 		style.appendChild(document.createTextNode("\n"));
 

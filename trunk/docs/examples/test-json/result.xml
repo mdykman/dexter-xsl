@@ -6,12 +6,12 @@
 		middle <span>Carson</span>
 		last <span>Jones</span>
 
-	<a href="javascript:dosomething({ first:'Peter', middle:'Carson', last:'Jones' })">do something</a>
-</div><div>
+		<a href="javascript:dosomething({ first:'Peter', middle:'Carson', last:'Jones' })">do something</a>
+	</div><div>
 		first <span>Sally</span>
 		middle <span>Louise</span>
 		last <span>O'Reilly</span>
 
-	<a href="javascript:dosomething({ first:'Sally', middle:'Louise', else:{ thing:'Christian' }, last:'O\'Reilly' })">do something</a>
-</div>
+		<a href="javascript:dosomething({ first:'Sally', middle:'Louise', else:{ thing:'Christian' }, last:'O\'Reilly' })">do something</a>
+	</div>
 </div>

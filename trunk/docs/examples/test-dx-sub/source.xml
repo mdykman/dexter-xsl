@@ -1,5 +1,5 @@
 <xxx>
-	<www dx:text="*/cat/stuff" />
+	<www dx:text="{*/cat/stuff}" />
 	<yyy id="yyy" dx:sub="*/thing1">
 		<span dx:ghost="" dx:text="stuff"/>
 		<zzz id="zzz" dx:sub="/*/thing2" dx:text="stuff" />

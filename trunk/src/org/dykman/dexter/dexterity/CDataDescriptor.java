@@ -1,5 +1,7 @@
 package org.dykman.dexter.dexterity;
 
+import java.util.List;
+
 import org.dykman.dexter.base.PathEval;
 import org.dykman.dexter.descriptor.Descriptor;
 import org.dykman.dexter.descriptor.PathDescriptor;
@@ -26,12 +28,20 @@ public class CDataDescriptor extends PathDescriptor
 			value = value.substring(1);
 			useDefault = true;
 		}
-		if(value.length() > 0) {
-		sequencer.copyNodes(new PathEval(value), 
+		List<PathEval> pp = PathEval.parse(value);
+		if(pp.size() == 1) {
+			sequencer.copyNodes(pp.get(0), 
 				useDefault ? ((Element)element).getTextContent() : null, true);
-		} else {
+		} 
+		else {
+			throw new DexteritySyntaxException("CDATA descriptor may only take a single xpath expression");
+		}
+		// WHY would I do this?
+	/*
+		else {
 			super.children();
 		}
+		*/
 
 	}
 

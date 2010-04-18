@@ -6,7 +6,6 @@
 
 package org.dykman.dexter.descriptor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.dykman.dexter.base.PathEval;
@@ -87,7 +86,7 @@ public abstract class PathDescriptor extends NodeTransformDescriptor
 		for(int i = 0; i < p.length;++i) {
 			
 			args[i] = mapPath(root,p[i]);
-System.out.println(p[i] + " =>> " + args[i]);
+//System.out.println(p[i] + " =>> " + args[i]);
 		}
 		return args;
 	}
@@ -124,8 +123,8 @@ System.out.println(p[i] + " =>> " + args[i]);
 	}
 	
 
-	protected Object[] valueTemplateParams(String value) {
-//		System.out.println("start of valueTemplateParams: " + value);
+	protected List<PathEval>  valueTemplateParams(String value) {
+		/*
 		List<Object> list = new ArrayList<Object>();
 		if(value.length() == 0) {
 			return new Object[0];
@@ -134,13 +133,13 @@ System.out.println(p[i] + " =>> " + args[i]);
 		int pc = 0;
 		
 		if(value.indexOf('{') == -1) {
-			list.add(value);
+			list.add(new PathEval(value));
 		} else while(pc < value.length()) {
 			if(value.charAt(pc) == '{') {
 				int end = value.indexOf('}',pc);
 				String s = value.substring(pc+1, end);
-  // TODO: this is where I should be parsing the flags out
-				PathEval ev = new PathEval(s);
+ 				PathEval ev = new PathEval(s);
+ 				ev.setLookup(value.charAt(pc+1) == '{'); 
 				list.add(ev);
 				pc = end+1;
 			} else {
@@ -154,11 +153,12 @@ System.out.println(p[i] + " =>> " + args[i]);
 				}
 			}
 		}
-		String [] res = list.toArray(new String[list.size()]);
-//		for(String v : res) {
-//			System.out.println("end of valueTemplateParams: " + v);
-//		}
-//System.out.println();
+		*/
+		return PathEval.parse(value);
+		/*
+		Object [] res = list.toArray(new Object[list.size()]);
+
 		return res;
+		*/
 	}
 }

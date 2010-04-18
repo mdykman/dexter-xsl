@@ -11,7 +11,7 @@ TMPDAT="tmp-${DATA}.res"
 
 dexter.sh ${INPUT}
 dexter.sh -x${INPUT}.xsl ${DATA} > $TMPDAT
-diff ${RESULT} ${TMPDAT}
+diff -b ${RESULT} ${TMPDAT}
 if [[ $? == "0" ]]; then
 	echo ok
 	rm $TMPDAT

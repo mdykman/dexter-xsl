@@ -1,4 +1,4 @@
-<project default="dexter-jar">
+<project default="dexter-jar" name="dexter">
 
 	<property  file="build.properties" />
 
