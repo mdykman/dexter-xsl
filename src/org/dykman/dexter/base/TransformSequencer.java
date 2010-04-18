@@ -6,6 +6,8 @@
 
 package org.dykman.dexter.base;
 
+import java.util.List;
+
 import org.dykman.dexter.descriptor.Descriptor;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
@@ -34,15 +36,11 @@ public interface TransformSequencer
 
 	public void mapAttribute(
 			String name,
-			Object[] path, 
-			String def,
-			boolean force,
-			boolean disable_escape);
+			List<PathEval> path, 
+			String def);
 	public void mapNode(
-			Object []path, 
-			String def,
-			boolean force,
-			boolean disable_escape);
+			List<PathEval> path, 
+			String def);
 
 	public void copyNodes(
 			PathEval path, 

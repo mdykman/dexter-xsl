@@ -21,26 +21,25 @@ public class MapNodeDescriptor extends PathDescriptor
 	public void children()
 	{
 		boolean useDefault = false;
-		boolean disableEscape = false;
-		boolean force = false;
-		if(value.startsWith("~")) {
-			value = value.substring(1);
-			disableEscape = true;
-		}
+//		boolean force = false;
+//		if(value.startsWith("~")) {
+//			value = value.substring(1);
+//			disableEscape = true;
+//		}
 		if(value.startsWith("!")) {
 			value = value.substring(1);
 			if(value.startsWith("!")) {
-				force = true;
+//				force = true;
 				value = value.substring(1);
 			}
 			useDefault = true;
 		}
 
-		if(value.startsWith("~")) {
-			value = value.substring(1);
-			disableEscape = true;
-		}
+//		if(value.startsWith("~")) {
+//			value = value.substring(1);
+//			disableEscape = true;
+//		}
 		sequencer.mapNode(valueTemplateParams(value), 
-				useDefault ? ((Element)element).getTextContent() : null,force,disableEscape);
+				useDefault ? ((Element)element).getTextContent() : null);
 	}
 }

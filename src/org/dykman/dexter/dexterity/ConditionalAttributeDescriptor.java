@@ -22,6 +22,9 @@ public class ConditionalAttributeDescriptor extends AbstractAttributeDescriptor
 			String [] nv = tests[i].split(DexterityConstants.ATTR_SEP,2);
 			String name = nv[0];
 			String exp = (nv.length > 1) ? nv[1] : "";
+			if(exp.length() == 0) {
+				exp="''";
+			}
 			
 			String test = tests[i+1];
 
@@ -36,7 +39,7 @@ public class ConditionalAttributeDescriptor extends AbstractAttributeDescriptor
 
 			// no concept of default value. it appears or not dependent on conditional
 			sequencer.mapAttribute(name, 
-					valueTemplateParams(exp),  value,false,false);
+					valueTemplateParams(exp),  value);
 			
 			this.sequencer.endTest();			
 		}

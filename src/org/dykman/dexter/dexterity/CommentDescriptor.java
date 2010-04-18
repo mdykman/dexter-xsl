@@ -26,12 +26,14 @@ public class CommentDescriptor extends PathDescriptor
 			value = value.substring(1);
 			useDefault = true;
 		}
-		if(value.length() > 0) {
-		sequencer.copyNodes(new PathEval(value), 
+		sequencer.copyNodes(PathEval.parseSingle(value), 
 				useDefault ? ((Element)element).getTextContent() : null, true);
-		} else {
+		// WHY would I do this?
+	/*
+		else {
 			super.children();
 		}
+		*/
 
 	}
 

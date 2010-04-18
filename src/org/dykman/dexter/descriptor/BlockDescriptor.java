@@ -6,7 +6,6 @@
 
 package org.dykman.dexter.descriptor;
 
-
 import org.dykman.dexter.base.PropertyResolver;
 import org.w3c.dom.Element;
 
