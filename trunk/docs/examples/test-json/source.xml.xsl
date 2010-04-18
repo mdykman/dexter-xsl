@@ -7,18 +7,18 @@
 <xsl:template match="/">
 		<xsl:element name="div">			<xsl:text>
 	</xsl:text>
-		<xsl:apply-templates mode="af935398d21620d2e" select="data/names/name"/>
+		<xsl:apply-templates mode="a6432206f4d7860ea" select="data/names/name"/>
 			<xsl:text>
 	---------------------------------------
 	</xsl:text>
-		<xsl:apply-templates mode="ad737d5f00e61d8eb" select="data/person"/>
+		<xsl:apply-templates mode="a11f5e2fca298cfe8" select="data/person"/>
 			<xsl:text>
 </xsl:text>
 		</xsl:element>
 
 	</xsl:template>
 
-<xsl:template match="data/names/name" mode="af935398d21620d2e">				<xsl:element name="div"><xsl:attribute name="onlick"><xsl:if test="string-length(.)"><xsl:text>return collect(</xsl:text><xsl:call-template name="json"><xsl:with-param name="param1" select="."/></xsl:call-template><xsl:text>);</xsl:text></xsl:if></xsl:attribute></xsl:element>
+<xsl:template match="data/names/name" mode="a6432206f4d7860ea">				<xsl:element name="div"><xsl:attribute name="onlick"><xsl:if test="string-length(.)"><xsl:text>return collect(</xsl:text><xsl:call-template name="json"><xsl:with-param name="param1" select="."/></xsl:call-template><xsl:text>);</xsl:text></xsl:if></xsl:attribute></xsl:element>
 
 			</xsl:template>
 
@@ -125,7 +125,7 @@
 	</xsl:choose>
 </xsl:template>
 
-<xsl:template match="data/person" mode="ad737d5f00e61d8eb">				<xsl:element name="div">					<xsl:text>
+<xsl:template match="data/person" mode="a11f5e2fca298cfe8">				<xsl:element name="div">					<xsl:text>
 		first </xsl:text>
 									<xsl:element name="span"><xsl:if test="string-length(first)"><xsl:value-of select="first"/></xsl:if></xsl:element>
 
