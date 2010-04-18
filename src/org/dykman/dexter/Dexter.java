@@ -76,6 +76,7 @@ public class Dexter
 
 	private static Set<String> XPathFunctionList = new HashSet<String>();
 	static {
+		/* XPath 1.0 functions */
 		XPathFunctionList.add("last");
 		XPathFunctionList.add("position");
 		XPathFunctionList.add("count");
@@ -108,7 +109,18 @@ public class Dexter
 		XPathFunctionList.add("ceiling");
 		XPathFunctionList.add("round");
 		XPathFunctionList.add("lang");
-		XPathFunctionList.add("lang");
+		
+		/* XSLT 1.0 functions */
+		XPathFunctionList.add("document");
+		XPathFunctionList.add("key");
+		XPathFunctionList.add("format-number");
+
+		
+		XPathFunctionList.add("key");
+		XPathFunctionList.add("current");
+		XPathFunctionList.add("unparsed-entity-uri");
+		XPathFunctionList.add("generate-id");
+		XPathFunctionList.add("system-property");
 	}
 	
 	public String[] namespaces() {

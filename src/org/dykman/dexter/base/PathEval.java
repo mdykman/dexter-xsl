@@ -53,9 +53,9 @@ public class PathEval {
 				if(!tok.hasNext()) throw new DexteritySyntaxException("untermiated lookup phrase");
 				t = tok.nextToken();
 				if(t.equals("}}")) {
-					list.add(new PathEval(".",XPATH));
+					list.add(new PathEval(".",LOOKUP));
 				} else {
-					list.add(new PathEval(t,XPATH));
+					list.add(new PathEval(t,LOOKUP));
 					if(!"}}".equals(tok.nextToken()))
 						throw new DexteritySyntaxException("failed to close lookup phrase");
 				}

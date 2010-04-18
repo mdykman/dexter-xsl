@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:output encoding="UTF-8" indent="no" media-type="text/html" method="html" />
-	
+
+
+<xsl:template name="lookup">
+	<xsl:param name="key" />
+	<xsl:param name="data" />
+	<xsl:value-of select="$data/data/entry[@key=$key]/*|$data/data/entry[@key=$key]/text()" />
+</xsl:template>
+
+
 <xsl:template name="escape-quotes">
 	<xsl:param name="param1" select="."/>
 	<xsl:param name="param2" >'</xsl:param>

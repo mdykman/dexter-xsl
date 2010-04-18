@@ -7,10 +7,12 @@
 package org.dykman.dexter.base;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
 
@@ -197,12 +199,17 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		}
 		
 
+	Set<String> lookupTable = new HashSet<String>();
+	
 	protected Element callTemplateEvaluator(
 			PathEval pp, 
 			String evalTag) {
 		Element cc= scallTemplateEvaluator(pp, evalTag);
 		if(pp.getType() == PathEval.LOOKUP) {
+			// ensure lookup is loaded
+			dexter.loadTemplate(currentStylesheet,"lookup");
 			// TODO: ensure lookup template in inserted
+			// probably need to work harder to allow any legal XPATH
 			String file = "lookup";
 			String p = pp.path;
 			int n;
@@ -213,18 +220,31 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 					p = ss[1];
 				}
 			}
+			if(! lookupTable.contains(file)) {
+				lookupTable.add(file);
+				// now load a document as a variable immediately after the output
+				Element output = getFirstChildElement(currentStylesheet);
+				Element var = currentDocument.createElement(XSLVARIABLE);
+				var.setAttribute("name",file + "data");
+				var.setAttribute("select", "document('" + file + ".xml')");
+				NodeList ch = currentDocument.getElementsByTagName(XSLTEMPLATE);
+				Node firstTemplate = ch.item(0);
+				currentStylesheet.insertBefore(var, firstTemplate);
+//				currentStylesheet.insertBefore(firstTemplate, currentDocument.createTextNode("\n\n"));
+			}
 			n = file.indexOf(".");
-			Element lookup = currentDocument.createElement("call-template");
+			Element lookup = currentDocument.createElement(XSLCALLTEMPLATE);
 			lookup.setAttribute("name", "lookup");
-			Element param = currentDocument.createElement("with-param");
+			Element param = currentDocument.createElement(XSLWITHPARAM);
 			param.setAttribute("name", "key");
 			param.appendChild(cc);
 			lookup.appendChild(param);
+
 			
 			// TODO ensure filedata variable is established
-			param = currentDocument.createElement("with-param");
-			param.setAttribute("name", "key");
-			param.setAttribute("select", "$" + file +"data");
+			param = currentDocument.createElement(XSLWITHPARAM);
+			param.setAttribute("name", "data");
+			param.setAttribute("select", "$" + file + "data");
 			lookup.appendChild(param);
 			
 			return lookup;
@@ -309,7 +329,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		int n = path.size();
 		boolean app = false;
 		if(! pureLiteral(path)) for(PathEval pp : path) {
-			if(pp.type == PathEval.XPATH) {
+			if(pp.type != PathEval.LITERAL) {
 				if(app) attrTest.append(" and ");
 				String p = getInnerExpresion(pp.path);
 				attrTest.append("string-length(" + p + ")");
