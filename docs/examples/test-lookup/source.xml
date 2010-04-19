@@ -1,0 +1,11 @@
+<tests>
+	<div dx:env="data" >
+		<span dx:text="{{title}}" >
+		</span>
+		<span dx:text="first" >
+		</span>
+		<span dx:text="last" >
+		</span>
+	</div>
+
+</tests>
