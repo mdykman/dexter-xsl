@@ -3,7 +3,7 @@
   elementFormDefault="qualified">
   <xs:annotation>
   	<xs:appinfo>http://code.google.com/p/dexter-xsl</xs:appinfo>
-  	<xs:documentation>XHTLM-specific processing attributes</xs:documentation>
+  	<xs:documentation>XHTML-specific processing attributes</xs:documentation>
   </xs:annotation>
   <xs:attribute name="meta" type="xs:normalizedString">
    <xs:annotation>
