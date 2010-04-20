@@ -1,0 +1,4 @@
+<div>
+	<span dx:ghost="" dx:text="csv(data/names)"></span>
+	<span dx:ghost="" dx:text="section(data/names)"></span>
+</div>

@@ -1,0 +1,5 @@
+
+<div dx:env="data/names" >
+<div dx:each="name" dx:text="your name is {escape-quotes(.)}" />. 
+say it again: <div dx:each="name" dx:text="jsstr(.)" />
+</div>
