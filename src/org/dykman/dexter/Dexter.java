@@ -375,9 +375,7 @@ public class Dexter
 					}
 				}
 			}
-		}
-		catch(IOException e)
-		{
+		} catch(IOException e) {
 			throw new DexterException(e);
 		}
   }

@@ -667,6 +667,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		switch (type)
 		{
 			case Node.DOCUMENT_NODE:
+//				Element  rt = currentStylesheet.
 				popStylesheet();
 				popDoc();
 			case Node.ELEMENT_NODE:
@@ -888,6 +889,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	{
 		Document popped = docStack.pop();
 		String name = nameStack.pop();
+		
+		popped.getDocumentElement().appendChild(popped.createTextNode("\n"));
 		finished.put(name, popped);
 
 		if (docStack.size() > 0)
