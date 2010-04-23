@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.TreeMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -54,10 +53,10 @@ public class Main
 
 	private static boolean propComments = true;
 	private static String inputXSL = null; 
-	private static boolean displayMacros = false;
 	
-	public static void main(String[] args)
-	{
+	private static	String idHash = null;
+
+	public static void main(String[] args) {
 		
 		int argp = 0;
 		LongOpt[] opts = new LongOpt[16];
@@ -73,12 +72,12 @@ public class Main
 		opts[9] = new LongOpt("resolve-entities",LongOpt.NO_ARGUMENT,null,'r');
 		opts[10] = new LongOpt("suppress-comments",LongOpt.NO_ARGUMENT,null,'C');
 		opts[11] = new LongOpt("transform",LongOpt.REQUIRED_ARGUMENT,null,'x');
-		opts[12] = new LongOpt("macros",LongOpt.NO_ARGUMENT,null,'M');
-		opts[13] = new LongOpt("skip-validation",LongOpt.NO_ARGUMENT,null,'V');
-		opts[14] = new LongOpt("no-media-type",LongOpt.NO_ARGUMENT,null,'T');
-		opts[15] = new LongOpt("library",LongOpt.REQUIRED_ARGUMENT,null,'l');
+		opts[12] = new LongOpt("skip-validation",LongOpt.NO_ARGUMENT,null,'V');
+		opts[13] = new LongOpt("no-media-type",LongOpt.NO_ARGUMENT,null,'T');
+		opts[14] = new LongOpt("library",LongOpt.REQUIRED_ARGUMENT,null,'L');
+		opts[15] = new LongOpt("hash",LongOpt.REQUIRED_ARGUMENT,null,'H');
 		
-		Getopt go = new Getopt("dexter",args,"m::l::o::p::e::i::t::d::x::hvrCMVT",opts,false);
+		Getopt go = new Getopt("dexter",args,"m::L::o::p::e::i::t::d::x::H::hvrCVT",opts,false);
 		int s;
 		
 		Set<String> libararySet = new HashSet<String>();
@@ -87,11 +86,13 @@ public class Main
 		{
 			switch(s)
 			{
-				case 'l':
-					libararySet.add(go.getOptarg());
+				case 'H' :
+//					org.dykman.dexter.descriptor.PathDescriptor.idHash = 
+						idHash = go.getOptarg();
+
 				break;
-				case 'M':
-					displayMacros = true;
+				case 'L':
+					libararySet.add(go.getOptarg());
 				break;
 				case 'V':
 					checkValidity = false;
@@ -165,14 +166,14 @@ public class Main
 				default :
 					System.out.println("invalid switch specified `" + (char)s + "'");
 					showHelpFile();
-					System.exit(0);
+					System.exit(3);
 			}
 		}
 		
 		argp = go.getOptind();
 		try
 		{
-			if ((!displayMacros) && args.length <= argp)
+			if (args.length <= argp)
 			{
 				showHelpFile();
 				System.exit(1);
@@ -205,24 +206,6 @@ public class Main
 
 			Dexter dexter = new Dexter(encoding,dexterProps,builder);
 			
-			if(displayMacros) {
-				dexter.baseResolver.getPropertiesMatching("macro");
-				System.out.println(" defined macros:");
-				Map<Object,Object> sorted = new TreeMap<Object, Object>(
-						);
-				sorted.putAll(dexter.baseResolver.getPropertiesMatching("macro"));
-				for(Map.Entry<Object, Object> entry : 
-					sorted.entrySet()) {
-					String k = entry.getKey().toString();
-					System.out.print("   " + k);
-					for(int i = 20 -k.length(); i >= 0; --i) {
-						System.out.print(" ");
-					}
-					System.out.println("\t" + entry.getValue().toString());
-				}
-				System.out.println();
-				System.exit(0);
-			}
 			loadLibraryTemplate(dexter,builder,libararySet);
 			
 			dexter.setPropigateComments(propComments);
@@ -314,6 +297,9 @@ public class Main
 	private static void putToDisk(String name, Document doc) throws Exception
 	{
 		File f;
+		if(idHash != null) {
+			name = name + "-" + idHash;
+		}
 		if(outputDirectory == null) f = new File(name);
 		else f = new File(outputDirectory,name);
 

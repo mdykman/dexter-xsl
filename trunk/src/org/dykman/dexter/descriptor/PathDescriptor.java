@@ -15,6 +15,8 @@ import org.dykman.dexter.dexterity.DexterityConstants;
 
 public abstract class PathDescriptor extends NodeTransformDescriptor
 {
+	public static String idHash = null;
+
 	public PathDescriptor(Descriptor  descriptor) {
 		super(descriptor);
 	}

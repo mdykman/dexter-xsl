@@ -16,5 +16,6 @@ valid options are listed below.  Long and short options behave identically.
  -M, --macros               * list all currently defined macros
  -C, --suppress-comments    * filter all user comments out of the stylesheet  
  -v, --version              * print version and copyright information.
+ -H, --hash                 * add hash to file names 
  -h, --help                 * print this screen and exit
 

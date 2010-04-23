@@ -1,21 +1,18 @@
-/**
- * 
- */
 package org.dykman.dexter;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
-class HackWriter extends Writer
+public class HackWriter extends Writer
 {
-	Writer inner;
-	Map<String, String> entities = null;
-	boolean started = false;
-	boolean preserveEntities = true;
-	boolean ampersandPending = false;
+	protected Writer inner;
+	protected Map<String, String> entities = null;
+	protected boolean started = false;
+	protected boolean preserveEntities = true;
+	protected boolean ampersandPending = false;
 	
-	HackWriter(Writer inner)
+	public HackWriter(Writer inner)
 	{
 		this.inner = inner;
 	}

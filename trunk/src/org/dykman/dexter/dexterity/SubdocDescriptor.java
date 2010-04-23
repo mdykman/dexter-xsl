@@ -19,7 +19,6 @@ public class SubdocDescriptor extends PathDescriptor
 		super(descriptor);
 	}
 
-
 	@Override
 	public void beforeNode()
 	{
@@ -28,6 +27,7 @@ public class SubdocDescriptor extends PathDescriptor
 		{
 			throw new DexteritySyntaxException("a subdoc element must have an 'id' attribute");
 		}
+
 		String altDoc = null;
 		if(value.indexOf(':') > -1)
 		{
@@ -35,8 +35,6 @@ public class SubdocDescriptor extends PathDescriptor
 			value = bits[0];
 			altDoc = bits[1];
 		}
-//		String path = mapPath(value);
-//		setPath(path);
 		sequencer.startSubdoc(altDoc,id, value,true);
 	}
 
