@@ -13,7 +13,8 @@
 </xsl:text>
 		</xsl:element>
 
-	</xsl:template>
+	<xsl:text>
+</xsl:text></xsl:template>
 
 <xsl:template name="csv">
 	<xsl:param name="param1"><xsl:copy-of select="."/></xsl:param> 
@@ -40,4 +41,5 @@
 		<xsl:with-param name="param2"> :: </xsl:with-param>
 	</xsl:call-template>
 </xsl:template>
+
 </xsl:stylesheet>

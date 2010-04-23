@@ -20,6 +20,8 @@ public class GhostDescriptor extends NodeTransformDescriptor
 	public void start()
 	{
 		if(!applyToChildren) beforeNode();
+//		inner.start();
+
 	}
 
 	@Override
@@ -44,6 +46,7 @@ public class GhostDescriptor extends NodeTransformDescriptor
 	@Override 
 	public void end()
 	{
+//		inner.end();
 		if(!applyToChildren) afterNode();
 	}
 }

@@ -210,7 +210,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			dexter.loadTemplate(currentStylesheet,"lookup");
 			// TODO: ensure lookup template in inserted
 			// probably need to work harder to allow any legal XPATH
-			String file = "lookup";
+			String file = "dexter-lookup";
 			String p = pp.path;
 			int n;
 			if((n = p.indexOf(":")) != -1) {
@@ -655,6 +655,18 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		}
 	}
 
+	public Element childElement(Element parent,String name) {
+		NodeList nl = parent.getChildNodes();
+		parent.getChildNodes();
+		for(int i = 0; i < nl.getLength(); ++i) {
+			Node nn = nl.item(i);
+			if(nn.getNodeType() == Node.ELEMENT_NODE && name.equalsIgnoreCase(
+				nn.getNodeName())) {
+				return (Element) nn;
+			}
+		}
+		return null;
+	}
 	public void endNode()
 	{
 		short type = nodeTypes[--nodeLevel];
@@ -667,7 +679,17 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		switch (type)
 		{
 			case Node.DOCUMENT_NODE:
-//				Element  rt = currentStylesheet.
+				NodeList nl = currentStylesheet.getElementsByTagName("xsl:template");
+				for(int i = 0; i < nl.getLength(); ++i) {
+					Element nn = (Element) nl.item(i);
+					String match = nn.getAttribute("match");
+					if("/".equals(match)) {
+						Element tn = currentDocument.createElement(XSLTEXT);
+						tn.appendChild(currentDocument.createTextNode("\n"));
+						nn.appendChild(tn);
+						break;
+					}
+				}
 				popStylesheet();
 				popDoc();
 			case Node.ELEMENT_NODE:

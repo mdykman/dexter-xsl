@@ -34,15 +34,18 @@
 	
 <xsl:template name="csv">
 	<xsl:param name="param1" ><xsl:copy-of select="." /></xsl:param> 
-	<xsl:apply-templates select="$param1" mode="csv" />
+	<xsl:param name="param2" >,</xsl:param> 
+	<xsl:apply-templates select="$param1" mode="csv" >
+		<xsl:with-param name="param1" select="$param2" />
+	</xsl:apply-templates>
 </xsl:template>
 
 <xsl:template match="*" mode="csv" >
-	<xsl:param name="seperator">,</xsl:param>
+	<xsl:param name="param1">,</xsl:param>
 	<xsl:for-each select="descendant-or-self::*[string-length(normalize-space(text()))> 0]">
  		<xsl:value-of select="." />
  		<xsl:if test="position() != last()" >
- 			<xsl:value-of select="$seperator" />
+ 			<xsl:value-of select="$param1" />
  		</xsl:if> 
 	</xsl:for-each>
 </xsl:template>
