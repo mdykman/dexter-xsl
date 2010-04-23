@@ -7,11 +7,13 @@ shift
 RESULT=$1
 shift
 
+DIFF="diff -w --ignore-blank-lines"
+
 TMPDAT="tmp-${DATA}.res"
 
-dexter.sh -lext.xsl ${INPUT}
+dexter.sh -Lext.xsl ${INPUT}
 dexter.sh -x${INPUT}.xsl ${DATA} > $TMPDAT
-diff -b ${RESULT} ${TMPDAT}
+$DIFF  ${RESULT} ${TMPDAT}
 if [[ $? == "0" ]]; then
 	echo ok
 	rm $TMPDAT
