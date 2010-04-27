@@ -31,10 +31,10 @@ public class PathEval {
 		List<PathEval> list = new ArrayList<PathEval> ();
 		
 		if(s.indexOf("{") == -1) {
+			if(s.length() == 0) s = ".";
 			list.add(new PathEval(s,XPATH));
 			return list;
 		}
-		
 		Tokenizer tok = new Tokenizer(s);
 		while(tok.hasNext()) {
 			String t = tok.nextToken();
@@ -44,6 +44,7 @@ public class PathEval {
 				if(t.equals("}")) {
 					list.add(new PathEval(".",XPATH));
 				} else {
+					if(t.length() == 0) t = ".";
 					list.add(new PathEval(t,XPATH));
 					if(!"}".equals(tok.nextToken()))
 						throw new DexteritySyntaxException("failed to close expression phrase");
@@ -55,6 +56,7 @@ public class PathEval {
 				if(t.equals("}}")) {
 					list.add(new PathEval(".",LOOKUP));
 				} else {
+					if(t.length() == 0) t = ".";
 					list.add(new PathEval(t,LOOKUP));
 					if(!"}}".equals(tok.nextToken()))
 						throw new DexteritySyntaxException("failed to close lookup phrase");

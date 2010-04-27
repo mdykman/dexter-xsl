@@ -357,6 +357,7 @@ public class Main
 			Source source = new javax.xml.transform.dom.DOMSource(document);
 
 			tranformer.transform(source, result);
+			writer.write("\n");
 		}
 		catch (Exception e)
 		{

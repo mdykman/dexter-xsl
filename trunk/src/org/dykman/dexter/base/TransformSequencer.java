@@ -25,7 +25,8 @@ public interface TransformSequencer
 	public Element textContainer(String content);
 
 	public String randMode();
-	public void startSelect(String name, String match, String mode);
+	public void startSelect(String name, String match);
+//	public void startSelect(String name, String match, String mode);
 	public void endSelect();
 	public void startNode(String name, int type);
 	public void endNode();

@@ -19,6 +19,7 @@ public class NodeDescriptor extends AbstractDescriptor
 {
 	protected Node node;
 	TransformSequencer sequencer;
+	boolean taint;
 	public void setTransformSequencer(TransformSequencer sequencer)
 	{
 		this.sequencer = sequencer;
@@ -27,6 +28,9 @@ public class NodeDescriptor extends AbstractDescriptor
 	public NodeDescriptor(Node node)
 	{
 		this.node = node;
+		taint = node.getUserData(Dexter.DEXTER_TAINT) != null;
+		
+System.out.println("ELEMENT: " + (taint ? "TAINTED" : "UNTAINED") + " " + node.getNodeName());		
 	}
 	public void attributes()
 	{
