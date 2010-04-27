@@ -126,41 +126,6 @@ public abstract class PathDescriptor extends NodeTransformDescriptor
 	
 
 	protected List<PathEval>  valueTemplateParams(String value) {
-		/*
-		List<Object> list = new ArrayList<Object>();
-		if(value.length() == 0) {
-			return new Object[0];
-		}
-		
-		int pc = 0;
-		
-		if(value.indexOf('{') == -1) {
-			list.add(new PathEval(value));
-		} else while(pc < value.length()) {
-			if(value.charAt(pc) == '{') {
-				int end = value.indexOf('}',pc);
-				String s = value.substring(pc+1, end);
- 				PathEval ev = new PathEval(s);
- 				ev.setLookup(value.charAt(pc+1) == '{'); 
-				list.add(ev);
-				pc = end+1;
-			} else {
-				int end = value.indexOf('{', pc);
-				if(end == -1) {
-					list.add(value.substring(pc));
-					pc = value.length();
-				} else {
-					list.add(value.substring(pc, end));
-					pc = end;
-				}
-			}
-		}
-		*/
 		return PathEval.parse(value);
-		/*
-		Object [] res = list.toArray(new Object[list.size()]);
-
-		return res;
-		*/
 	}
 }

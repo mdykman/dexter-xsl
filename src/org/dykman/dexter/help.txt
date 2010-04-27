@@ -1,4 +1,4 @@
-  usage: java -cp lib/dexter.jar:lib/gnu-getopt.jar org.dykman.dexter.Main  [OPTIONS] file ...
+  u7sage: java -cp lib/dexter.jar:lib/gnu-getopt.jar org.dykman.dexter.Main  [OPTIONS] file ...
 
 valid options are listed below.  Long and short options behave identically.
  
@@ -10,10 +10,9 @@ valid options are listed below.  Long and short options behave identically.
  -i, --indent=yes|no        * specify the indent attribute in the output element. Default: no
  -o, --directory=<path>     * specify an output directory. Default: use source directory
  -x, --transform=<xsl-file> <xml-data> * use file xsl-file to transform file xml-data
- -l, --library=<xsl-file>   * load additional function-templates; may be specified multiple times
+ -L, --library=<xsl-file>   * load additional function-templates; may be specified multiple times
  -p, --properties=<filename> * load additional properties; may be specified multiple times
  -d, --define=<key>=<value> * define a single property; may be specified multiple times
- -M, --macros               * list all currently defined macros
  -C, --suppress-comments    * filter all user comments out of the stylesheet  
  -v, --version              * print version and copyright information.
  -H, --hash                 * add hash to file names 

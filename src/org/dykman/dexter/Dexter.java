@@ -783,6 +783,7 @@ public class Dexter
 		List list = (List) element.getUserData(DexterityConstants.DEXTER_SPECIFIERS);
 		if (list == null)
 		{
+			taintAncestors(element);
 			list = new LinkedList<TransformSpecifier>();
 			element.setUserData(DexterityConstants.DEXTER_SPECIFIERS, list, null);
 		}
@@ -876,7 +877,17 @@ public class Dexter
 		return Arrays.copyOfRange(related, 0, c);
 	}
 
+	public static final String DEXTER_TAINT = "DEXTER_TAINT";
+	public static void taintAncestors(Node el) {
+		el.setUserData(DEXTER_TAINT, 1, null);
+		Node n = el.getParentNode();
+		if(n != null && n.getUserData(DEXTER_TAINT) == null) {
+			taintAncestors(n);
+		}
+		
+	}
 	public static Descriptor marshallNode(Node node,Dexter dexter) {
+System.out.println("marshallNode called!!!");	   		
 	   	Descriptor descriptor = new NodeDescriptor(node);
 	   	List<NodeSpecifier> list = (List<NodeSpecifier>) node
 	   	      .getUserData(DexterityConstants.DEXTER_SPECIFIERS);

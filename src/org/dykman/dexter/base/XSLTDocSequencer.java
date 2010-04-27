@@ -120,7 +120,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	public void startIterator(String path)
 	{
 		iteratorStack.push(path);
-		startSelect(null, path, randMode());
+		startSelect(null, path);
+//		startSelect(null, path, randMode());
 	}
 
 	public void endIterator() {
@@ -457,7 +458,15 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	public void endNamedTemplate() {
 		popNode();
 	}
-	public void startSelect(String name, String match, String mode) {
+//	public void startSelect(String name, String match, String mode) {
+	public void startSelect(String name, String match) {
+			
+		int n = match.lastIndexOf(".//");
+		String select = match;
+		match = makeMatch(select);
+		
+		String mode = this.randMode();
+
 		Element template = currentDocument.createElement(XSLTEMPLATE);
 		template.setAttribute("match", match);
 		template.setAttribute("mode", mode);
@@ -466,7 +475,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		currentStylesheet.appendChild(currentDocument.createTextNode("\n"));
 
 		Element matcher = currentDocument.createElement(XSLAPPLYTEMPLATES);
-		matcher.setAttribute("select", match);
+		matcher.setAttribute("select", select);
 		matcher.setAttribute("mode", mode);
 		
 		currentNode.appendChild(matcher);
@@ -509,13 +518,20 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		Element element = currentDocument.createElement(XSLIMPORT);
 		element.setAttribute("href", fn + ".xsl");
 
-		NodeList ch = currentDocument.getElementsByTagName(XSLTEMPLATE);
-		Node output = ch.item(0);
+//		NodeList ch = currentDocument.getElementsByTagName(XSLTEMPLATE);
+		
+		Element output = childElement(currentStylesheet, XSLOUTPUT);
+		 
 		currentStylesheet.insertBefore(element, output);
 		currentStylesheet.insertBefore(
 				currentDocument.createTextNode("\n"), output);
-		currentNode.appendChild(createExternalTemplateCall(match,tn));
+		
+		String select = match;
+		match = makeMatch(select);
 
+		currentNode.appendChild(createExternalTemplateCall(select,tn));
+
+		// create secondary document, set  the stack
 		Document document = createStub(match,tn,tn);
 		if (altDoc != null)	name = name + ".dispose";
 		pushDoc(document, name);
@@ -523,9 +539,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 // create the main entry point template to handle cases where it is invoked independently
 		Element template = currentDocument.createElement(XSLTEMPLATE);
 		template.setAttribute("match", "/");
-		template.appendChild(createExternalTemplateCall(match,tn));
-		ch = currentDocument.getElementsByTagName(XSLTEMPLATE);
-		output = ch.item(0);
+		template.appendChild(createExternalTemplateCall(select,tn));
+		output = childElement(currentStylesheet,XSLTEMPLATE);;
 		currentStylesheet.insertBefore(template, output);
 		currentStylesheet.insertBefore(currentDocument.createTextNode("\n"), output);
 		currentStylesheet.insertBefore(currentDocument.createTextNode("\n"), template);
@@ -655,7 +670,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		}
 	}
 
-	public Element childElement(Element parent,String name) {
+	public Element childElement(Node parent,String name) {
 		NodeList nl = parent.getChildNodes();
 		parent.getChildNodes();
 		for(int i = 0; i < nl.getLength(); ++i) {
@@ -726,14 +741,20 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	}
 
 
-	protected Element createExternalTemplateCall(String match,String name) {
-		
-//		String trmatch = translateXSLPath(match);
+	protected String makeMatch(String select) {
+		String match = select;
+		int n = select.lastIndexOf('/');
+		if(n > -1) match = select.substring(n+1);
+			
+		return match;
+	}
+	
+	protected Element createExternalTemplateCall(String select,String name) {
 		Element choose = currentDocument.createElement(XSLCHOOSE);
 		Element when = currentDocument.createElement(XSLWHEN);
-		when.setAttribute("test", match);
+		when.setAttribute("test", select);
 		Element apply = currentDocument.createElement(XSLAPPLYTEMPLATES);
-		apply.setAttribute("select", match);
+		apply.setAttribute("select", select);
 		apply.setAttribute("mode", name);
 		when.appendChild(apply);
 		choose.appendChild(when);
@@ -779,8 +800,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		template.appendChild(document.createTextNode("\n"));
 
 		if(match != null) template.setAttribute("match", match);
-		if
-		(name != null) template.setAttribute("name", name);
+		if(name != null) template.setAttribute("name", name);
 		if(mode != null) template.setAttribute("mode", mode);
 
 		style.appendChild(document.createTextNode("\n"));
