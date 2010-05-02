@@ -32,6 +32,7 @@ import org.dykman.dexter.base.PropertyResolver;
 import org.dykman.dexter.base.XSLTDocSequencer;
 import org.dykman.dexter.descriptor.Descriptor;
 import org.dykman.dexter.descriptor.NodeDescriptor;
+import org.dykman.dexter.descriptor.PassthroughDescriptor;
 import org.dykman.dexter.descriptor.TransformDescriptor;
 import org.dykman.dexter.dexterity.DexterityConstants;
 import org.w3c.dom.Document;
@@ -45,10 +46,13 @@ import org.w3c.dom.traversal.NodeIterator;
 
 public class Dexter
 {
+
 	protected Document inputDocument;
 	protected DocumentBuilder builder;
-	public static String DEXTER_VERSION = "dexter-0.9-beta";
-	public static String DEXTER_COPYRIGHT = "copyright (c) 2007-2010 Michael Dykman"; 
+	public static final String DEXTER_VERSION = "dexter-0.9-beta";
+	public static final String DEXTER_COPYRIGHT = "copyright (c) 2007-2010 Michael Dykman, Lauren Enterprises"; 
+	public static final String DEXTER_TAINT = "DEXTER_TAINT";
+
 	private String propertyPath = null;
 
 	private String encoding;
@@ -70,6 +74,9 @@ public class Dexter
 	private Map<String, String> editors = new HashMap<String, String>();
 	private Map<String, String> blocks = new HashMap<String, String>();
 
+	private String idHash;
+	
+	
 	private boolean propigateComments = true;
 
 	private Document templateLibrary;
@@ -550,7 +557,7 @@ public class Dexter
 		}
 		// convert dexter attributes
 		scanDocument(document);
-		Descriptor descriptor = marshall(document, this);
+		Descriptor descriptor = marshall(document);
 
 		XSLTDocSequencer sequencer = new XSLTDocSequencer(
 				this,builder,filename, encoding);
@@ -877,7 +884,6 @@ public class Dexter
 		return Arrays.copyOfRange(related, 0, c);
 	}
 
-	public static final String DEXTER_TAINT = "DEXTER_TAINT";
 	public static void taintAncestors(Node el) {
 		el.setUserData(DEXTER_TAINT, 1, null);
 		Node n = el.getParentNode();
@@ -886,8 +892,8 @@ public class Dexter
 		}
 		
 	}
-	public static Descriptor marshallNode(Node node,Dexter dexter) {
-System.out.println("marshallNode called!!!");	   		
+	public  Descriptor marshallNode(Node node) {
+//System.out.print("nodeDescriptor created!!!");	   		
 	   	Descriptor descriptor = new NodeDescriptor(node);
 	   	List<NodeSpecifier> list = (List<NodeSpecifier>) node
 	   	      .getUserData(DexterityConstants.DEXTER_SPECIFIERS);
@@ -902,20 +908,28 @@ System.out.println("marshallNode called!!!");
 	   	return descriptor;
 	}
 
-	public static Descriptor marshall(Node node,Dexter dexter)
+	public Descriptor marshall(Node node)
 	{
-		Descriptor parent = Dexter.marshallNode(node,dexter);
-		Descriptor c;
-		NodeList children = node.getChildNodes();
-		int nc = children.getLength();
-		for (int i = 0; i < nc; ++i)
-		{
-			Node child = children.item(i);
-			if(child != null &&	child.getParentNode() != null)
+		Descriptor parent;
+	
+		if((node.getNodeType() != Node.ELEMENT_NODE) || (node.getUserData(DEXTER_TAINT) != null)) {
+			parent = marshallNode(node);
+			Descriptor c;
+			NodeList children = node.getChildNodes();
+			int nc = children.getLength();
+			for (int i = 0; i < nc; ++i)
 			{
-				c = marshall(child,dexter);
-				parent.appendChild(c);
+				Node child = children.item(i);
+				if(child != null &&	child.getParentNode() != null)
+				{
+					c = marshall(child);
+					parent.appendChild(c);
+				}
+			
 			}
+		} else {
+//System.out.println("passthrough descriptor created " + node.getNodeName() + " " + node.getNodeType());			
+			parent = new PassthroughDescriptor(node);
 		}
 		return parent;
 	}
@@ -940,6 +954,15 @@ System.out.println("marshallNode called!!!");
 		}
 	}
 
+	public String getHashName(String name) {
+		int n = name.lastIndexOf('.');
+		if(idHash != null && n != -1){
+			return new StringBuilder().append(name.substring(0,n)).append(':')
+				.append(idHash).append(name.substring(n)).toString();
+			
+		}
+		return name;
+	}
 	public void setIndent(String indent)
     {
     	this.indent = indent;
@@ -951,5 +974,25 @@ System.out.println("marshallNode called!!!");
 	public void setPropigateComments(boolean propigateComments)
     {
     	this.propigateComments = propigateComments;
+    }
+
+	public List<String> getIdNames()
+    {
+    	return idNames;
+    }
+
+	public void setIdNames(List<String> idNames)
+    {
+    	this.idNames = idNames;
+    }
+
+	public String getIdHash()
+    {
+    	return idHash;
+    }
+
+	public void setIdHash(String idHash)
+    {
+    	this.idHash = idHash;
     }
 }

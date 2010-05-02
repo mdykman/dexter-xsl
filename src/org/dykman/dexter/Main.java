@@ -205,6 +205,7 @@ public class Main
 			}
 
 			Dexter dexter = new Dexter(encoding,dexterProps,builder);
+			dexter.setIdHash(idHash);
 			
 			loadLibraryTemplate(dexter,builder,libararySet);
 			
@@ -221,7 +222,7 @@ public class Main
 				fn = args[argp];
 				try {
 					Document impl = builder.parse(new FileInputStream(fn));
-					docs = dexter.generateXSLT(fn,impl);
+					docs = dexter.generateXSLT(dexter.getHashName(fn),impl);
 					Iterator<String> k = docs.keySet().iterator();
 					while(k.hasNext())
 					{
@@ -297,9 +298,7 @@ public class Main
 	private static void putToDisk(String name, Document doc) throws Exception
 	{
 		File f;
-		if(idHash != null) {
-			name = name + "-" + idHash;
-		}
+
 		if(outputDirectory == null) f = new File(name);
 		else f = new File(outputDirectory,name);
 
