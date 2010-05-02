@@ -30,9 +30,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 
 public class XSLTDocSequencer extends BaseTransformSequencer
 {
@@ -360,7 +360,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 						Element valueOf = callTemplateEvaluator(
 								pe,evalTag);
 						when.appendChild(valueOf);
-	//				}
 				} else {
 					when.appendChild(textContainer(pe.path));
 				}
@@ -388,6 +387,58 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		return true;
 	}
 
+	protected Node replaceTextNodes(Node node) {
+		Node nn;
+		switch(node.getNodeType()) {
+//		case Node.DOCUMENT_NODE:
+//		break;
+		
+		case Node.TEXT_NODE :
+				nn = currentDocument.createElement(XSLTEXT);
+				nn.appendChild(currentDocument.createTextNode(node.getNodeValue()));
+			break;
+			case Node.ELEMENT_NODE :
+				Element element =currentDocument.createElement(node.getNodeName());
+				NamedNodeMap attr  = ((Element)node).getAttributes();
+				for(int i = 0; i < attr.getLength(); ++i) {
+					Node item = attr.item(i);
+					element.setAttribute(item.getNodeName(), item.getNodeValue());
+				}
+				nn = element;
+			break;
+			case Node.ENTITY_REFERENCE_NODE:
+				Node n = translateEntityReference(node.getNodeName());
+				Element el = currentDocument.createElement(XSLTEXT);
+				el.appendChild(n);
+				nn = el;
+			break;
+			case Node.COMMENT_NODE :
+				nn = currentDocument.createComment(node.getNodeValue());
+			break;
+			default:
+				System.out.println("    UNEXPECTED node type here: " + node.getNodeType());
+				nn = null;
+		}
+		return nn;
+	}
+	
+	protected Node replaceText(Node node) {
+			Node result = replaceTextNodes(node);
+			NodeList nl = node.getChildNodes();
+			for(int i = 0; i < nl.getLength(); ++i) {
+				Node c = nl.item(i);
+				result.appendChild(replaceText(nl.item(i)));
+			}
+		
+			return result;
+	}
+	
+	public void cloneNode(Node node) {
+		Node nn = replaceText(node.cloneNode(true));
+		
+		currentNode.appendChild(nn);
+	}
+
 	public void setAttribute(String key, String value)
 	{
 		key = translateName(key);
@@ -397,11 +448,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		}
 		else
 		{
-			Element element = currentDocument.createElement(XSLATTRIBUTE);
-			element.setAttribute("name", key);
-			Text text = currentDocument.createTextNode(value);
-			element.appendChild(text);
-			currentNode.appendChild(element);
+			Element el = (Element) currentNode;
+			el.setAttribute(key, value);
 		}
 	}
 	
@@ -449,6 +497,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 		Element template = currentDocument.createElement(XSLTEMPLATE);
 		template.setAttribute("name", name);
+		template.appendChild(currentDocument.createTextNode("\n"));
+
 		currentStylesheet.appendChild(currentDocument.createTextNode("\n"));
 		currentStylesheet.appendChild(template);
 		currentStylesheet.appendChild(currentDocument.createTextNode("\n"));
@@ -470,6 +520,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		Element template = currentDocument.createElement(XSLTEMPLATE);
 		template.setAttribute("match", match);
 		template.setAttribute("mode", mode);
+		template.appendChild(currentDocument.createTextNode("\n"));
+
 		currentStylesheet.appendChild(currentDocument.createTextNode("\n"));
 		currentStylesheet.appendChild(template);
 		currentStylesheet.appendChild(currentDocument.createTextNode("\n"));
@@ -539,6 +591,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 // create the main entry point template to handle cases where it is invoked independently
 		Element template = currentDocument.createElement(XSLTEMPLATE);
 		template.setAttribute("match", "/");
+		template.appendChild(currentDocument.createTextNode("\n"));
+
 		template.appendChild(createExternalTemplateCall(select,tn));
 		output = childElement(currentStylesheet,XSLTEMPLATE);;
 		currentStylesheet.insertBefore(template, output);
@@ -608,8 +662,10 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			case Node.ELEMENT_NODE:
 			{
 				indentWithWhitespace();
-				Element el = currentDocument.createElement(XSLELEMENT);
-				el.setAttribute("name", name);
+//				Element el = currentDocument.createElement(XSLELEMENT);
+//				el.setAttribute("name", name);
+//System.out.print("startmnode: element");				
+				Element el = currentDocument.createElement(name);
 				currentNode.appendChild(el);
 				currentNode.appendChild(currentDocument.createTextNode("\n"));
 				pushNode(el);

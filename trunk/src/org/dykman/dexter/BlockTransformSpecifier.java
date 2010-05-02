@@ -47,7 +47,7 @@ public class BlockTransformSpecifier extends TransformSpecifier
 			Descriptor[] cd = new Descriptor[block.length];
 			for(int i = 0 ; i < block.length; ++i)
 			{
-				cd[i] = Dexter.marshall(block[i],dexter);
+				cd[i] = dexter.marshall(block[i]);
 			}
 			td.setPropertyResolver(properties);
 			td.setArgs(block, cd,names,values);

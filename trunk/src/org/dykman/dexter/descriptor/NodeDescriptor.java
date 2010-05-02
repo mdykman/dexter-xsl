@@ -17,6 +17,7 @@ import org.w3c.dom.Node;
 
 public class NodeDescriptor extends AbstractDescriptor
 {
+//	public static String idHash;
 	protected Node node;
 	TransformSequencer sequencer;
 	boolean taint;
@@ -30,7 +31,7 @@ public class NodeDescriptor extends AbstractDescriptor
 		this.node = node;
 		taint = node.getUserData(Dexter.DEXTER_TAINT) != null;
 		
-System.out.println("ELEMENT: " + (taint ? "TAINTED" : "UNTAINED") + " " + node.getNodeName());		
+//System.out.println("ELEMENT: " + (taint ? "TAINTED" : "UNTAINED") + " " + node.getNodeName());		
 	}
 	public void attributes()
 	{
