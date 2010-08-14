@@ -1,5 +1,5 @@
 /**
- * dexter (c) 2007,-2009 Michael Dykman 
+ * dexter (c) 2007-2010 Michael Dykman 
  * Free for use under version 2.0 of the Artistic License.     
  * http://www.opensource.org/licences/artistic-license.php     
  */
@@ -68,16 +68,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 	private DocumentBuilder builder;
 
-	
-	static {
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		dbf.setValidating(false);
-		
-		dbf.setExpandEntityReferences(false);
-		dbf.setCoalescing(true);
-		dbf.setIgnoringComments(false);
-	}
-
 	private Map<String, Document> finished = new HashMap<String, Document>();
 
 	private Map<String, Map<String, DocumentFragment>> valMap = new HashMap<String, Map<String, DocumentFragment>>();
@@ -132,7 +122,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	public void copyNodes(PathEval pe, String def, boolean children)
 	{
 		String av = pe.path;
-		if(children) av = pe.path + "/*";
+		if(children) av = pe.path + "/node()";
 		PathEval ev = new PathEval(pe,av);
 		Element valueOf = callTemplateEvaluator(ev, XSLCOPYOF);
 
@@ -397,23 +387,29 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 				nn = currentDocument.createElement(XSLTEXT);
 				nn.appendChild(currentDocument.createTextNode(node.getNodeValue()));
 			break;
+			case Node.COMMENT_NODE :
+//				nn = currentDocument.createComment(node.getNodeValue());
+//			break;
 			case Node.ELEMENT_NODE :
-				Element element =currentDocument.createElement(node.getNodeName());
-				NamedNodeMap attr  = ((Element)node).getAttributes();
-				for(int i = 0; i < attr.getLength(); ++i) {
-					Node item = attr.item(i);
-					element.setAttribute(item.getNodeName(), item.getNodeValue());
-				}
-				nn = element;
+//				Element element =currentDocument.createElement(node.getNodeName());
+//				NamedNodeMap attr  = ((Element)node).getAttributes();
+//				for(int i = 0; i < attr.getLength(); ++i) {
+//					Node item = attr.item(i);
+//					element.setAttribute(item.getNodeName(), item.getNodeValue());
+//				}
+//				nn = element;
+//			break;
+			case Node.CDATA_SECTION_NODE:
+			case Node.ENTITY_NODE:
+				nn = currentDocument.importNode(node,true); 
 			break;
 			case Node.ENTITY_REFERENCE_NODE:
-				Node n = translateEntityReference(node.getNodeName());
-				Element el = currentDocument.createElement(XSLTEXT);
-				el.appendChild(n);
-				nn = el;
-			break;
-			case Node.COMMENT_NODE :
-				nn = currentDocument.createComment(node.getNodeValue());
+//				nn = currentDocument.importNode(node,true); 
+				nn = translateEntityReference(node.getNodeName());
+				//translateEntityReference(node.getNodeName());
+//				Element el = currentDocument.createElement(XSLTEXT);
+//				el.appendChild(n);
+//				nn = el;
 			break;
 			default:
 				System.out.println("    UNEXPECTED node type here: " + node.getNodeType());
@@ -649,18 +645,16 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 	public void startNode(String name, int type)
 	{
+//	System.out.println("type = " + type);
 		nodeTypes[nodeLevel++] = (short) type;
-		switch (type)
-		{
-			case Node.DOCUMENT_NODE:
-			{
+		switch (type) {
+			case Node.DOCUMENT_NODE: {
 				Document document = createStub("/",null,null);
 				pushDoc(document, filename);
 				lastWasEntity = false;
 			}
 			break;
-			case Node.ELEMENT_NODE:
-			{
+			case Node.ELEMENT_NODE: {
 				indentWithWhitespace();
 //				Element el = currentDocument.createElement(XSLELEMENT);
 //				el.setAttribute("name", name);
@@ -672,8 +666,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 				lastWasEntity = false;
 			}
 			break;
-			case Node.TEXT_NODE:
-			{
+			case Node.TEXT_NODE: {
 				indentWithWhitespace();
 				Element el = currentDocument.createElement(XSLTEXT);
 				el.setTextContent(name);
@@ -682,8 +675,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 				lastWasEntity = false;
 			}
 			break;
-			case Node.CDATA_SECTION_NODE:
-			{
+			case Node.CDATA_SECTION_NODE: {
 				indentWithWhitespace();
 				CDATASection cd = currentDocument.createCDATASection(name);
 				currentNode.appendChild(cd);
@@ -692,8 +684,10 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			}
 			break;
 			case Node.ENTITY_NODE:
+			System.out.println("ENTITY_NODE");
 				// TODO: this is screwed up for this case, I am sure...
 			case Node.ENTITY_REFERENCE_NODE:
+			System.out.println("ENTITY_REEFERENCE_NODE");
 			{
 
 				indentWithWhitespace();
@@ -776,8 +770,18 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		}
 	}
 
-	protected Node translateEntityReference(String ref)
+	protected Node translateEntityReference(String ref) {
+		String val = dexter.getEntity(ref);
+//System.out.println("val = " + val + " ref = " + ref);
+		Element el = currentDocument.createElement(XSLTEXT);
+		el.appendChild(currentDocument.createEntityReference(ref));
+		return el;
+	}
+
+	protected Node translateEntityReferenceX(String ref)
 	{
+
+		Element el = currentDocument.createElement(XSLTEXT);
 		String val = dexter.getEntity(ref);
 		if(val == null)
 		{
@@ -793,7 +797,10 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			currentDocument.setUserData("entity-map",ent,null);
 		}
 		ent.put(ref, val);
-		return  currentDocument.createTextNode("&" + ref + ';');
+//		return  currentDocument.createTextNode("&" + ref + ';');
+		el.appendChild(currentDocument.createTextNode("&" + ref + ';'));
+		el.setAttribute("disable-output-escaping","yes");
+		return el;
 	}
 
 
@@ -853,8 +860,15 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		tagTemplate(output);
 
 		Element template = document.createElement(XSLTEMPLATE);
+	
 		template.appendChild(document.createTextNode("\n"));
 
+		Element brake = document.createElement(XSLTEXT);
+		brake.appendChild(document.createTextNode("\n"));
+		template.appendChild(brake);
+
+		template.appendChild(document.createTextNode("\n"));
+		
 		if(match != null) template.setAttribute("match", match);
 		if(name != null) template.setAttribute("name", name);
 		if(mode != null) template.setAttribute("mode", mode);
@@ -893,26 +907,23 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		DocumentFragment fragment = createIdentityValueExpression(currentDocument,
 		      value);
 		Map<String, List<Element>> im = replacementMap.get(key);
-		if (im != null)
-		{
+		if (im != null) {
 			List<Element> els = im.get(value);
 			if (els != null)
 			{
 				Iterator<Element> it = els.iterator();
-				while (it.hasNext())
-				{
+				while (it.hasNext()) {
 					Element el = it.next();
 					Node parent = el.getParentNode();
 					Node repl = fragment.cloneNode(true);
 					Document eldoc = el.getOwnerDocument();
-					eldoc.adoptNode(repl);
+//					eldoc.adoptNode(repl);
 					parent.replaceChild(repl, el);
 				}
 			}
 		}
 		Map<String, DocumentFragment> kk = valMap.get(key);
-		if (kk == null)
-		{
+		if (kk == null) {
 			kk = new HashMap<String, DocumentFragment>();
 			valMap.put(key, kk);
 		}
@@ -920,13 +931,11 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		return fragment;
 	}
 
-	public Element textContainer(String content)
-	{
+	public Element textContainer(String content) {
 		return textContainer(currentDocument, content);
 	}
 
-	public Element textContainer(Document document, String content)
-	{
+	public Element textContainer(Document document, String content) {
 		Element element = document.createElement(XSLTEXT);
 		element.setTextContent(content);
 		return element;
@@ -934,8 +943,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 	protected DocumentFragment createIdentityValueExpression(
 			Document document, 
-			String value) 
-	{
+			String value) {
 		DocumentFragment fragment = document.createDocumentFragment();
 
 		Element element = currentDocument.createElement(XSLTEXT);
@@ -1057,7 +1065,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	public void appendText(String s,boolean escape) {
 		Element el = currentDocument.createElement(XSLTEXT);
 		if(escape) el.setAttribute("disable-output-escaping", "yes");
-		currentNode.appendChild(currentDocument.createTextNode(s));
+		el.appendChild(currentDocument.createTextNode(s));
+		currentNode.appendChild(el);
 	}
 
 
