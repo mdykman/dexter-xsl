@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Writer;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -31,11 +30,8 @@ import javax.xml.transform.stream.StreamSource;
 import org.dykman.dexter.base.DexterEntityResolver;
 import org.dykman.dexter.dexterity.DexteritySyntaxException;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.traversal.DocumentTraversal;
-import org.w3c.dom.traversal.NodeFilter;
-import org.w3c.dom.traversal.NodeIterator;
+import org.w3c.dom.NodeList;
 
 public class Main
 {
@@ -82,12 +78,9 @@ public class Main
 		
 		Set<String> libararySet = new HashSet<String>();
 		
-		while((s = go.getopt()) != -1)
-		{
-			switch(s)
-			{
+		while((s = go.getopt()) != -1) {
+			switch(s) {
 				case 'H' :
-//					org.dykman.dexter.descriptor.PathDescriptor.idHash = 
 						idHash = go.getOptarg();
 
 				break;
@@ -145,16 +138,14 @@ public class Main
 						String b[] = ps.split("[=]",2);
 						String v = b.length > 1 ? b[1] : "";
 						System.setProperty(b[0], v);
-					}
-					else {
+					} else {
 						throw new DexterException("invalid property definition: " + ps);
 					}
 				break;
 				case 'o' :
 					outputDirectory = go.getOptarg();
 					File ff = new File(outputDirectory);
-					if(!ff.isDirectory() || ff.canWrite())
-					{
+					if(!ff.isDirectory() || ff.canWrite()) {
 						throw new DexterException(outputDirectory + " is not a writeable directory");
 					}
 				break;
@@ -171,10 +162,8 @@ public class Main
 		}
 		
 		argp = go.getOptind();
-		try
-		{
-			if (args.length <= argp)
-			{
+		try {
+			if (args.length <= argp) {
 				showHelpFile();
 				System.exit(1);
 			}
@@ -182,7 +171,10 @@ public class Main
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			dbf.setValidating(false);
 			dbf.setExpandEntityReferences(false);
-			dbf.setCoalescing(true);
+
+			// WHY AGAIN??
+			dbf.setCoalescing(false);
+//			dbf.setCoalescing(true);
 			dbf.setIgnoringComments(false);
 			DocumentBuilder builder = dbf.newDocumentBuilder();
 			builder.setEntityResolver(new DexterEntityResolver(encoding));
@@ -207,7 +199,7 @@ public class Main
 			Dexter dexter = new Dexter(encoding,dexterProps,builder);
 			dexter.setIdHash(idHash);
 			
-			loadLibraryTemplate(dexter,builder,libararySet);
+			dexter.loadLibraryTemplate(builder,libararySet);
 			
 			dexter.setPropigateComments(propComments);
 			
@@ -217,38 +209,33 @@ public class Main
 
 			String fn;
 			Map<String, Document> docs = null;
-			while(argp < args.length)
-			{
+			while(argp < args.length) {
 				fn = args[argp];
 				try {
 					Document impl = builder.parse(new FileInputStream(fn));
+//					dump(impl);
 					docs = dexter.generateXSLT(dexter.getHashName(fn),impl);
 					Iterator<String> k = docs.keySet().iterator();
-					while(k.hasNext())
-					{
+					while(k.hasNext()) {
 						String name = k.next();
-		 				if(!name.endsWith(".dispose.xsl"))
-						{
+		 				if(!name.endsWith(".dispose.xsl")) {
 							putToDisk(name, docs.get(name));
 						}
 					}
-					if(checkValidity)
-					{
+					if(checkValidity) {
 						k = docs.keySet().iterator();
-						while(k.hasNext())
-						{
+						while(k.hasNext()) {
 							String name = k.next();
 							File f;
 							if(outputDirectory == null) f = new File(name);
 							else f = new File(outputDirectory,name);
-							Source source = new StreamSource(f);
-							source.setSystemId(f.getPath());
+							StreamSource source = new StreamSource(f);
+							source.setSystemId(f);
 							Transformer transformer= transFact.newTransformer(source);
 							transformer.hashCode();
 						}
 					}
-				}
-				catch(Exception e) {
+				} catch(Exception e) {
 					e.printStackTrace(System.out);
 					System.out.print("error while processing source file `" + fn + "'");
 					System.out.println(e.getMessage());
@@ -256,28 +243,22 @@ public class Main
 				++argp;
 			}
 			
-		}
-		catch (DexterHaltException e)
-		{
+		} catch (DexterHaltException e) {
 			// just end it quietly
 		}
-		catch (DexteritySyntaxException e)
-		{
+		catch (DexteritySyntaxException e) {
 			System.err.println("Syntax exception in dexterity descriptor: " + e.getMessage());
 		}
-		catch (DexterException e)
-		{
+		catch (DexterException e) {
 			System.err.println("DexterException: " + e.getMessage());
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			System.err.println("unexpected exception");
 			e.printStackTrace();
 		}
 	}
 	
-	protected static void showHelpFile()
-	{
+	protected static void showHelpFile() {
 		try
 		{
 			InputStream in = Dexter.class.getResourceAsStream("help.txt");
@@ -314,33 +295,6 @@ public class Main
 		writer.close();
 	}
 
-	private static void loadLibraryTemplate(Dexter dexter,DocumentBuilder builder,Collection<String> libararySet) 
-			throws IOException
-		{
-		for(String s : libararySet) {
-			try
-            {
-				File f = new File(s);
-	            Document document = builder.parse(f);
-	            DocumentTraversal dt = (DocumentTraversal) document;
-	            NodeIterator it = dt.createNodeIterator(document, 
-	            	NodeFilter.FILTER_ACCEPT, new AnyTemplateFilter(), false);
-	            Node n;
-	            while((n = it.nextNode()) != null) {
-	            	dexter.addTemplate((Element)n);
-	            }
-            } catch (Exception e)
-            {
-	            e.printStackTrace();
-            }
-		}
-	}
-	static class AnyTemplateFilter implements NodeFilter {
-		public short acceptNode(Node n) {
-			return "xsl:template".equals(n.getNodeName()) ?  NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
-			
-		}
-	}
 
 	protected static void write(Document document, Writer writer, String encoding)
 	{
@@ -363,5 +317,20 @@ public class Main
 			throw new DexterException("error while rendering document: " 
 					+ e.getMessage(),e);
 		}
+	}
+	protected static void dumpNode(Node node,int n) {
+		for(int i = 0; i < n; ++i) {
+			System.out.print("  ");
+		}
+		System.out.print(node.getNodeType());
+		if(node.getNodeType() == 5) System.out.print("  " + node.getNodeName() + " " + node.getNodeValue());
+		System.out.println();
+		NodeList nl = node.getChildNodes();
+		for(int i = 0; i < nl.getLength(); ++i) {
+			dumpNode(nl.item(i),n+1);
+		}
+	}
+	protected static void dump(Document doc) {
+		dumpNode(doc.getDocumentElement(),0);
 	}
 }

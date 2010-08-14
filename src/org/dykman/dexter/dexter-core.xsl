@@ -10,6 +10,26 @@
 </xsl:template>
 
 
+<xsl:template name="replace-chars">
+	<xsl:param name="param1" select="."/>
+	<xsl:param name="param2" />
+	<xsl:param name="param3" />
+	<xsl:choose>
+		<xsl:when test="contains($param1,$param2)" >
+			<xsl:value-of select="substring-before($param1,$param2)" />
+			<xsl:value-of select="$param3" />
+			<xsl:call-template name="replace-chars">
+				<xsl:with-param name="param1" select="substring-after($param1,$param2)" />
+				<xsl:with-param name="param2" select="$param2" />
+				<xsl:with-param name="param3" select="$param3" />
+			</xsl:call-template>
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:value-of select="$param1" />
+		</xsl:otherwise>
+	</xsl:choose>
+</xsl:template>
+
 <xsl:template name="escape-quotes">
 	<xsl:param name="param1" select="."/>
 	<xsl:param name="param2" >'</xsl:param>
@@ -89,20 +109,41 @@
 	</xsl:choose>
 </xsl:template>
 
+<xsl:template name="escape-all" >
+	<xsl:param name="param1" select="." />
+	<xsl:param name="param2" />
+	<xsl:param name="param3" />
+
+</xsl:template>
+
 <xsl:template name="js.str" >
 	<xsl:param name="param1" select="."/>
 	<xsl:text>'</xsl:text>
-	<xsl:call-template name="escape-quotes">
-		<xsl:with-param name="param1" >
-			<xsl:call-template name="escape-quotes">
-				<xsl:with-param name="param1" select="$param1" />
-				<xsl:with-param name="param2" >\</xsl:with-param>
-				<xsl:with-param name="param3" >\</xsl:with-param>
-			</xsl:call-template>
-		</xsl:with-param>
-		<xsl:with-param name="param2" >'</xsl:with-param>
-		<xsl:with-param name="param3" >\</xsl:with-param>
-	</xsl:call-template>
+
+<xsl:call-template name="replace-chars">
+	<xsl:with-param name="param1">
+		<xsl:call-template name="replace-chars">
+			<xsl:with-param name="param1" >
+				<xsl:call-template name="escape-quotes">
+					<xsl:with-param name="param1" >
+						<xsl:call-template name="escape-quotes">
+							<xsl:with-param name="param1" select="$param1" />
+							<xsl:with-param name="param2" >\</xsl:with-param>
+							<xsl:with-param name="param3" >\</xsl:with-param>
+						</xsl:call-template>
+					</xsl:with-param>
+					<xsl:with-param name="param2" >'</xsl:with-param>
+					<xsl:with-param name="param3" >\</xsl:with-param>
+				</xsl:call-template>
+			</xsl:with-param>
+			<xsl:with-param name="param2"><xsl:text>&#x0A;</xsl:text></xsl:with-param>
+			<xsl:with-param name="param3" select="'\n'" />
+		</xsl:call-template>
+	</xsl:with-param>
+	<xsl:with-param name="param2"><xsl:text>&#x0D;</xsl:text></xsl:with-param>
+	<xsl:with-param name="param3" select="'\r'" />
+</xsl:call-template>
+
 	<xsl:text>'</xsl:text>
 </xsl:template>
 

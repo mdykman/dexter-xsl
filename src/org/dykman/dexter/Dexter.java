@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -46,16 +47,16 @@ import org.w3c.dom.traversal.NodeIterator;
 
 public class Dexter
 {
-
 	protected Document inputDocument;
 	protected DocumentBuilder builder;
 	public static final String DEXTER_VERSION = "dexter-0.9-beta";
+	public static final String DEXTER_SHORT_COPYRIGHT = "(c) 2007-2010 Michael Dykman, Lauren Enterprises"; 
 	public static final String DEXTER_COPYRIGHT = "copyright (c) 2007-2010 Michael Dykman, Lauren Enterprises"; 
 	public static final String DEXTER_TAINT = "DEXTER_TAINT";
 
 	private String propertyPath = null;
 
-	private String encoding;
+	private String encoding ="UTF-8";;
 	
 	private String indent = "no";
 	private String method = "html";
@@ -573,8 +574,7 @@ public class Dexter
 	private static Properties loadBuiltInProperties()
 	{
 		Properties p = new Properties();
-		try
-		{
+		try {
 			p.load(Dexter.class.getResourceAsStream(DexterityConstants.SCAN_CFG));
 			p.load(Dexter.class.getResourceAsStream("HTMLlat1-ent.properties"));
 			p.load(Dexter.class.getResourceAsStream("HTMLspecial-ent.properties"));
@@ -642,33 +642,16 @@ public class Dexter
 		inputDocument = oldDocument;
 	}
 
-	public void compileDescriptors(Node node) throws Exception
-	{
+	public void compileDescriptors(Node node) throws Exception {
 		compileNode(node);
 		NodeList children = node.getChildNodes();
-		if (children != null)
-		{
-			for (int i = 0; i < children.getLength(); ++i)
-			{
-				Node child = children.item(i);
-				if (child == null)
-				{
-					System.out.println("INFO: child removed by earier process");
-				}
-				else if (child.getParentNode() == null)
-				{
-					System.out.println("INFO: child has no parent removed by earier process");
-				}
-				else
-				{
-					compileDescriptors(child);
-				}
-			}
+		for (int i = 0; i < children.getLength(); ++i) {
+			compileDescriptors(children.item(i));
 		}
 	}
 
-	protected void executeEditors(Element element) throws Exception
-	{
+	protected void executeEditors(Element element) 
+		throws Exception {
 		scanForEditors(element);
 		NodeList children = element.getChildNodes();
 		for (int i = 0; i < children.getLength(); ++i)
@@ -713,8 +696,7 @@ public class Dexter
 		String namespace = bb[0];
 		String localname = bb[1];
 
-		if (blocks.containsKey(label))
-		{
+		if (blocks.containsKey(label)) {
 			String end = blocks.get(label);
 
 			Node parent = element.getParentNode();
@@ -750,9 +732,7 @@ public class Dexter
 			BlockTransformSpecifier btd = new BlockTransformSpecifier(cl);
 			btd.setArgs(namespace,siblings, names, values);
 			td = btd;
-		}
-		else
-		{
+		} else {
 			td = new TransformSpecifier(cl);
 			td.setArg(namespace,element, label, element.getAttribute(label));
 			element.removeAttribute(label);
@@ -799,16 +779,13 @@ public class Dexter
 
 	public void compileNode(Node node) throws Exception
 	{
-		if (node.getNodeType() == Node.ELEMENT_NODE)
-		{
-			Element el = (Element) node;
-			scanForDescriptors(el);
+		if (node.getNodeType() == Node.ELEMENT_NODE) {
+			scanForDescriptors((Element) node);
 		}
 	}
 
 	public Element[] findContiguousSiblings(Element el, String keyAttr,
-	      String endAttr, boolean remove) throws Exception
-	{
+	      String endAttr, boolean remove) throws Exception {
 		Node parent = el.getParentNode();
 		NodeList children = parent.getChildNodes();
 		int n = children.getLength();
@@ -851,26 +828,20 @@ public class Dexter
 			}
 			else if (start)
 			{
-				if (child.getNodeType() == Node.COMMENT_NODE)
-				{
+				if (child.getNodeType() == Node.COMMENT_NODE) {
 					// quietly dropping comments between block nodes
 					// because it's WAY easier than trying to save them
 					
-				}
-				else if (child.getNodeType() != Node.TEXT_NODE)
-				{
+				} else if (child.getNodeType() != Node.TEXT_NODE) {
 					reportInternalError("dropping non-text nodes between siblings: "
 							+ child.getNodeType(),null);
-				}
-				else if (child.getNodeValue().trim().length() != 0)
-				{
+				} else if (child.getNodeValue().trim().length() != 0) {
+				// TODO: usage error, not an internal error
 					reportInternalError("dropping non-empty text nodes between siblings" +
 					      		"in block section...",null);
 					System.err.print(child.getNodeValue().trim());
 					throw new DexterHaltException();
-				}
-				else
-				{
+				} else {
 				// empty text node, ignore
 				}
 				drop[dc++] = child;
@@ -908,10 +879,10 @@ public class Dexter
 	   	return descriptor;
 	}
 
-	public Descriptor marshall(Node node)
-	{
+	public Descriptor marshall(Node node) {
 		Descriptor parent;
 	
+//System.out.println("marshall " + node.getNodeName() + " " + node.getNodeType());			
 		if((node.getNodeType() != Node.ELEMENT_NODE) || (node.getUserData(DEXTER_TAINT) != null)) {
 			parent = marshallNode(node);
 			Descriptor c;
@@ -995,4 +966,31 @@ public class Dexter
     {
     	this.idHash = idHash;
     }
+	public void loadLibraryTemplate(DocumentBuilder builder,Collection<String> libararySet) 
+			throws IOException
+		{
+		for(String s : libararySet) {
+			try
+            {
+				File f = new File(s);
+	            Document document = builder.parse(f);
+	            DocumentTraversal dt = (DocumentTraversal) document;
+	            NodeIterator it = dt.createNodeIterator(document, 
+	            	NodeFilter.FILTER_ACCEPT, new AnyTemplateFilter(), false);
+	            Node n;
+	            while((n = it.nextNode()) != null) {
+	            	this.addTemplate((Element)n);
+	            }
+            } catch (Exception e)
+            {
+	            e.printStackTrace();
+            }
+		}
+	}
+	static class AnyTemplateFilter implements NodeFilter {
+		public short acceptNode(Node n) {
+			return "xsl:template".equals(n.getNodeName()) ?  NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+			
+		}
+	}
 }

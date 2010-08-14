@@ -52,52 +52,60 @@ public class HackWriter extends Writer
 	}
 	
 	public void writeWithEntities(String s)
+		throws IOException {
+//	System.out.println("writing = |" + s + "|");
+		inner.write(s);
+	}
+	public void writeWithEntitiesX(String s)
 		throws IOException
 	{
-		if(ampersandPending)
-		{
-			int n = s.indexOf(';');
-			if(n == -1)
-			{
+//	System.out.println("start of write, amppend = " + ampersandPending);
+	if(ampersandPending) System.out.println("writing = " + s);
+		int off = s.indexOf("&amp;");
+		if(ampersandPending) {
+			if(off == 0) {
 				inner.write("&amp;");
-				
-			}
-			else
-			{
+				if(s.length() > 5) {
+					writeWithEntities(s.substring(5));
+				}
+			} 
+		
+			ampersandPending = false;
+			int n = s.indexOf(';');
+			if(n == -1) {
+//System.out.println("writing single");
+				inner.write("&amp;");
+			} else {
 				String ent = s.substring(0, n);
-				if(entities.containsKey(ent))
-				{
-					if(preserveEntities)
-					{
+System.out.println("does this hit? ent = " + ent);
+				if(entities.containsKey(ent)) {
+					if(preserveEntities) {
 						inner.write("&");
 						inner.write(ent);
 						inner.write(";");
-					}
-					else
-					{
+					} else {
 						inner.write(entities.get(ent));
 					}
 					s = s.substring(n+1);
+				} else {
+System.out.println("unable to locate key = " + ent);
 				}
 			}
-			ampersandPending = false;
 		}
 
-		int off = s.indexOf("&amp;");
-		if(off != -1)
-		{
-			if(off > 0)
-			{
-				inner.write(s.substring(0,off));
-			}
+		off = s.indexOf("&amp;");
+		if(off == 0) {
 			ampersandPending = true;
-			if(s.length() > off + 5)
-			{
+			if(s.length() > 5) {
+				writeWithEntities(s.substring(5));
+			}
+		} else if(off != -1) {
+			inner.write(s.substring(0,off));
+			ampersandPending = true;
+			if(s.length() > off + 5) {
 				writeWithEntities(s.substring(off+5));
 			}
-		}
-		else
-		{
+		} else {
 			inner.write(s);
 		}
 		

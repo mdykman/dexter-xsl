@@ -80,6 +80,7 @@ public class NodeDescriptor extends AbstractDescriptor
 	public void start()
 	{
 		int type = node.getNodeType();
+//		System.out.println("seq " + type);
 		switch(type)
 		{
 			case Node.ELEMENT_NODE:

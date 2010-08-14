@@ -28,13 +28,17 @@ public class CDataDescriptor extends PathDescriptor
 			value = value.substring(1);
 			useDefault = true;
 		}
-		List<PathEval> pp = PathEval.parse(value);
-		if(pp.size() == 1) {
-			sequencer.copyNodes(pp.get(0), 
-				useDefault ? ((Element)element).getTextContent() : null, true);
-		} 
-		else {
-			throw new DexteritySyntaxException("CDATA descriptor may only take a single xpath expression");
+		if(value.length() == 0) {
+			super.children();
+		} else {
+			List<PathEval> pp = PathEval.parse(value);
+			if(pp.size() == 1) {
+				sequencer.copyNodes(pp.get(0), 
+					useDefault ? ((Element)element).getTextContent() : null, true);
+			} 
+			else {
+				throw new DexteritySyntaxException("CDATA descriptor may only take a single xpath expression");
+			}
 		}
 		// WHY would I do this?
 	/*
