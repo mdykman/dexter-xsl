@@ -12,27 +12,22 @@ public class HackWriter extends Writer
 	protected boolean preserveEntities = true;
 	protected boolean ampersandPending = false;
 	
-	public HackWriter(Writer inner)
-	{
+	public HackWriter(Writer inner) {
 		this.inner = inner;
 	}
-	public void setEntities(Map<String, String> entities)
-	{
+	public void setEntities(Map<String, String> entities) {
 		this.entities = entities;
 	}
 	public void close()
-		throws IOException
-	{
+		throws IOException {
 		inner.close();
 	}
 	public void flush()
-		throws IOException
-	{
+		throws IOException {
 		inner.flush();
 	}
 	public void writeDocType()
-		throws IOException
-	{
+		throws IOException {
 		StringBuilder buffer = new StringBuilder();
 
 		if(preserveEntities && entities != null && entities.size() > 0)
@@ -57,8 +52,7 @@ public class HackWriter extends Writer
 		inner.write(s);
 	}
 	public void writeWithEntitiesX(String s)
-		throws IOException
-	{
+		throws IOException {
 //	System.out.println("start of write, amppend = " + ampersandPending);
 	if(ampersandPending) System.out.println("writing = " + s);
 		int off = s.indexOf("&amp;");
@@ -142,7 +136,7 @@ System.out.println("unable to locate key = " + ent);
 		}
 	}
 	public void setPreserveEntities(boolean preserveEntities)
-    {
+   {
     	this.preserveEntities = preserveEntities;
-    }
+   }
 }

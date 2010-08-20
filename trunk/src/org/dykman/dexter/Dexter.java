@@ -544,10 +544,8 @@ public class Dexter
 		return result;
 	}
 	
-	
 	public Map<String, Document> generateXSLT(String filename,Document document) 
-		throws Exception
-	{
+		throws Exception {
 		Element docel = document.getDocumentElement();
 		Iterator<String> it = modulesMap.keySet().iterator();
 		while(it.hasNext()) {
@@ -993,4 +991,23 @@ public class Dexter
 			
 		}
 	}
+	public static void dumpNode(Node node,int n) {
+		for(int i = 0; i < n; ++i) {
+			System.out.print("  ");
+		}
+		System.out.print(node.getNodeType());
+		if(node.getNodeType() == 5) System.out.print("  " + node.getNodeName() + " " + node.getNodeValue());
+		System.out.println();
+		NodeList nl = node.getChildNodes();
+		for(int i = 0; i < nl.getLength(); ++i) {
+			dumpNode(nl.item(i),n+1);
+		}
+	}
+	public static void dump(Node doc) {
+		dumpNode(doc,0);
+	}
+	public static void dump(Document doc) {
+		dumpNode(doc.getDocumentElement(),0);
+	}
+
 }
