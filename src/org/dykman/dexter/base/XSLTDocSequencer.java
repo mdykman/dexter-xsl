@@ -430,7 +430,24 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	}
 	
 	public void cloneNode(Node node) {
+System.out.println(" -->> " + node.getNodeType() + " : " + node.getNodeName());
+System.out.println("AAAAA  ---------------------------------");
+Dexter.dump(node);
+		Node nn = currentDocument.importNode(node.cloneNode(true),true);
+System.out.println("BBBBB  ---------------------------------");
+Dexter.dump(nn);
+System.out.println("CCCCC  ---------------------------------");
+		currentNode.appendChild(nn);
+	}
+
+	public void cloneNodeX(Node node) {
+System.out.println(" -->> " + node.getNodeType() + " : " + node.getNodeName());
+System.out.println("AAAAA  ---------------------------------");
+Dexter.dump(node);
 		Node nn = replaceText(node.cloneNode(true));
+System.out.println("BBBBB  ---------------------------------");
+Dexter.dump(nn);
+System.out.println("CCCCC  ---------------------------------");
 		
 		currentNode.appendChild(nn);
 	}

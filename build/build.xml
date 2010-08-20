@@ -10,6 +10,7 @@
 	<target name="rebuild" depends="clean,all" />
 	<target name="all" depends="dexter-jar" />
 	<target name="docs" depends="compile-doc" />
+	<target name="enjar" depends="dexter-jar" />
 
 	<target name="clean" description="clean the output files">
 		<delete failonerror="no">
@@ -92,6 +93,9 @@
 			</fileset>
 			<fileset dir="../src">
 				<include name="**/*.xsl" />
+			</fileset>
+			<fileset dir="../src">
+				<include name="**/*.dtd" />
 			</fileset>
 			<fileset dir="../src">
 				<include name="**/*.properties" />

@@ -213,7 +213,6 @@ public class Main
 				fn = args[argp];
 				try {
 					Document impl = builder.parse(new FileInputStream(fn));
-//					dump(impl);
 					docs = dexter.generateXSLT(dexter.getHashName(fn),impl);
 					Iterator<String> k = docs.keySet().iterator();
 					while(k.hasNext()) {
@@ -276,8 +275,7 @@ public class Main
 		}
 	}
 
-	private static void putToDisk(String name, Document doc) throws Exception
-	{
+	private static void putToDisk(String name, Document doc) throws Exception {
 		File f;
 
 		if(outputDirectory == null) f = new File(name);
@@ -287,9 +285,10 @@ public class Main
 			throw new DexterException("duplicate output names: " + f.getPath());
 		else	outputFile.add(f);
 
-		HackWriter writer = new HackWriter(new FileWriter(f));
-		writer.setPreserveEntities(preserveEntities);
-		writer.setEntities((Map<String,String>)doc.getUserData("entity-map"));
+		Writer writer = new FileWriter(f);
+//		HackWriter writer = new HackWriter(new FileWriter(f));
+//		writer.setPreserveEntities(preserveEntities);
+//		writer.setEntities((Map<String,String>)doc.getUserData("entity-map"));
 		
 		write(doc, writer, encoding);
 		writer.close();
@@ -298,8 +297,9 @@ public class Main
 
 	protected static void write(Document document, Writer writer, String encoding)
 	{
-		try
-		{
+System.out.println("=========================================");
+Dexter.dump(document);
+		try {
 			Transformer tranformer = transformerFactory.newTransformer();
 			tranformer.setOutputProperty("indent", "no");
 			tranformer.setOutputProperty("method", "xml");
@@ -312,25 +312,10 @@ public class Main
 			tranformer.transform(source, result);
 			writer.write("\n");
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			throw new DexterException("error while rendering document: " 
 					+ e.getMessage(),e);
 		}
 	}
-	protected static void dumpNode(Node node,int n) {
-		for(int i = 0; i < n; ++i) {
-			System.out.print("  ");
-		}
-		System.out.print(node.getNodeType());
-		if(node.getNodeType() == 5) System.out.print("  " + node.getNodeName() + " " + node.getNodeValue());
-		System.out.println();
-		NodeList nl = node.getChildNodes();
-		for(int i = 0; i < nl.getLength(); ++i) {
-			dumpNode(nl.item(i),n+1);
-		}
-	}
-	protected static void dump(Document doc) {
-		dumpNode(doc.getDocumentElement(),0);
-	}
+
 }
