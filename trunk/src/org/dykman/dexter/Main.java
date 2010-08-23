@@ -299,17 +299,19 @@ public class Main
 	{
 System.out.println("=========================================");
 Dexter.dump(document);
+System.out.println("=========================================");
 		try {
-			Transformer tranformer = transformerFactory.newTransformer();
-			tranformer.setOutputProperty("indent", "no");
-			tranformer.setOutputProperty("method", "xml");
-			tranformer.setOutputProperty("media-type","text/xsl");
-			tranformer.setOutputProperty("encoding", encoding);
+			Transformer transformer = transformerFactory.newTransformer();
+System.out.println(">> " + transformer.getClass().getName());
+			transformer.setOutputProperty("indent", "no");
+			transformer.setOutputProperty("method", "xml");
+			transformer.setOutputProperty("media-type","text/xsl");
+			transformer.setOutputProperty("encoding", "ascii");
 
-			Result result = new javax.xml.transform.stream.StreamResult(writer);
 			Source source = new javax.xml.transform.dom.DOMSource(document);
+			Result result = new javax.xml.transform.stream.StreamResult(writer);
 
-			tranformer.transform(source, result);
+			transformer.transform(source, result);
 			writer.write("\n");
 		}
 		catch (Exception e) {
