@@ -1,5 +1,5 @@
 /**
- * dexter (c) 2007, 2008 Michael Dykman 
+ * dexter (c) 2007, 2010 Michael Dykman 
  * Free for use under version 2.0 of the Artistic License.     
  * http://www.opensource.org/licences/artistic-license.php     
  */
@@ -991,23 +991,44 @@ public class Dexter
 			
 		}
 	}
-	public static void dumpNode(Node node,int n) {
-		for(int i = 0; i < n; ++i) {
-			System.out.print("  ");
+
+
+
+	public static void dumpText(Node n) {
+		dumpText(n,0);
+	}
+	static void dumpText(Node node,int n) {
+		if(node == null) return;
+		if(node.getNodeType() == Node.TEXT_NODE) {
+			char [] cc = node.getNodeValue().toCharArray();
+			for(char c : cc) {
+				System.out.print(Integer.toHexString((int) c));
+//				System.out.print(Integer.toHexString(Character.getNumericValue(c)));
+				System.out.print(" ");
+			}
+			System.out.println();
 		}
-		System.out.print(node.getNodeType());
-		if(node.getNodeType() == 5) System.out.print("  " + node.getNodeName() + " " + node.getNodeValue());
-		System.out.println();
 		NodeList nl = node.getChildNodes();
 		for(int i = 0; i < nl.getLength(); ++i) {
-			dumpNode(nl.item(i),n+1);
+			dumpText(nl.item(i),n+1);
 		}
+		
 	}
-	public static void dump(Node doc) {
-		dumpNode(doc,0);
+	public static void dump(Node n) {
+		dump(n,0);
 	}
-	public static void dump(Document doc) {
-		dumpNode(doc.getDocumentElement(),0);
+
+	public static void dump(Node node,int n) {
+		if(node == null) return;
+		for(int i = 0; i < n; ++i ) {
+			System.out.print("   ");
+		}
+		System.out.println(node.getNodeType() + "::" + node.getNodeName());
+		NodeList nl = node.getChildNodes();
+		for(int i = 0; i < nl.getLength(); ++i) {
+			dump(nl.item(i),n+1);
+		}
+		
 	}
 
 }

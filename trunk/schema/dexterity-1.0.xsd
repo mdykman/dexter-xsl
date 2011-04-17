@@ -82,25 +82,25 @@ generate a seperate stylesheet representing the current element and include it i
 
 	<xs:attribute name="attr" type="xs:normalizedString">
 		<xs:annotation>
-			<xs:documentation>a sequcence of space-delimited attribute-assgnment expressions</xs:documentation>
+			<xs:documentation>a sequence of space-delimited attribute-assgnment expressions</xs:documentation>
 		</xs:annotation>
 	</xs:attribute>
 
 	<xs:attribute name="attrs" type="xs:normalizedString">
 		<xs:annotation>
-			<xs:documentation>a sequcence of space-delimited attribute-assgnment expressions</xs:documentation>
+			<xs:documentation>a sequence of space-delimited attribute-assgnment expressions</xs:documentation>
 		</xs:annotation>
 	</xs:attribute>
 
 	<xs:attribute name="cattr" type="xs:normalizedString">
 		<xs:annotation>
-			<xs:documentation>a sequcence of space-delimited attribute-assgnment expressions</xs:documentation>
+			<xs:documentation>a sequence of space-delimited attribute-assgnment expressions</xs:documentation>
 		</xs:annotation>
 	</xs:attribute>
 
 	<xs:attribute name="cattrs" type="xs:normalizedString">
 		<xs:annotation>
-			<xs:documentation>a sequcence of space-delimited attribute-assgnment expressions</xs:documentation>
+			<xs:documentation>a sequence of space-delimited attribute-assgnment expressions</xs:documentation>
 		</xs:annotation>
 	</xs:attribute>
 

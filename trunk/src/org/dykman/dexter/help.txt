@@ -15,6 +15,7 @@ valid options are listed below.  Long and short options behave identically.
  -d, --define=<key>=<value> * define a single property; may be specified multiple times
  -C, --suppress-comments    * filter all user comments out of the stylesheet  
  -v, --version              * print version and copyright information.
+ -V, --skip-validation      * skip the validation test after XSL generation
  -H, --hash                 * add hash to file names 
  -h, --help                 * print this screen and exit
 

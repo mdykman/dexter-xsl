@@ -21,7 +21,7 @@ public class Attrib
 			
 			if(element.hasAttribute("xsl:test"))
 			{
-System.out.println("found it");				
+//System.out.println("found it");				
 			}
 			NodeList children = element.getChildNodes();
 			if(children != null)

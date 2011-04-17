@@ -23,6 +23,14 @@ public class SelectDescriptor extends PathDescriptor
 		String path = mapPath(value);
 		setPath(path);
 		setIteratorContext(path);		
+
+		String id = element.getAttribute("id");
+		if(id != null && id.length() > 0) {
+			id = id.replaceAll("[^0-9a-zA-Z_]","_");
+			id = id.replaceAll("_[_]+","_");
+			sequencer.setVariable(id,".");
+			sequencer.setVariable(id + "index","position()");
+		}
 	}
 
 	@Override

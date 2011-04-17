@@ -32,6 +32,7 @@ public interface TransformSequencer
 	public void startNode(String name, int type);
 	public void endNode();
 	
+	public void setVariable(String name,String select);
 	public void startNamedTemplate(String name);
 	public void endNamedTemplate();
 	public void callNamedTemplate(String name);
