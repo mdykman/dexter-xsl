@@ -8,25 +8,17 @@ public class PassthroughDescriptor extends AbstractDescriptor
 	public PassthroughDescriptor(Node node) {
 		this.node = node;
 	}
-	public void attributes()
-	{
-		// TODO Auto-generated method stub
-	}
 
-	public void children()
-	{
+	public void start() { }
+
+	public void attributes() { } 
+
+	public void children() {
 //	System.out.println("pass " + node.getNodeType());
 		sequencer.cloneNode(node);
 	}
 
-	public void end()
-	{
-		// TODO Auto-generated method stub
-	}
+	public void end() { }
 
-	public void start()
-	{
-		// TODO Auto-generated method stub
-	}
 
 }

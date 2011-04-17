@@ -7,7 +7,8 @@ shift
 RESULT=$1
 shift
 
-DIFF="diff -w --ignore-blank-lines"
+#DIFF="diff -w --ignore-blank-lines"
+DIFF=../xml-diff.sh
 
 TMPDAT="tmp-${DATA}.res"
 

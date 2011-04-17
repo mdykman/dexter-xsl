@@ -7,7 +7,8 @@ shift
 RESULT=$1
 shift
 
-DIFF="diff -w --ignore-blank-lines"
+DIFF=../xml-diff.sh
+#DIFF="diff -w --ignore-blank-lines"
 TMPDAT="tmp-${DATA}.res"
 
 dexter.sh ${INPUT}

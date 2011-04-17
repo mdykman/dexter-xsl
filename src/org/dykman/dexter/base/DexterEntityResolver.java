@@ -18,6 +18,7 @@ public class DexterEntityResolver implements EntityResolver
 	public InputSource resolveEntity(String publicId, String systemId)
 	      throws SAXException, IOException
 	{
+System.out.println("resolving " + publicId + ", " + systemId);
 		InputSource source = new InputSource(systemId);
 		source.setEncoding(encoding);
 		source.setPublicId(publicId);

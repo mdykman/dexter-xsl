@@ -30,8 +30,6 @@ import javax.xml.transform.stream.StreamSource;
 import org.dykman.dexter.base.DexterEntityResolver;
 import org.dykman.dexter.dexterity.DexteritySyntaxException;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 public class Main
 {
@@ -45,6 +43,9 @@ public class Main
 	private static boolean checkValidity = true;
 	private static Set<File> outputFile = new HashSet<File>();
 	private static TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	static {
+//		transformerFactory.
+	}
 	private static boolean preserveEntities = true;
 
 	private static boolean propComments = true;
@@ -173,8 +174,7 @@ public class Main
 			dbf.setExpandEntityReferences(false);
 
 			// WHY AGAIN??
-			dbf.setCoalescing(false);
-//			dbf.setCoalescing(true);
+			dbf.setCoalescing(true);
 			dbf.setIgnoringComments(false);
 			DocumentBuilder builder = dbf.newDocumentBuilder();
 			builder.setEntityResolver(new DexterEntityResolver(encoding));
@@ -213,12 +213,14 @@ public class Main
 				fn = args[argp];
 				try {
 					Document impl = builder.parse(new FileInputStream(fn));
+					dexter.dump(impl);
 					docs = dexter.generateXSLT(dexter.getHashName(fn),impl);
 					Iterator<String> k = docs.keySet().iterator();
 					while(k.hasNext()) {
 						String name = k.next();
 		 				if(!name.endsWith(".dispose.xsl")) {
-							putToDisk(name, docs.get(name));
+							Document dd = docs.get(name);
+							putToDisk(name, dd);
 						}
 					}
 					if(checkValidity) {
@@ -285,10 +287,10 @@ public class Main
 			throw new DexterException("duplicate output names: " + f.getPath());
 		else	outputFile.add(f);
 
-		Writer writer = new FileWriter(f);
-//		HackWriter writer = new HackWriter(new FileWriter(f));
-//		writer.setPreserveEntities(preserveEntities);
-//		writer.setEntities((Map<String,String>)doc.getUserData("entity-map"));
+		HackWriter writer = new HackWriter(new FileWriter(f));
+		writer.setPreserveEntities(preserveEntities);
+		Object oo = doc.getUserData("entity-map");
+		if(oo != null) writer.setEntities((Map<String,String>)oo);
 		
 		write(doc, writer, encoding);
 		writer.close();
@@ -297,16 +299,15 @@ public class Main
 
 	protected static void write(Document document, Writer writer, String encoding)
 	{
-System.out.println("=========================================");
-Dexter.dump(document);
-System.out.println("=========================================");
-		try {
-			Transformer transformer = transformerFactory.newTransformer();
-System.out.println(">> " + transformer.getClass().getName());
-			transformer.setOutputProperty("indent", "no");
-			transformer.setOutputProperty("method", "xml");
-			transformer.setOutputProperty("media-type","text/xsl");
-			transformer.setOutputProperty("encoding", "ascii");
+		try
+		{
+			Transformer tranformer = transformerFactory.newTransformer();
+			tranformer.setOutputProperty("indent", "yes");
+			tranformer.setOutputProperty("method", "xml");
+			tranformer.setOutputProperty("encoding", "ascii");
+			tranformer.setOutputProperty("media-type","text/xsl");
+			tranformer.setOutputProperty("omit-xml-declaration","yes");
+			tranformer.setOutputProperty("encoding", encoding);
 
 			Source source = new javax.xml.transform.dom.DOMSource(document);
 			Result result = new javax.xml.transform.stream.StreamResult(writer);

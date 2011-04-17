@@ -12,41 +12,34 @@ import java.util.Map;
 import org.dykman.dexter.Dexter;
 import org.dykman.dexter.descriptor.Descriptor;
 
-public abstract class BaseTransformSequencer implements TransformSequencer
-{
+public abstract class BaseTransformSequencer implements TransformSequencer {
 	protected Map<String, String>	    metaData	  = new HashMap<String, String>();
 	protected Map<String, PathFunction>	pathFunctions	= new HashMap<String, PathFunction>();
 
 	Dexter	                            dexter;
 
-	public BaseTransformSequencer(Dexter dexter)
-	{
+	public BaseTransformSequencer(Dexter dexter) {
 		this.dexter = dexter;
 	}
 
-	public void definePathFunction(String name, PathFunction function)
-	{
+	public void definePathFunction(String name, PathFunction function) {
 		this.pathFunctions.put(name, function);
 	}
 
-	public void setMeta(String key, String value)
-	{
-		if (value == null)
-		{
+	public void setMeta(String key, String value) {
+		if (value == null) {
 			metaData.remove(key);
-		} else
-		{
+		} else {
 			metaData.put(key, value);
 		}
 	}
 
-	public String getMeta(String key)
-	{
+	public String getMeta(String key) {
 		return metaData.get(key);
 	}
 
-	public final void runDescriptor(Descriptor descriptor)
-	{
+	public final void runDescriptor(Descriptor descriptor) {
+//System.out.println(descriptor.getClass().getName());
 		descriptor.setTransformSequencer(this);
 		descriptor.start();
 		descriptor.attributes();
@@ -54,18 +47,14 @@ public abstract class BaseTransformSequencer implements TransformSequencer
 		descriptor.end();
 	}
 
-	protected String getLastToken(String path)
-	{
+	protected String getLastToken(String path) {
 		int n = path.lastIndexOf('/');
 		String result = null;
-		if (n > -1)
-		{
+		if (n > -1) {
 			result = path.substring(n + 1);
-		} else
-		{
+		} else {
 			result = path;
 		}
-
 		return result;
 	}
 }

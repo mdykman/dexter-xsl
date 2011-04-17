@@ -1,10 +1,10 @@
 <form name="userform">
-	<input value="Michael" name="first"> <br>
-	<input value="Dykman" name="last"> <br>
-	<input checked="true" name="size" type="radio" value="tall">tall
-	<input name="size" type="radio" value="short">short <br>
-	<input checked="true" name="adult" type="checkbox" value="yes">adult <br>
-	<input name="senior" type="checkbox" value="yes">senior <br>
-	<textarea name="story">this is my story</textarea><br>
-	<input value="press this" name="clicker" type="submit">
+	<input value="Michael" name="first"/> <br/>
+	<input value="Dykman" name="last"/> <br/>
+	<input checked="true" name="size" type="radio" value="tall"/>tall
+	<input name="size" type="radio" value="short"/>short <br/>
+	<input checked="true" name="adult" type="checkbox" value="yes"/>adult <br/>
+	<input name="senior" type="checkbox" value="yes"/>senior <br/>
+	<textarea name="story">this is my story</textarea><br/>
+	<input value="press this" name="clicker" type="submit"/>
 </form>

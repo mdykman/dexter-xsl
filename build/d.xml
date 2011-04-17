@@ -1,3 +1,31 @@
-<div>
-	<div dx:each="data/person" dx:attrs="|onlick:return sayhello({jshash(.)});" />
-</div>
+<result>
+	<channel>
+		<title>thejobroute channel</title>
+		<description>welcome to a new way of thinking</description>
+		<pubDate>Wed April 23, 2010</pubDate>
+		<link>http://www.thejobroute.com/</link>
+		<items>
+			<item>
+				<title>title 1</title>
+				<description>
+					<para>
+					this is a longer thing, where the meat of the item really is to be found
+					</para>
+				</description>
+				<link>http://www.thejobroute.com/career/Accountant</link>
+				<pubDate>Wed April 23, 2010</pubDate>
+			</item>
+			<item>
+				<title>title 2</title>
+				<description>
+					<para>And another thing</para>
+					<para>
+					<i>Here</i> is a thing with markup
+					</para>
+				</description>
+				<link>http://www.thejobroute.com/career/Engineer</link>
+				<pubDate>Wed April 23, 2010</pubDate>
+			</item>
+		</items>
+	</channel>
+</result>

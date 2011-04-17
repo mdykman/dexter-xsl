@@ -29,6 +29,7 @@ public class NodeDescriptor extends AbstractDescriptor
 	public NodeDescriptor(Node node)
 	{
 		this.node = node;
+
 		taint = node.getUserData(Dexter.DEXTER_TAINT) != null;
 		
 //System.out.println("ELEMENT: " + (taint ? "TAINTED" : "UNTAINED") + " " + node.getNodeName());		
@@ -80,7 +81,7 @@ public class NodeDescriptor extends AbstractDescriptor
 	public void start()
 	{
 		int type = node.getNodeType();
-//		System.out.println("seq " + type);
+//System.out.println("start " + type);
 		switch(type)
 		{
 			case Node.ELEMENT_NODE:

@@ -1,5 +1,5 @@
 /**
- * dexter (c) 2007-2010 Michael Dykman 
+ * dexter (c) 2007,-2010 Michael Dykman 
  * Free for use under version 2.0 of the Artistic License.     
  * http://www.opensource.org/licences/artistic-license.php     
  */
@@ -68,6 +68,17 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 	private DocumentBuilder builder;
 
+	
+	static DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+	static {
+		dbf.setValidating(false);
+		
+		dbf.setExpandEntityReferences(false);
+		dbf.setCoalescing(false);
+		dbf.setIgnoringComments(false);
+		dbf.setIgnoringElementContentWhitespace(false);
+	}
+
 	private Map<String, Document> finished = new HashMap<String, Document>();
 
 	private Map<String, Map<String, DocumentFragment>> valMap = new HashMap<String, Map<String, DocumentFragment>>();
@@ -94,7 +105,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			DocumentBuilder builder, String name, String encoding) throws Exception
 	{
 		super(dexter);
-		this.builder = builder;
+		this.builder = dbf.newDocumentBuilder();
+//		this.builder = builder;
 		this.encoding = encoding;
 		this.filename = name;
 	}
@@ -111,7 +123,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	{
 		iteratorStack.push(path);
 		startSelect(null, path);
-//		startSelect(null, path, randMode());
 	}
 
 	public void endIterator() {
@@ -119,6 +130,12 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		iteratorStack.pop();
 	}
 
+	public void setVariable(String name, String select) {
+		Element var = currentDocument.createElement(XSLVARIABLE);
+		var.setAttribute("name",name);
+		var.setAttribute("select",select);
+		currentNode.appendChild(var);
+	}
 	public void copyNodes(PathEval pe, String def, boolean children)
 	{
 		String av = pe.path;
@@ -168,9 +185,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 		currentNode.appendChild(element);
 	}
-
-//	Pattern functiondesc = Pattern.compile("^([a-zA-Z][a-zA-Z0-9._-]+[(].*)");
-//	Pattern functiondesc = Pattern.compile("^([a-zA-Z][a-zA-Z0-9._-]+)[(](.*)[)]$");
 
 	protected String getInnerExpresion(String path) {
 		if(Dexter.isTemplateCall(path)) {
@@ -377,66 +391,10 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		return true;
 	}
 
-	protected Node replaceTextNodes(Node node) {
-		Node nn;
-		switch(node.getNodeType()) {
-//		case Node.DOCUMENT_NODE:
-//		break;
-		
-		case Node.TEXT_NODE :
-				nn = currentDocument.createElement(XSLTEXT);
-				nn.appendChild(currentDocument.createTextNode(node.getNodeValue()));
-			break;
-			case Node.COMMENT_NODE :
-//				nn = currentDocument.createComment(node.getNodeValue());
-//			break;
-			case Node.ELEMENT_NODE :
-//				Element element =currentDocument.createElement(node.getNodeName());
-//				NamedNodeMap attr  = ((Element)node).getAttributes();
-//				for(int i = 0; i < attr.getLength(); ++i) {
-//					Node item = attr.item(i);
-//					element.setAttribute(item.getNodeName(), item.getNodeValue());
-//				}
-//				nn = element;
-//			break;
-			case Node.CDATA_SECTION_NODE:
-			case Node.ENTITY_NODE:
-				nn = currentDocument.importNode(node,true); 
-			break;
-			case Node.ENTITY_REFERENCE_NODE:
-//				nn = currentDocument.importNode(node,true); 
-				nn = translateEntityReference(node.getNodeName());
-				//translateEntityReference(node.getNodeName());
-//				Element el = currentDocument.createElement(XSLTEXT);
-//				el.appendChild(n);
-//				nn = el;
-			break;
-			default:
-				System.out.println("    UNEXPECTED node type here: " + node.getNodeType());
-				nn = null;
-		}
-		return nn;
-	}
-	
-	protected Node replaceText(Node node) {
-			Node result = replaceTextNodes(node);
-			NodeList nl = node.getChildNodes();
-			for(int i = 0; i < nl.getLength(); ++i) {
-				Node c = nl.item(i);
-				result.appendChild(replaceText(nl.item(i)));
-			}
-		
-			return result;
-	}
-	
 	public void cloneNode(Node node) {
-		Node nn = currentDocument.importNode(node.cloneNode(true),true);
-		currentNode.appendChild(nn);
-	}
+		Node res = currentDocument.importNode(node,true);
+		currentNode.appendChild(res);
 
-	public void cloneNodeX(Node node) {
-		Node nn = replaceText(node.cloneNode(true));
-		currentNode.appendChild(nn);
 	}
 
 	public void setAttribute(String key, String value)
@@ -493,7 +451,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 	}
 	public void startNamedTemplate(String name) {
-//		callNamedTemplate(name);
 
 		Element template = currentDocument.createElement(XSLTEMPLATE);
 		template.setAttribute("name", name);
@@ -508,7 +465,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	public void endNamedTemplate() {
 		popNode();
 	}
-//	public void startSelect(String name, String match, String mode) {
+
 	public void startSelect(String name, String match) {
 			
 		int n = match.lastIndexOf(".//");
@@ -631,6 +588,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	}
 	
 	protected void indentWithWhitespace() {
+	}
+	protected void indentWithWhitespaceX() {
 		indentWithWhitespace(0);
 	}
 		protected void indentWithWhitespace(int m) {
@@ -665,7 +624,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 //System.out.print("startmnode: element");				
 				Element el = currentDocument.createElement(name);
 				currentNode.appendChild(el);
-				currentNode.appendChild(currentDocument.createTextNode("\n"));
+//				currentNode.appendChild(currentDocument.createTextNode("\n"));
 				pushNode(el);
 				lastWasEntity = false;
 			}
@@ -675,7 +634,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 				Element el = currentDocument.createElement(XSLTEXT);
 				el.setTextContent(name);
 				currentNode.appendChild(el);
-				currentNode.appendChild(currentDocument.createTextNode("\n"));
+//				currentNode.appendChild(currentDocument.createTextNode("\n"));
 				lastWasEntity = false;
 			}
 			break;
@@ -683,7 +642,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 				indentWithWhitespace();
 				CDATASection cd = currentDocument.createCDATASection(name);
 				currentNode.appendChild(cd);
-				currentNode.appendChild(currentDocument.createTextNode("\n"));
+//				currentNode.appendChild(currentDocument.createTextNode("\n"));
 				lastWasEntity = false;
 			}
 			break;
@@ -693,13 +652,9 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			case Node.ENTITY_REFERENCE_NODE:
 			System.out.println("ENTITY_REEFERENCE_NODE");
 			{
-
-				indentWithWhitespace();
+			System.out.println("========>>>> do we ever come by this way?");
 				Node n = translateEntityReference(name);
-				Element el = currentDocument.createElement(XSLTEXT);
-				el.appendChild(n);
-				currentNode.appendChild(el);
-				currentNode.appendChild(currentDocument.createTextNode("\n"));
+				appendText(n);
 				lastWasEntity = true;
 			}
 			break;
@@ -711,7 +666,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 					indentWithWhitespace();
 					Comment comment = currentDocument.createComment(name);
 					currentNode.appendChild(comment);
-					currentNode.appendChild(currentDocument.createTextNode("\n"));
+//					currentNode.appendChild(currentDocument.createTextNode("\n"));
 				}
 				lastWasEntity = false;
 			}
@@ -753,9 +708,11 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 					Element nn = (Element) nl.item(i);
 					String match = nn.getAttribute("match");
 					if("/".equals(match)) {
-						Element tn = currentDocument.createElement(XSLTEXT);
-						tn.appendChild(currentDocument.createTextNode("\n"));
-						nn.appendChild(tn);
+//						Element tn = currentDocument.createElement(XSLTEXT);
+//						tn.appendChild(currentDocument.createTextNode("\n"));
+//						nn.appendChild(tn);
+
+						nn.appendChild(currentDocument.createTextNode("\n"));
 						break;
 					}
 				}
@@ -768,20 +725,15 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 				}
 			default : 
 				if(type!= Node.DOCUMENT_NODE) { 
-					indentWithWhitespace(-1);
+//					indentWithWhitespace(-1);
 				}
 			break;
 		}
 	}
 
 	protected Node translateEntityReference(String ref) {
-		String val = dexter.getEntity(ref);
-//System.out.println("val = " + val + " ref = " + ref);
-		Element el = currentDocument.createElement(XSLTEXT);
-		el.appendChild(currentDocument.createEntityReference(ref));
-		return el;
+		return currentDocument.createEntityReference(ref);
 	}
-
 	protected Node translateEntityReferenceX(String ref)
 	{
 
@@ -861,15 +813,22 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		style.appendChild(output);
 		style.appendChild(document.createTextNode("\n"));
 		
+		output = document.createElement("xsl:preserve-space");
+		output.setAttribute("elements","*");
+		style.appendChild(output);
+		style.appendChild(document.createTextNode("\n"));
+
 		tagTemplate(output);
 
 		Element template = document.createElement(XSLTEMPLATE);
 	
 		template.appendChild(document.createTextNode("\n"));
 
-		Element brake = document.createElement(XSLTEXT);
-		brake.appendChild(document.createTextNode("\n"));
-		template.appendChild(brake);
+//		template.appendChild(document.createTextNode("\n"));
+
+//		Element brake = document.createElement(XSLTEXT);
+//		brake.appendChild(document.createTextNode("\n"));
+//		template.appendChild(brake);
 
 		template.appendChild(document.createTextNode("\n"));
 		
@@ -890,10 +849,10 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		Document document = element.getOwnerDocument();
 		for (int i = 0; i < lines.length; ++i)
 		{
-			element.appendChild(document.createTextNode("\n"));
+//			element.appendChild(document.createTextNode("\n"));
 			element.appendChild(document.createComment(lines[i]));
 		}
-		element.appendChild(document.createTextNode("\n"));
+//		element.appendChild(document.createTextNode("\n"));
 	}
 
 	private void tagTemplate(Element element)
@@ -1067,10 +1026,31 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		appendText(s, false);
 	}
 	public void appendText(String s,boolean escape) {
-		Element el = currentDocument.createElement(XSLTEXT);
-		if(escape) el.setAttribute("disable-output-escaping", "yes");
-		el.appendChild(currentDocument.createTextNode(s));
-		currentNode.appendChild(el);
+			Node res = currentDocument.createTextNode(s);
+			if(escape)  {
+				Element el = currentDocument.createElement(XSLTEXT);
+				el.setAttribute("disable-output-escaping", "yes");
+				el.appendChild(res);
+				res = el;
+			} 
+			appendText(res);
+	}
+
+	public void appendText(Node s) {
+		Node last = currentNode.getLastChild();
+		if(last != null && last.getNodeType() == Node.ELEMENT_NODE && last.getNodeName().equals(XSLTEXT)) {
+			last.appendChild(s);
+//				String content = last.getTextContent() + s;
+//				last.setTextContent(content);
+		} else {
+			Element el = currentDocument.createElement(XSLTEXT);
+			el.appendChild(s);
+			currentNode.appendChild(el);
+		}
+//		Element el = currentDocument.createElement(XSLTEXT);
+//		if(escape) el.setAttribute("disable-output-escaping", "yes");
+//		el.appendChild(currentDocument.createTextNode(s));
+//		currentNode.appendChild(el);
 	}
 
 

@@ -3,11 +3,12 @@ package org.dykman.dexter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
+import java.util.HashMap;
 
 public class HackWriter extends Writer
 {
 	protected Writer inner;
-	protected Map<String, String> entities = null;
+	protected Map<String, String> entities = new HashMap<String,String>();;
 	protected boolean started = false;
 	protected boolean preserveEntities = true;
 	protected boolean ampersandPending = false;
@@ -47,6 +48,15 @@ public class HackWriter extends Writer
 	}
 	
 	public void writeWithEntities(String s)
+<<<<<<< .mine
+		throws IOException {
+		inner.write(s);
+	}
+	public void writeWithEntitiesX(String s)
+		throws IOException {
+		if(ampersandPending)
+		{
+=======
 		throws IOException {
 //	System.out.println("writing = |" + s + "|");
 		inner.write(s);
@@ -65,6 +75,7 @@ public class HackWriter extends Writer
 			} 
 		
 			ampersandPending = false;
+>>>>>>> .r179
 			int n = s.indexOf(';');
 			if(n == -1) {
 //System.out.println("writing single");
