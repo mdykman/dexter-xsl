@@ -393,6 +393,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 	public void cloneNode(Node node) {
 		Node res = currentDocument.importNode(node,true);
+//		System.out.println("clone node -> " + node.getNodeType());
 		currentNode.appendChild(res);
 
 	}
@@ -732,6 +733,20 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	}
 
 	protected Node translateEntityReference(String ref) {
+		String val = dexter.getEntity(ref);
+		if(val == null)
+		{
+			throw new DexterException("unrecognized entity reference used: " + ref);
+		}
+		val = val.trim();
+		Map<String,String> ent = 
+			(Map<String,String>)currentDocument.getUserData("entity-map");
+		if(ent == null)
+		{
+			ent = new TreeMap<String,String>();
+			currentDocument.setUserData("entity-map",ent,null);
+		}
+		ent.put(ref, val);
 		return currentDocument.createEntityReference(ref);
 	}
 	protected Node translateEntityReferenceX(String ref)
@@ -790,14 +805,19 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	protected Document createStub(String match,String name, String mode)
 	{
 		DOMImplementation impl = builder.getDOMImplementation();
-		DocumentType dt = impl.createDocumentType("stylesheet", null, 
+		DocumentType dt = impl.createDocumentType("xsl:stylesheet", "xsl", 
 				"http://www.w3.org/1999/XSL/Transform");
 		
+		
+		
+//		document
 		Document document = impl.createDocument(
 				"http://www.w3.org/1999/XSL/Transform",
 				"xsl:stylesheet", dt);
 
+//		document.setPrefix("xsl");
 		Element style = document.getDocumentElement();
+		style.setAttribute("xmlns:xsl","http://www.w3.org/1999/XSL/Transform");
 		style.setAttribute("version", "1.0");
 
 		pushStylesheet(style);
