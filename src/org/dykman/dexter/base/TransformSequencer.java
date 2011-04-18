@@ -19,15 +19,12 @@ public interface TransformSequencer
 
 	public void runDescriptor(Descriptor descriptor);
 	public Node getCurrentNode();
-//	public Node getTextExpression(String key, String value);
-//	public String translateXSLPath(String p);
 	public void setIdNames(java.util.List<String> names);
 	public Element textContainer(String content);
 
 	public String randMode();
 	public void cloneNode(Node n);
 	public void startSelect(String name, String match);
-//	public void startSelect(String name, String match, String mode);
 	public void endSelect();
 	public void startNode(String name, int type);
 	public void endNode();
@@ -41,6 +38,7 @@ public interface TransformSequencer
 			String name,
 			List<PathEval> path, 
 			String def);
+
 	public void mapNode(
 			List<PathEval> path, 
 			String def);

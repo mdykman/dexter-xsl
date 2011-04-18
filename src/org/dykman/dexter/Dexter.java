@@ -551,8 +551,10 @@ public class Dexter
 		while(it.hasNext()) {
 			String mod = it.next();
 			String ns = modulesMap.get(mod).getProperty("namespace");
-			String nsspec = "xmlns:" + ns;
-			if(docel.hasAttribute(nsspec))  docel.removeAttribute(nsspec);
+			if(ns != null) {
+				String nsspec = "xmlns:" + ns;
+				if(docel.hasAttribute(nsspec))  docel.removeAttribute(nsspec);
+			}
 		}
 		// convert dexter attributes
 		scanDocument(document);
@@ -641,6 +643,7 @@ public class Dexter
 	}
 
 	public void compileDescriptors(Node node) throws Exception {
+//		System.out.println("in compileDescriptors: " + node.getNodeType());
 		compileNode(node);
 		NodeList children = node.getChildNodes();
 		for (int i = 0; i < children.getLength(); ++i) {
@@ -689,7 +692,8 @@ public class Dexter
 	{
 		TransformSpecifier td = null;
 		String k = descriptors.get(label);
-		Class cl = Class.forName(k);
+		Class<TransformDescriptor> cl = 
+			(Class<TransformDescriptor>) Class.forName(k);
 		String []bb = parseNs(label);
 		String namespace = bb[0];
 		String localname = bb[1];
@@ -880,7 +884,6 @@ public class Dexter
 	public Descriptor marshall(Node node) {
 		Descriptor parent;
 	
-//System.out.println("marshall " + node.getNodeName() + " " + node.getNodeType());			
 		if((node.getNodeType() != Node.ELEMENT_NODE) || (node.getUserData(DEXTER_TAINT) != null)) {
 			parent = marshallNode(node);
 			Descriptor c;

@@ -28,6 +28,7 @@ public class NodeDescriptor extends AbstractDescriptor
 
 	public NodeDescriptor(Node node)
 	{
+//		System.out.println("node type " + node.getNodeType());
 		this.node = node;
 
 		taint = node.getUserData(Dexter.DEXTER_TAINT) != null;

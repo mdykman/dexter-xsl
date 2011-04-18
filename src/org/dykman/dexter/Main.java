@@ -3,6 +3,7 @@ package org.dykman.dexter;
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 
+import java.beans.XMLEncoder;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,7 +11,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -23,13 +26,22 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.dykman.dexter.base.DexterEntityResolver;
+import org.dykman.dexter.base.DexterURIResolver;
 import org.dykman.dexter.dexterity.DexteritySyntaxException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.sun.corba.se.impl.encoding.OSFCodeSetRegistry.Entry;
+import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 public class Main
 {
@@ -213,14 +225,16 @@ public class Main
 				fn = args[argp];
 				try {
 					Document impl = builder.parse(new FileInputStream(fn));
-					dexter.dump(impl);
+//					dexter.dump(impl);
 					docs = dexter.generateXSLT(dexter.getHashName(fn),impl);
 					Iterator<String> k = docs.keySet().iterator();
 					while(k.hasNext()) {
 						String name = k.next();
 		 				if(!name.endsWith(".dispose.xsl")) {
 							Document dd = docs.get(name);
-							putToDisk(name, dd);
+//							System.out.println("SAVING");
+//							dexter.dump(dd);
+							putToDisk(name, dd,dexter);
 						}
 					}
 					if(checkValidity) {
@@ -233,6 +247,15 @@ public class Main
 							StreamSource source = new StreamSource(f);
 							source.setSystemId(f);
 							Transformer transformer= transFact.newTransformer(source);
+							transFact.setURIResolver(new URIResolver() {
+								
+								@Override
+								public Source resolve(String arg0, String arg1) throws TransformerException {
+									System.out.println("resoving " + arg0 + "::" + arg1);
+									// TODO Auto-generated method stub
+									return null;
+								}
+							});
 							transformer.hashCode();
 						}
 					}
@@ -277,7 +300,19 @@ public class Main
 		}
 	}
 
-	private static void putToDisk(String name, Document doc) throws Exception {
+	private static void collectEntities(Node n, Map m,Dexter dexter) {
+		if(n.getNodeType() == Node.ENTITY_REFERENCE_NODE) {
+//			System.out.print("entity reference ");
+//			System.out.println(n.getNodeName() + " " + dexter.getEntity(n.getNodeName()));
+			m.put(n.getNodeName(), dexter.getEntity(n.getNodeName()));
+		}
+		NodeList nl = n.getChildNodes();
+		for(int i = 0; i < nl.getLength(); ++i) {
+			collectEntities(nl.item(i), m, dexter);
+		}
+	}
+	
+	private static void putToDisk(String name, Document doc,Dexter dexter) throws Exception {
 		File f;
 
 		if(outputDirectory == null) f = new File(name);
@@ -287,32 +322,67 @@ public class Main
 			throw new DexterException("duplicate output names: " + f.getPath());
 		else	outputFile.add(f);
 
+		Map<String,String> mm = new HashMap<String, String>();
+		collectEntities(doc, mm, dexter);
 		HackWriter writer = new HackWriter(new FileWriter(f));
 		writer.setPreserveEntities(preserveEntities);
-		Object oo = doc.getUserData("entity-map");
-		if(oo != null) writer.setEntities((Map<String,String>)oo);
+		writer.setEntities(mm);
+//		writer.writeDocType();
+	
+//.dexter.		Writer writer = new FileWriter(f);
 		
-		write(doc, writer, encoding);
+	
+//		Dexter.dump(doc);
+		write(doc, writer, encoding,mm);
 		writer.close();
 	}
 
 
-	protected static void write(Document document, Writer writer, String encoding)
+	protected static void write(Document document, Writer writer, String encoding,
+			Map<String,String> entities)
+		throws IOException
 	{
-		try
-		{
-			Transformer tranformer = transformerFactory.newTransformer();
-			tranformer.setOutputProperty("indent", "yes");
-			tranformer.setOutputProperty("method", "xml");
-			tranformer.setOutputProperty("encoding", "ascii");
-			tranformer.setOutputProperty("media-type","text/xsl");
-			tranformer.setOutputProperty("omit-xml-declaration","yes");
-			tranformer.setOutputProperty("encoding", encoding);
 
+		try {
+//			document
+			
+//			document.getDocumentElement().setAttributeNS(
+//					"http://www.w3.org/1999/XSL/Transform", "xsl", "value");
+//			document.createElementNS( "http://www.w3.org/1999/XSL/Transform","xml");
+			OutputFormat of = new OutputFormat("XML","UTF-8",true);
+//			of.setDoctype("xsl", "http://www.w3.org/1999/XSL/Transform");
+			of.setOmitDocumentType(false);
+//			of.setOmitDocumentType(false);
+//			of.
+			
+			XMLSerializer serializer =  new XMLSerializer(writer,  of);
+			serializer.startDocument();
+			//serializer.
+			for(Map.Entry<String,String>entry : entities.entrySet()) {
+				serializer.unparsedEntityDecl("one", "two","three", "four");
+//System.out.println("    " + entry.getKey() + "::" + entry.getValue());
+//				serializer.internalEntityDecl(entry.getKey(), entry.getValue0());
+			}
+//			serializer.startDTD("Entity", "b", "c");
+//			serializer.endDTD();
+			serializer.serialize(document.getDocumentElement());
+			serializer.endDocument();
+/*
 			Source source = new javax.xml.transform.dom.DOMSource(document);
 			Result result = new javax.xml.transform.stream.StreamResult(writer);
+			Transformer transformer	= transformerFactory.newTransformer();
+			transformer.setURIResolver(new DexterURIResolver());
+			transformer.setOutputProperty("indent", "yes");
+			transformer.setOutputProperty("method", "xml");
+			transformer.setOutputProperty("encoding", "ascii");
+			transformer.setOutputProperty("media-type","text/xsl");
+			transformer.setOutputProperty("omit-xml-declaration","yes");
+			transformer.setOutputProperty("encoding", encoding);
+
 
 			transformer.transform(source, result);
+			writer.write("\n");
+		*/
 			writer.write("\n");
 		}
 		catch (Exception e) {
