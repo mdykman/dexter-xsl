@@ -677,7 +677,7 @@ public class Dexter
 				String[] bb = parseNs(alabel);
 				String namespace = bb[0];
 
-				Class klass = Class.forName(editors.get(alabel));
+				Class<?> klass = Class.forName(editors.get(alabel));
 				DocumentEditor editor = (DocumentEditor) klass.newInstance();
 				editor.setPropertyResolver(modulesMap.get(namespace));
 				editor.setDexter(this);
@@ -769,7 +769,8 @@ public class Dexter
 
 	public static void addSpecifier(Element element, TransformSpecifier specifier)
 	{
-		List list = (List) element.getUserData(DexterityConstants.DEXTER_SPECIFIERS);
+		@SuppressWarnings("unchecked")
+		List<TransformSpecifier> list = (List<TransformSpecifier>) element.getUserData(DexterityConstants.DEXTER_SPECIFIERS);
 		if (list == null)
 		{
 			taintAncestors(element);
