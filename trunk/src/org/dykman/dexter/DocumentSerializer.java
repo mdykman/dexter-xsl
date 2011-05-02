@@ -42,13 +42,15 @@ public class DocumentSerializer {
 			String publicId = dt.getPublicId();
 			String systemId = dt.getSystemId();
 			writer.append("<!DOCTYPE ").append(docEl.getNodeName());
+			/*
 			if (publicId != null) {
 				writer.append(" PUBLIC \"").append(publicId).append("\"");
 			}
 			if (systemId != null) {
 				writer.append(" \"").append(systemId).append("\"");
 			}
-			
+			*/
+			if(entities.size() > 0) {
 			writer.append(" [\n");
 			for(String key : entities.keySet())
 			{
@@ -57,7 +59,9 @@ public class DocumentSerializer {
 					.append(entities.get(key))
 					.append("\" >\n");
 			}
-			writer.append("  ]>\n");
+			writer.append("  ]");
+			}
+			writer.append(">\n");
 		}
 
 	}
