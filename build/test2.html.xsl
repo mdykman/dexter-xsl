@@ -1,4 +1,4 @@
-<!DOCTYPE xsl:stylesheet PUBLIC "xsl" "http://www.w3.org/1999/XSL/Transform" [
+<!DOCTYPE xsl:stylesheet [
   <!ENTITY nbsp "&#160;" >
   ]>
 
@@ -22,7 +22,7 @@
 </xsl:text><body><xsl:text>
 hello&nbsp;there
 and again
-</xsl:text><xsl:apply-templates mode="md-144ad634aa7d6c08" select="*/things/thing"></xsl:apply-templates>
+</xsl:text><xsl:apply-templates mode="md-cc2e3f1f44368243" select="*/things/thing"></xsl:apply-templates>
 <xsl:text>
 </xsl:text><div id="container">
 </div><xsl:text>
@@ -32,7 +32,7 @@ and again
 
 </xsl:template>
 
-<xsl:template match="thing" mode="md-144ad634aa7d6c08">
+<xsl:template match="thing" mode="md-cc2e3f1f44368243">
 <div><xsl:text>
 	</xsl:text><button><xsl:attribute name="onclick"><xsl:if test="string-length(.)"><xsl:text>return sayhello('</xsl:text><xsl:value-of select="."></xsl:value-of><xsl:text>');</xsl:text></xsl:if></xsl:attribute><xsl:attribute name="name"><xsl:if test="string-length(.)"><xsl:value-of select="."></xsl:value-of></xsl:if></xsl:attribute><xsl:choose><xsl:when test="string-length(.)"><xsl:value-of select="."></xsl:value-of></xsl:when><xsl:otherwise><xsl:text>click me</xsl:text></xsl:otherwise></xsl:choose></button>
 <xsl:text>
