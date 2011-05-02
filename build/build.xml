@@ -1,4 +1,4 @@
-<project default="dexter-jar" name="dexter">
+<project default="dexter-jar" name="dexter" >
 
 	<property  file="build.properties" />
 
@@ -53,6 +53,7 @@
 		<copy todir="${PACKAGEDIR}/docs" file="${DOCSOURCE}/dexter.meta" />
         <copy todir="${PACKAGEDIR}/docs" file="${DOCSOURCE}/docster.html" />
 	    <copy todir="${PACKAGEDIR}/docs" file="${DOCSOURCE}/docster.html.xsl" />
+<!--
 		<copy todir="${PACKAGEDIR}/docs" file="${DOCSOURCE}/style.css" />
 
 		<copy todir="${PACKAGEDIR}/docs/doxygen">
@@ -60,7 +61,7 @@
 				<include name="**/*.*" />
 			</fileset>
 		</copy>
-
+ -->
 		<zip destfile="${RELEASENAME}.zip">
 			<fileset dir="${STAGINGDIR}">
 				<include name="${RELEASENAME}/**/*.*" />
@@ -77,6 +78,7 @@
 			srcdir="../src" 
 			debug="yes"
 			failonerror="true" 
+			includeantruntime="no"
 		/>
 	</target>
 

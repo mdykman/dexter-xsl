@@ -13,8 +13,9 @@
 </head>
 <body>
 hello&nbsp;there
+and&#160;again
 <div dx:each="*/things/thing" >
-	<button name="clicker" dx:attrs="|onclick:return sayhello('{.}');|name:." dx:value=".">click me</button>
+	<button name="clicker" dx:attrs="|onclick:return sayhello('{.}');|name:." dx:text="!.">click me</button>
 </div>
 <div id="container">
 </div>

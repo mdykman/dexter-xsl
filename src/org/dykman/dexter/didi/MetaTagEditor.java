@@ -34,7 +34,7 @@ public class MetaTagEditor extends AbstractDocumentEditor
 			Properties props = new Properties();
 			props.load(in);
 			in.close();
-			Iterator it= props.keySet().iterator();
+			Iterator it = props.keySet().iterator();
 			Element el; 
 			while(it.hasNext())
 			{
