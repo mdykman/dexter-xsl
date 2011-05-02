@@ -24,7 +24,7 @@ public interface TransformSequencer
 
 	public String randMode();
 	public void cloneNode(Node n);
-	public void startSelect(String name, String match);
+	public void startSelect(String name, String match,boolean force);
 	public void endSelect();
 	public void startNode(String name, int type);
 	public void endNode();

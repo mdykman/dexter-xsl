@@ -98,12 +98,13 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 	private String filename;
 	private String encoding;
-	private Random rand = new Random();
+	private Random rand;
 
 	public XSLTDocSequencer(Dexter dexter,
 			DocumentBuilder builder, String name, String encoding) throws Exception
 	{
 		super(dexter);
+		this.rand = new Random();
 		this.builder = dbf.newDocumentBuilder();
 //		this.builder = builder;
 		this.encoding = encoding;
@@ -116,17 +117,17 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		idNames = ids;
 	}
 
-	Stack<String> iteratorStack = new Stack<String>();
+//	Stack<String> iteratorStack = new Stack<String>();
 
 	public void startIterator(String path)
 	{
-		iteratorStack.push(path);
+//		iteratorStack.push(path);
 		startSelect(null, path);
 	}
 
 	public void endIterator() {
 		endSelect();
-		iteratorStack.pop();
+//		iteratorStack.pop();
 	}
 
 	public void setVariable(String name, String select) {
@@ -467,6 +468,10 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	}
 
 	public void startSelect(String name, String match) {
+		startSelect(name, match,false);
+	}
+	
+	public void startSelect(String name, String match, boolean force) {
 			
 //		int n = match.lastIndexOf(".//");
 		String select = match;
@@ -477,6 +482,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		Element template = currentDocument.createElement(XSLTEMPLATE);
 		template.setAttribute("match", match);
 		template.setAttribute("mode", mode);
+		if(name == null) template.setAttribute("name", mode);
+		else  template.setAttribute("name", name);
 		template.appendChild(currentDocument.createTextNode("\n"));
 
 		currentStylesheet.appendChild(currentDocument.createTextNode("\n"));
@@ -486,8 +493,26 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		Element matcher = currentDocument.createElement(XSLAPPLYTEMPLATES);
 		matcher.setAttribute("select", select);
 		matcher.setAttribute("mode", mode);
-		
-		currentNode.appendChild(matcher);
+
+		if(force) {
+			Element ch =  currentDocument.createElement(XSLCHOOSE);
+	
+			Element ifx = currentDocument.createElement(XSLWHEN);
+			ifx.setAttribute("test", select);
+			ifx.appendChild(matcher);
+			ch.appendChild(ifx);
+
+			ifx = currentDocument.createElement(XSLOTHERWISE);
+			Element caller = currentDocument.createElement(XSLCALLTEMPLATE);
+			if(name == null) caller.setAttribute("name", mode);
+			else  caller.setAttribute("name", name);
+			ifx.appendChild(caller);
+			ch.appendChild(ifx);
+			
+			currentNode.appendChild(ch);
+		} else {
+			currentNode.appendChild(matcher);
+		}
 		currentNode.appendChild(currentDocument.createTextNode("\n"));
 
 		pushNode(template);
@@ -826,6 +851,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 		style.appendChild(document.createTextNode("\n"));
 		style.appendChild(output);
+		tagTemplate(output);
 		style.appendChild(document.createTextNode("\n"));
 		
 		output = document.createElement("xsl:preserve-space");
@@ -833,19 +859,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		style.appendChild(output);
 		style.appendChild(document.createTextNode("\n"));
 
-		tagTemplate(output);
-
 		Element template = document.createElement(XSLTEMPLATE);
-	
-		template.appendChild(document.createTextNode("\n"));
-
-//		template.appendChild(document.createTextNode("\n"));
-
-//		Element brake = document.createElement(XSLTEXT);
-//		brake.appendChild(document.createTextNode("\n"));
-//		template.appendChild(brake);
-
-		template.appendChild(document.createTextNode("\n"));
+		template.appendChild(document.createTextNode("\n\n"));
 		
 		if(match != null) template.setAttribute("match", match);
 		if(name != null) template.setAttribute("name", name);
