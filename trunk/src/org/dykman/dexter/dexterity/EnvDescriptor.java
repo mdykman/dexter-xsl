@@ -19,7 +19,7 @@ public class EnvDescriptor extends PathDescriptor
 	@Override
 	public void start()
 	{
-		sequencer.startSelect(null,value);
+		sequencer.startSelect(null,value,true);
 		super.start();
 	}
 
