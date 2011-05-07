@@ -1,0 +1,17 @@
+<data>
+	<found value="y" >I found it</found>
+	<things>
+		<thing>
+			<name>john</name>
+		</thing>
+		<thing>
+			<name>fred</name>
+		</thing>
+		<thing>
+			<name>dave</name>
+		</thing>
+		<thing>
+			<name>wilson</name>
+		</thing>
+	</things>
+</data>

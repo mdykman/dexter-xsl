@@ -1,0 +1,4 @@
+<tests>
+		<div id="myvar" dx:each="data/things/thing" dx:text="$myvar/name">
+		</div>
+</tests>
