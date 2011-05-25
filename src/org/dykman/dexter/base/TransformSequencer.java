@@ -28,11 +28,12 @@ public interface TransformSequencer
 	public void endSelect();
 	public void startNode(String name, int type);
 	public void endNode();
-	
+	public Element createElement(String name);
 	public void setVariable(String name,String select);
 	public void startNamedTemplate(String name);
 	public void endNamedTemplate();
 	public void callNamedTemplate(String name);
+	public boolean loadTemplate(String name);
 
 	public void mapAttribute(
 			String name,

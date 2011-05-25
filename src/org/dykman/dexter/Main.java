@@ -30,10 +30,11 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.dykman.dexter.base.DexterEntityResolver;
-import org.dykman.dexter.dexterity.DexteritySyntaxException;
+import org.dykman.dexter.DexteritySyntaxException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 
 public class Main {
 	private static Properties dexterProps = new Properties();
@@ -45,8 +46,8 @@ public class Main {
 	private static File userProperties = null;
 	private static boolean checkValidity = true;
 	private static Set<File> outputFile = new HashSet<File>();
-	private static TransformerFactory transformerFactory = TransformerFactory
-			.newInstance();
+//	private static TransformerFactory transformerFactory = TransformerFactory
+//			.newInstance();
 	static {
 		// transformerFactory.
 	}
@@ -186,18 +187,24 @@ public class Main {
 				showHelpFile();
 				System.exit(1);
 			}
-
+           
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			
+//			dbf.setEntityResolver(new DexterEntityResolver(encoding));			
 			dbf.setValidating(false);
 			dbf.setExpandEntityReferences(false);
-
+//			Schema schema = dbf.getSchema();
 			// WHY AGAIN??
 			dbf.setCoalescing(true);
 			dbf.setIgnoringComments(false);
 			DocumentBuilder builder = dbf.newDocumentBuilder();
-			builder.setEntityResolver(new DexterEntityResolver(encoding));
 
-			TransformerFactory transFact = TransformerFactory.newInstance();
+			builder.setEntityResolver(new DexterEntityResolver(encoding));
+//			HtmlDocumentBuilder builder= new HtmlDocumentBuilder();
+//System.out.println("VALIDATING = " + builder.isValidating());
+
+
+TransformerFactory transFact = TransformerFactory.newInstance();
 			if (inputXSL != null) {
 				Templates templates = transFact.newTemplates(new StreamSource(
 						new File((inputXSL))));
