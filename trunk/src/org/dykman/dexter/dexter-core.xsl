@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-<xsl:output encoding="UTF-8" indent="no" media-type="text/html" method="html" />
+<xsl:output encoding="UTF-8" indent="no" media-type="text/html" method="xml" />
 
 
 <xsl:template name="lookup">
@@ -105,6 +105,55 @@
 		</xsl:when>
 		<xsl:otherwise>
 			<xsl:value-of select="." />
+		</xsl:otherwise>
+	</xsl:choose>
+</xsl:template>
+
+<xsl:template name="find-extension">
+	<xsl:param name="param1" />
+	<xsl:call-template name="last-index-of">
+		<xsl:with-param name="str" select="$param1"/>
+		<xsl:with-param name="mc">.</xsl:with-param>
+	</xsl:call-template>
+</xsl:template>
+
+<xsl:template name="gossamer-image">
+	<xsl:param name="param1" />
+	<xsl:param name="param2" />
+	<xsl:variable name="n">
+		<xsl:call-template name="find-extension">
+			<xsl:param name="param1" select="$param1"/>
+		</xsl:call-template>
+	</xsl:variable>
+	<xsl:choose>
+		<xsl:when test="$n >= 0">
+			<xsl:value-of select="substring($param1,0,$n)" />
+			<xsl:value-of select="$param2" />
+			<xsl:value-of select="substring($param1,$n)" />
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:value-of select="$param1" />
+		</xsl:otherwise>
+	</xsl:choose>
+</xsl:template>
+
+<xsl:template name="last-index-of">
+	<xsl:param name="str"/>
+	<xsl:param name="mc"/>
+	<xsl:param name="index" select="string-length(str)" />
+	<xsl:choose>
+		<xsl:when test="$index == 0" >
+			<xsl:value-of select= "number(-1)" />
+		</xsl:when>
+		<xsl:when test="starts-with(substring($str,$index),$mc)" >
+			<xsl:value-of select="$index" />
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:call-template name="last-index-of">
+				<xsl:with-param name="str" select="$str" />
+				<xsl:with-param name="mc" select="$mc" />
+				<xsl:with-param name="index" select="$index-1" />
+			</xsl:call-template>
 		</xsl:otherwise>
 	</xsl:choose>
 </xsl:template>

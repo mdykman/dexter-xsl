@@ -37,6 +37,7 @@
 		<copy todir="${PACKAGEDIR}" file="CHANGES.txt" />
 
 		<copy todir="${PACKAGEDIR}/lib" file="../lib/gnu-getopt.jar" />
+		<copy todir="${PACKAGEDIR}/lib" file="../lib/htmlparser-1.3.1.jar" />
 
 		<copy todir="${PACKAGEDIR}/build" file="dexter.jar" />
 		<copy todir="${PACKAGEDIR}/build" file="dexter.sh" />
@@ -53,15 +54,7 @@
 		<copy todir="${PACKAGEDIR}/docs" file="${DOCSOURCE}/dexter.meta" />
         <copy todir="${PACKAGEDIR}/docs" file="${DOCSOURCE}/docster.html" />
 	    <copy todir="${PACKAGEDIR}/docs" file="${DOCSOURCE}/docster.html.xsl" />
-<!--
-		<copy todir="${PACKAGEDIR}/docs" file="${DOCSOURCE}/style.css" />
 
-		<copy todir="${PACKAGEDIR}/docs/doxygen">
-			<fileset dir="${DOCSOURCE}/html">
-				<include name="**/*.*" />
-			</fileset>
-		</copy>
- -->
 		<zip destfile="${RELEASENAME}.zip">
 			<fileset dir="${STAGINGDIR}">
 				<include name="${RELEASENAME}/**/*.*" />
@@ -74,12 +67,16 @@
 	<target name="compile">
 		<mkdir dir="../bin"/>
 		<javac destdir="../bin" 
-			classpath="../lib/gnu-getopt.jar:../lib/Tidy.jar" 
 			srcdir="../src" 
 			debug="yes"
 			failonerror="true" 
-			includeantruntime="no"
-		/>
+			includeantruntime="no">
+			<classpath >
+				<fileset dir="../lib">
+					<include name="gnu-getopt.jar" />
+				</fileset>
+			</classpath>		
+		</javac>
 	</target>
 
 		

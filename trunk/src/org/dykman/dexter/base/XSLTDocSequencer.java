@@ -112,6 +112,12 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	}
 	
 
+	public Element createElement(String name) {
+		Element el = currentDocument.createElement(name);
+		currentNode.appendChild(el);
+		
+		return el;
+	}
 	public void setIdNames(List<String> ids)
 	{
 		idNames = ids;
@@ -186,13 +192,16 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		currentNode.appendChild(element);
 	}
 
+	public boolean loadTemplate(String name) {
+		return dexter.loadTemplate(currentStylesheet, name);
+	}
 	protected String getInnerExpresion(String path) {
 		if(Dexter.isTemplateCall(path)) {
 			String[] parts = Dexter.parseTemplateCall(path);
 			String label = parts[0];
 				if(Dexter.isXpathFunction(label)) {
 					return path;
-				} else if(dexter.loadTemplate(currentStylesheet, label)) {
+				} else if(loadTemplate(label)) {
 					String val = parts[1];
 					if(val.length() == 0) {
 						val = ".";
