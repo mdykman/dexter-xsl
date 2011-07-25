@@ -27,7 +27,7 @@ public class CommentDescriptor extends PathDescriptor
 			useDefault = true;
 		}
 		sequencer.copyNodes(PathEval.parseSingle(value), 
-				useDefault ? ((Element)element).getTextContent() : null, true);
+				useDefault ? element.getTextContent() : null, true);
 		// WHY would I do this?
 	/*
 		else {

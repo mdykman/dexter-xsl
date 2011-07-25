@@ -34,7 +34,7 @@ public class CDataDescriptor extends PathDescriptor
 			List<PathEval> pp = PathEval.parse(value);
 			if(pp.size() == 1) {
 				sequencer.copyNodes(pp.get(0), 
-					useDefault ? ((Element)element).getTextContent() : null, true);
+					useDefault ? element.getTextContent() : null, true);
 			} 
 			else {
 				throw new DexteritySyntaxException("CDATA descriptor may only take a single xpath expression");

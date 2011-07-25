@@ -83,7 +83,7 @@ public class DocumentSerializer {
 	public void writeNode(Node node, Writer writer) throws IOException {
 		switch (node.getNodeType()) {
 		case Node.DOCUMENT_TYPE_NODE:
-			writer.write("AHHH!!!!");
+//			writer.write("AHHH!!!!");
 			break;
 		case Node.ELEMENT_NODE:
 			writer.append("<").append(node.getNodeName());
