@@ -30,7 +30,6 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.dykman.dexter.base.DexterEntityResolver;
-import org.dykman.dexter.DexteritySyntaxException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -51,7 +50,7 @@ public class Main {
 	static {
 		// transformerFactory.
 	}
-	private static boolean preserveEntities = true;
+//	private static boolean preserveEntities = true;
 
 	private static boolean propComments = true;
 	private static String inputXSL = null;
@@ -110,7 +109,7 @@ public class Main {
 				propComments = false;
 				break;
 			case 'r':
-				preserveEntities = false;
+//				preserveEntities = false;
 				break;
 
 			case 'v':
@@ -135,7 +134,7 @@ public class Main {
 				break;
 			case 'p':
 				try {
-					File userProperties = userProperties = new File(
+					File userProperties  = new File(
 							go.getOptarg());
 					if (!userProperties.canRead()) {
 						throw new DexterHaltException(
@@ -314,7 +313,7 @@ TransformerFactory transFact = TransformerFactory.newInstance();
 		}
 	}
 
-	private static void collectEntities(Node n, Map m, Dexter dexter) {
+	private static void collectEntities(Node n, Map<String,String> m, Dexter dexter) {
 		if (n.getNodeType() == Node.ENTITY_REFERENCE_NODE) {
 			// System.out.print("entity reference ");
 			// System.out.println(n.getNodeName() + " " +
