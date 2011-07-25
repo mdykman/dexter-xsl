@@ -1032,7 +1032,13 @@ public class Dexter
 		for(int i = 0; i < n; ++i ) {
 			System.out.print("   ");
 		}
-		System.out.println(node.getNodeType() + "::" + node.getNodeName());
+		int type = node.getNodeType();
+		
+		System.out.print(type + "::" + node.getNodeName());
+		if(type == Node.TEXT_NODE) {
+			System.out.print("\t{" + node.getNodeValue() + "}");
+		}
+		System.out.println();
 		NodeList nl = node.getChildNodes();
 		for(int i = 0; i < nl.getLength(); ++i) {
 			dump(nl.item(i),n+1);
