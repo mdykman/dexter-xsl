@@ -109,12 +109,15 @@ public class DocumentSerializer {
 					.append(" -->");
 			break;
 		case Node.TEXT_NODE:
+System.out.println("TEXT ||" + node.getNodeValue() + "||");			
 			writer.append(formatText(node.getNodeValue()));
 			break;
 		case Node.ENTITY_REFERENCE_NODE:
+System.out.println("ENTITY_REFERENCE_NODE ||" + node.getNodeValue() + "||");			
 			writer.append('&').append(node.getNodeName()).append(';');
 			break;
 		case Node.ENTITY_NODE:
+System.out.println("ENTITY_NODE ||" + node.getNodeValue() + "||");			
 			break;
 		}
 	}
