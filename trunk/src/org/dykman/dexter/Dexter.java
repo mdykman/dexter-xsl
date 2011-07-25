@@ -1018,8 +1018,13 @@ public class Dexter
 		}
 		
 	}
+	
 	public static void dump(Node n) {
 		dump(n,0);
+	}
+	public static void dump(Node n,String msg) {
+		System.out.println("DUMP - " + msg);
+		dump(n);
 	}
 
 	public static void dump(Node node,int n) {

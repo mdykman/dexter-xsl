@@ -342,14 +342,6 @@ TransformerFactory transFact = TransformerFactory.newInstance();
 
 		Map<String, String> mm = new HashMap<String, String>();
 		collectEntities(doc, mm, dexter);
-//		HackWriter writer = new HackWriter(new FileWriter(f));
-//		writer.setPreserveEntities(preserveEntities);
-//		writer.setEntities(mm);
-		// writer.writeDocType();
-
-		// .dexter. Writer writer = new FileWriter(f);
-
-		// Dexter.dump(doc);
 		Writer writer = new FileWriter(f);
 		write(doc, writer, encoding, mm);
 		writer.close();

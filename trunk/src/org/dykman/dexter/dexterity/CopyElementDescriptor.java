@@ -28,6 +28,6 @@ public class CopyElementDescriptor extends PathDescriptor
 			useDefault = true;
 		}
 		sequencer.copyNodes(PathEval.parseSingle(value), 
-			useDefault ? ((Element)element).getTextContent() : null, false);
+			useDefault ? element.getTextContent() : null, false);
 	}
 }

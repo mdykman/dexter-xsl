@@ -40,6 +40,6 @@ public class MapNodeDescriptor extends PathDescriptor
 //			disableEscape = true;
 //		}
 		sequencer.mapNode(valueTemplateParams(value), 
-				useDefault ? ((Element)element).getTextContent() : null);
+				useDefault ? element.getTextContent() : null);
 	}
 }
