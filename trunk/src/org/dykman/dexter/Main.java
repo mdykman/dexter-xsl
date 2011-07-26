@@ -197,7 +197,7 @@ public class Main {
 			dbf.setCoalescing(true);
 			dbf.setIgnoringComments(false);
 			DocumentBuilder builder = dbf.newDocumentBuilder();
-System.out.println("builder = " + builder.getClass().getName());
+//System.out.println("builder = " + builder.getClass().getName());
 			builder.setEntityResolver(new DexterEntityResolver(encoding));
 //			HtmlDocumentBuilder builder= new HtmlDocumentBuilder();
 //System.out.println("VALIDATING = " + builder.isValidating());

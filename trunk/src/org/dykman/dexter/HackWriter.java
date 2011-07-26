@@ -54,7 +54,7 @@ public class HackWriter extends Writer
 	public void writeWithEntitiesX(String s)
 		throws IOException {
 //	System.out.println("start of write, amppend = " + ampersandPending);
-	if(ampersandPending) System.out.println("writing = " + s);
+//	if(ampersandPending) System.out.println("writing = " + s);
 		int off = s.indexOf("&amp;");
 		if(ampersandPending) {
 			if(off == 0) {

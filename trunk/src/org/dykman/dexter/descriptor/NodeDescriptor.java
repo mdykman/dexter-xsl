@@ -95,9 +95,9 @@ public class NodeDescriptor extends AbstractDescriptor
 				sequencer.startNode(node.getNodeValue(),node.getNodeType());
 			break;
 			case Node.ENTITY_NODE:
-System.out.println("ENTITY NODE CALLED IN NodeDescriptor");
+//System.out.println("ENTITY NODE CALLED IN NodeDescriptor");
 			case Node.ENTITY_REFERENCE_NODE:
-System.out.println("ENTITY_REFERENCE_NODE CALLED IN NodeDescriptor");
+//System.out.println("ENTITY_REFERENCE_NODE CALLED IN NodeDescriptor");
 				sequencer.startNode(node.getNodeName(),node.getNodeType());
 			break;
 			case Node.DOCUMENT_TYPE_NODE:
@@ -107,7 +107,7 @@ System.out.println("ENTITY_REFERENCE_NODE CALLED IN NodeDescriptor");
 			break;
 			case Node.PROCESSING_INSTRUCTION_NODE:
 				{
-System.err.println("WARNING: discarding processing instruction in the input");					
+//System.err.println("WARNING: discarding processing instruction in the input");					
 				}
 			break;
 			case Node.NOTATION_NODE:

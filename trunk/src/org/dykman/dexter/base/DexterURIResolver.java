@@ -22,7 +22,7 @@ public class DexterURIResolver implements URIResolver {
 		String pp = resources.get(base);
 		Source src = null;
 		if(pp != null) {
-			System.out.println("resolving uri:: " + base);
+//			System.out.println("resolving uri:: " + base);
 			src = new StreamSource(getClass().getResourceAsStream(pp), base);
 		}
 		// TODO Auto-generated method stub
