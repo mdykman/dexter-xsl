@@ -684,11 +684,11 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			}
 			break;
 			case Node.ENTITY_NODE:
-System.out.println("XSLTDocSequencer: ENTITY_NODE");
+//System.out.println("XSLTDocSequencer: ENTITY_NODE");
 				appendText(name);
 				break;
 			case Node.ENTITY_REFERENCE_NODE:
-System.out.println("XSLTDocSequencer: ENTITY_REFERENCE_NODE");
+//System.out.println("XSLTDocSequencer: ENTITY_REFERENCE_NODE");
 			{
 				Node n = translateEntityReference(name);
 				appendText(n);
@@ -764,7 +764,7 @@ System.out.println("XSLTDocSequencer: ENTITY_REFERENCE_NODE");
 
 	@SuppressWarnings("unchecked")
 	protected Node translateEntityReference(String ref) {
-System.out.println("translateEntityReference");
+//System.out.println("translateEntityReference");
 		String val = dexter.getEntity(ref);
 		if(val == null)
 		{
@@ -784,7 +784,7 @@ System.out.println("translateEntityReference");
 	@SuppressWarnings("unchecked")
 	protected Node translateEntityReferenceX(String ref)
 	{
-		System.out.println("translateEntityReferenceX");
+//		System.out.println("translateEntityReferenceX");
 
 		Element el = currentDocument.createElement(XSLTEXT);
 		String val = dexter.getEntity(ref);
