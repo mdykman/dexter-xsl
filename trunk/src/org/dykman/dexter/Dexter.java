@@ -901,7 +901,9 @@ public class Dexter
 			
 			}
 		} else {
-//System.out.println("passthrough descriptor created " + node.getNodeName() + " " + node.getNodeType());			
+//System.out.println("passthrough descriptor created " + node.getNodeName() + " " + node.getNodeType());
+			Dexter.dump(node,"PassthroughDescriptor");
+
 			parent = new PassthroughDescriptor(node);
 		}
 		return parent;
