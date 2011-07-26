@@ -401,11 +401,11 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	}
 
 	public void cloneNode(Node node) {
-		Dexter.dump(node,"BEFORE CLONE");
+//		Dexter.dump(node,"BEFORE CLONE");
 		Node res = currentDocument.importNode(node,true);
 //		System.out.println("clone node -> " + node.getNodeType());
 		currentNode.appendChild(res);
-		Dexter.dump(node,"AFTER CLONE");
+//		Dexter.dump(node,"AFTER CLONE");
 
 	}
 
