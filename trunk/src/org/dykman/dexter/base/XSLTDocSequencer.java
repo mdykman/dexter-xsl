@@ -72,7 +72,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		dbf.setValidating(false);
 		
 		dbf.setExpandEntityReferences(false);
-		dbf.setCoalescing(false);
+		dbf.setCoalescing(true);
 		dbf.setIgnoringComments(false);
 		dbf.setIgnoringElementContentWhitespace(false);
 	}
@@ -1002,7 +1002,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		String name = nameStack.pop();
 		
 		popped.getDocumentElement().appendChild(popped.createTextNode("\n"));
-		finished.put(name, popped);
+		if(!name.endsWith("dispose.xsl")) finished.put(name, popped);
 
 		if (docStack.size() > 0)
 			currentDocument = docStack.peek();

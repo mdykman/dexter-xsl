@@ -203,8 +203,8 @@ public class Main {
 //System.out.println("VALIDATING = " + builder.isValidating());
 
 
-TransformerFactory transFact = TransformerFactory.newInstance();
 			if (inputXSL != null) {
+				TransformerFactory transFact = TransformerFactory.newInstance();
 				Templates templates = transFact.newTemplates(new StreamSource(
 						new File((inputXSL))));
 
@@ -236,21 +236,20 @@ TransformerFactory transFact = TransformerFactory.newInstance();
 			while (argp < args.length) {
 				fn = args[argp];
 				try {
-					Document impl = builder.parse(new FileInputStream(fn));
-					// dexter.dump(impl);
-					docs = dexter.generateXSLT(dexter.getHashName(fn), impl);
+					docs = dexter.generateXSLT(new File(fn));
 					Iterator<String> k = docs.keySet().iterator();
 					while (k.hasNext()) {
 						String name = k.next();
-						if (!name.endsWith(".dispose.xsl")) {
+//						if (!name.endsWith(".dispose.xsl")) {
 							Document dd = docs.get(name);
 							// System.out.println("SAVING");
 							// dexter.dump(dd);
 							putToDisk(name, dd, dexter);
-						}
+//						}
 					}
 					if (checkValidity) {
 						k = docs.keySet().iterator();
+						TransformerFactory transFact = TransformerFactory.newInstance();
 						while (k.hasNext()) {
 							String name = k.next();
 							File f;

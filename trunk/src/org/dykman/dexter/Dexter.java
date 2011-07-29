@@ -135,6 +135,7 @@ public class Dexter
 		return modulesMap.keySet().toArray(new String[modulesMap.size()]);
 	}
 	
+	private Properties dexterProperties;
 	/**
 	 * construct a Dexter object with specified encoding and properties
 	 */
@@ -146,9 +147,26 @@ public class Dexter
 		if(properties != null) {
 			p.putAll(properties);
 		}
+		dexterProperties = p;
 		loadTemplateLibrary(p.getProperty("dexter.lib.templates"));
 		initializeProperties(p);
 		init();
+	}
+	
+	@Override
+	public Object clone() {
+		Dexter dexter = new Dexter(encoding, dexterProperties, builder);
+		dexter.setIdHash(idHash);
+
+//		dexter.loadLibraryTemplate(builder, librarySet);
+
+		dexter.templateLibrary = templateLibrary;
+		dexter.setPropigateComments(propigateComments);
+
+		dexter.setMediaType(mediaType);
+		dexter.setMethod(method);
+		dexter.setIndent(indent);
+		return dexter;
 	}
 
 	public void addTemplate(Element template) {
@@ -543,8 +561,14 @@ public class Dexter
 		}
 		return result;
 	}
+
+	public Map<String, Document> generateXSLT(File file)
+		throws Exception {
+		Document doc = builder.parse(file);
+		return generateXSLT(file.getAbsolutePath(), doc);
+	}
 	
-	public Map<String, Document> generateXSLT(String filename,Document document) 
+	private Map<String, Document> generateXSLT(String filename,Document document) 
 		throws Exception {
 		Element docel = document.getDocumentElement();
 		Iterator<String> it = modulesMap.keySet().iterator();
@@ -902,7 +926,7 @@ public class Dexter
 			}
 		} else {
 //System.out.println("passthrough descriptor created " + node.getNodeName() + " " + node.getNodeType());
-			Dexter.dump(node,"PassthroughDescriptor");
+//			Dexter.dump(node,"PassthroughDescriptor");
 
 			parent = new PassthroughDescriptor(node);
 		}
@@ -970,10 +994,10 @@ public class Dexter
     {
     	this.idHash = idHash;
     }
-	public void loadLibraryTemplate(DocumentBuilder builder,Collection<String> libararySet) 
+	public void loadLibraryTemplate(DocumentBuilder builder,Collection<String> librarySet) 
 			throws IOException
 		{
-		for(String s : libararySet) {
+		for(String s : librarySet) {
 			try
             {
 				File f = new File(s);
