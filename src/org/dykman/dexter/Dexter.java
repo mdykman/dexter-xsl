@@ -260,7 +260,19 @@ public class Dexter
 		return XPathFunctionList.contains(label);
 	}
 	
-	
+	public void collectEntities(Node n, Map<String,String> m) {
+		if (n.getNodeType() == Node.ENTITY_REFERENCE_NODE) {
+			// System.out.print("entity reference ");
+			// System.out.println(n.getNodeName() + " " +
+			// dexter.getEntity(n.getNodeName()));
+			m.put(n.getNodeName(), getEntity(n.getNodeName()));
+		}
+		NodeList nl = n.getChildNodes();
+		for (int i = 0; i < nl.getLength(); ++i) {
+			collectEntities(nl.item(i), m);
+		}
+	}
+
 	public boolean loadTemplate(Element stylesheet, String name) {
 		
 		DocumentTraversal dt = (DocumentTraversal)templateLibrary;
