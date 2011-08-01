@@ -964,7 +964,7 @@ public class Dexter
 			ex.printStackTrace(out);
 		}
 	}
-
+/*
 	public String getHashName(String name) {
 		int n = name.lastIndexOf('.');
 		if(idHash != null && n != -1){
@@ -974,6 +974,7 @@ public class Dexter
 		}
 		return name;
 	}
+*/
 	public void setIndent(String indent)
     {
     	this.indent = indent;
