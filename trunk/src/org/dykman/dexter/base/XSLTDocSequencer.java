@@ -992,25 +992,35 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		currentDocument = document;
 		docStack.push(document);
 		String ext = null;
-		if(nameStack.size() > 0) {
+		boolean isSub = nameStack.size() > 0;
+		if(isSub) {
 			ext = name;
 			name = filename;
 //			name = filename +"-" + name;
 		}
 		String hash = dexter.getIdHash();
+		int n = name.lastIndexOf('.');
 		if(hash != null) {
-			int n = name.lastIndexOf('.');
+			StringBuilder sb = new StringBuilder();
 			if(n!= -1) {
-				StringBuilder sb = new StringBuilder();
-				sb.append(name.substring(0, n)).append('$')
-					.append(hash).append(name.substring(n));
-				name = sb.toString();
+				sb.append(name.substring(0, n)).append('$').append(hash);
 			}
+			if(ext != null) {
+				
+			}
+			sb.append(name.substring(n));
+			name = sb.toString();
+		} else if (ext != null){
+			StringBuilder sb = new StringBuilder();
+			sb.append(name).append('-').append(ext);
+			name = name +"-" + ext;
+			name = sb.toString();
 		}
+/*		
 		if(nameStack.size() > 0) {
 			name = filename +"-" + name;
 		}
-	System.out.println("POP DOC: name = " + name + ".xsl");
+*/
 		nameStack.push(name + ".xsl");
 	}
 
