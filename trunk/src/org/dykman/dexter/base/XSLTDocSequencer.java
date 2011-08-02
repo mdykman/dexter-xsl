@@ -563,9 +563,18 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		tn = tn.replaceAll("--","-");
 
 		Element element = currentDocument.createElement(XSLIMPORT);
-		String hash = dexter.getIdHash();
 		StringBuilder sb = new StringBuilder();
 		boolean canFindThis = (new File(fn).exists());
+		String hash = dexter.getIdHash();
+		
+		int n1 = fn.lastIndexOf('.');
+		int n2 = fn.lastIndexOf('-');
+		// subtemplate
+		if(n2 > n1) {
+			String ext = fn.substring(0,n2);
+			hash = dexter.getSourceHash(new File(ext));
+			
+		}
 System.out.println("I CAN FIND THIS:: " + canFindThis + " :: " + fn);		
 		if(hash != null) {
 			int n = fn.lastIndexOf('.');
