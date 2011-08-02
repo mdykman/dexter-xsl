@@ -6,6 +6,7 @@
 
 package org.dykman.dexter.base;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -559,6 +560,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	{
 		String fn = altDoc == null ? filename + '-' + name : altDoc;
 		String tn = fn.replaceAll("[^a-zA-Z0-9]","-");
+		tn = tn.replaceAll("--","-");
 
 		Element element = currentDocument.createElement(XSLIMPORT);
 		element.setAttribute("href", fn + ".xsl");
@@ -579,7 +581,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		// create secondary document, set  the stack
 		Document document = createStub(match,tn,tn);
 		if (altDoc != null)	name = name + ".dispose";
-		pushDoc(document, name);
+		pushDoc(document, name,true);
 		
 // create the main entry point template to handle cases where it is invoked independently
 		Element template = currentDocument.createElement(XSLTEMPLATE);
@@ -649,7 +651,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		switch (type) {
 			case Node.DOCUMENT_NODE: {
 				Document document = createStub("/",null,null);
-				pushDoc(document, filename);
+				pushDoc(document, filename,false);
 				lastWasEntity = false;
 			}
 			break;
@@ -987,41 +989,34 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		currentStylesheet = t;
 	}
 
-	private void pushDoc(Document document, String name)
+	private void pushDoc(Document document, String name,boolean isSubdoc)
 	{
 		currentDocument = document;
 		docStack.push(document);
 		String ext = null;
-		boolean isSub = nameStack.size() > 0;
-		if(isSub) {
-			ext = name;
-			name = filename;
-//			name = filename +"-" + name;
-		}
+		StringBuilder sb = new StringBuilder();
+/*
 		String hash = dexter.getIdHash();
-		int n = name.lastIndexOf('.');
 		if(hash != null) {
-			StringBuilder sb = new StringBuilder();
+			int n = name.lastIndexOf('.');
 			if(n!= -1) {
 				sb.append(name.substring(0, n)).append('$').append(hash);
+				sb.append(name.substring(n));
 			}
-			if(ext != null) {
-				
-			}
-			sb.append(name.substring(n));
-			name = sb.toString();
-		} else if (ext != null){
-			StringBuilder sb = new StringBuilder();
-			sb.append(name).append('-').append(ext);
-			name = name +"-" + ext;
-			name = sb.toString();
-		}
-/*		
-		if(nameStack.size() > 0) {
-			name = filename +"-" + name;
+		} else {
+			sb.append(name);
 		}
 */
-		nameStack.push(name + ".xsl");
+//		sb.append(name);
+		if(isSubdoc) {
+			File f = new File(filename);
+			sb.append(f.getName());
+			sb.append('-');
+		} 
+		sb.append(name);
+//		sb.append(".xsl");
+System.out.println("putting name on the stack: " + sb.toString());
+		nameStack.push(sb.toString());
 	}
 
 	private Document popDoc()
@@ -1030,7 +1025,10 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		String name = nameStack.pop();
 		
 		popped.getDocumentElement().appendChild(popped.createTextNode("\n"));
-		if(!name.endsWith("dispose.xsl")) finished.put(name, popped);
+		if(!name.endsWith("dispose.xsl")) {
+System.out.println("creating final as " + name);
+			finished.put(name, popped);
+		}
 
 		if (docStack.size() > 0)
 			currentDocument = docStack.peek();
