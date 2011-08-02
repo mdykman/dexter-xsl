@@ -563,7 +563,21 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		tn = tn.replaceAll("--","-");
 
 		Element element = currentDocument.createElement(XSLIMPORT);
-		element.setAttribute("href", fn + ".xsl");
+		String hash = dexter.getIdHash();
+		StringBuilder sb = new StringBuilder();
+		if(hash != null) {
+			int n = fn.indexOf('.');
+			if(n != -1) {
+				sb.append(fn.substring(0, n)).append('$')
+					.append(hash).append(fn.substring(n));
+			} else {
+				sb.append(fn);
+			}
+		} else {
+			sb.append(fn);
+		}
+		sb.append(".xsl");
+		element.setAttribute("href", sb.toString());
 
 //		NodeList ch = currentDocument.getElementsByTagName(XSLTEMPLATE);
 		
