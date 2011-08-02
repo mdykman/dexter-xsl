@@ -572,8 +572,10 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		// subtemplate
 		if(n2 > n1) {
 			String ext = fn.substring(0,n2);
-System.out.println("getting hash from " + ext);			
-			hash = dexter.getSourceHash(new File(ext));
+			File mf = new File(ext);
+System.out.println("getting hash from " + ext + ", which exists? " + mf.exists());
+			
+			hash = dexter.getSourceHash(mf);
 			
 		}
 System.out.println("I CAN FIND THIS:: " + canFindThis + " :: " + fn);		
