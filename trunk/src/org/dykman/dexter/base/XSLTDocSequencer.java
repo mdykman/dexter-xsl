@@ -1025,7 +1025,18 @@ System.out.println("putting name on the stack: " + sb.toString());
 		String name = nameStack.pop();
 		
 		popped.getDocumentElement().appendChild(popped.createTextNode("\n"));
-		if(!name.endsWith("dispose.xsl")) {
+		if(!name.endsWith(".dispose")) {
+			String hash = dexter.getIdHash();
+			if(hash != null) {
+				int n = name.lastIndexOf('.');
+				if(n != -1) {
+					StringBuilder sb = new StringBuilder();
+					sb.append(name.substring(0, n)).append('$')
+						.append(hash).append(name.substring(n));
+					name = sb.toString();
+				}
+			}
+			name = name + ".xsl";
 System.out.println("creating final as " + name);
 			finished.put(name, popped);
 		}
