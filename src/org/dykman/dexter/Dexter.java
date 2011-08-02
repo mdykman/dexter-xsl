@@ -638,6 +638,10 @@ public class Dexter
 			blessTree(list.item(i));
 		}
 	}
+	protected String getSourceHash(File f) {
+		Long ts = f.lastModified();
+		return Long.toHexString(ts);
+	}
 
 	public void bless(Node node)
 	{
