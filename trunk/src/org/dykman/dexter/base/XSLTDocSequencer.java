@@ -566,7 +566,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		String hash = dexter.getIdHash();
 		StringBuilder sb = new StringBuilder();
 		boolean canFindThis = (new File(fn).exists());
-System.out.println("I CAN FIND THIS:: " + fn);		
+System.out.println("I CAN FIND THIS:: " + canFindThis + " :: " + fn);		
 		if(hash != null) {
 			int n = fn.lastIndexOf('.');
 			if(n != -1) {
