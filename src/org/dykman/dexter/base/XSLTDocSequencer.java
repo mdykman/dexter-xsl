@@ -566,6 +566,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		StringBuilder sb = new StringBuilder();
 		boolean canFindThis = (new File(fn).exists());
 		String hash = dexter.getIdHash();
+System.out.println("  SUBDOC:: based on " + fn);
+
 		
 		int n1 = fn.lastIndexOf('.');
 		int n2 = fn.lastIndexOf('-');
@@ -573,7 +575,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		if(n2 > n1) {
 			String ext = fn.substring(0,n2);
 			File mf = new File(ext);
-System.out.println("getting hash from " + ext + ", which exists? " + mf.exists());
+System.out.println("  SUBDOC:: getting hash from " + ext + ", which exists? " + mf.exists());
 			
 			hash = dexter.getSourceHash(mf);
 			
