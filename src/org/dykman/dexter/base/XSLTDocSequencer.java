@@ -573,7 +573,8 @@ System.out.println("  SUBDOC:: based on " + fn);
 		int n2 = fn.lastIndexOf('-');
 		// subtemplate
 		if(n2 > n1) {
-			String ext = fn.substring(0,n2);
+			int jj = fn.indexOf('-', n1);
+			String ext = fn.substring(0,jj);
 			File mf = new File(ext);
 System.out.println("  SUBDOC:: getting hash from " + ext + ", which exists? " + mf.exists());
 			
