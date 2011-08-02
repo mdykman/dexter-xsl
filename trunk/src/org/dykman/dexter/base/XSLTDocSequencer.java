@@ -566,7 +566,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		String hash = dexter.getIdHash();
 		StringBuilder sb = new StringBuilder();
 		if(hash != null) {
-			int n = fn.indexOf('.');
+			int n = fn.lastIndexOf('.');
 			if(n != -1) {
 				sb.append(fn.substring(0, n)).append('$')
 					.append(hash).append(fn.substring(n));
