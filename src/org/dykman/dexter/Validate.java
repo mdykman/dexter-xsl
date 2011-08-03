@@ -18,7 +18,7 @@ public class Validate
 			dbf.setValidating(true);
 			DocumentBuilder builder = dbf.newDocumentBuilder();
 			builder.parse(new File(args[0]));
-			System.out.println("validate succeeded");
+//			System.out.println("validate succeeded");
 		}
 		catch(Exception e)
 		{

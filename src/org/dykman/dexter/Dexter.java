@@ -1050,7 +1050,6 @@ public class Dexter
 			char [] cc = node.getNodeValue().toCharArray();
 			for(char c : cc) {
 				System.out.print(Integer.toHexString((int) c));
-//				System.out.print(Integer.toHexString(Character.getNumericValue(c)));
 				System.out.print(" ");
 			}
 			System.out.println();
