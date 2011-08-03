@@ -558,7 +558,8 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	public void startSubdoc(String altDoc, String name, String match,
 	      boolean keepSubDoc)
 	{
-		String fn = altDoc == null ? filename + '-' + name : altDoc;
+		File baseFile = new File(filename);
+		String fn = altDoc == null ? baseFile.getName() + '-' + name : altDoc;
 		String tn = fn.replaceAll("[^a-zA-Z0-9]","-");
 		tn = tn.replaceAll("--","-");
 
@@ -574,8 +575,8 @@ System.out.println("  SUBDOC:: based on " + fn);
 		if(n2 > n1) {
 			int jj = fn.indexOf('-', n1);
 			String ext = fn.substring(0,jj);
-			File parent = new File(filename).getParentFile();
-			File mf = new File(parent,ext);
+			File parent = baseFile.getParentFile();
+			File mf = new File(parent,new File(ext).getName());
 System.out.println("  SUBDOC:: getting hash from " + ext + ", which exists? " + mf.exists());
 			
 			hash = dexter.getSourceHash(mf);
