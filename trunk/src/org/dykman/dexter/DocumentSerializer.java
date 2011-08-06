@@ -15,7 +15,7 @@ public class DocumentSerializer {
 	public String encoding = "UTF-8";
 	protected Map<String,String> entities;
 
-	boolean xmlDeclaration = false;
+	boolean xmlDeclaration = true;
 
 	public DocumentSerializer(String encoding, boolean xmlDeclaration) {
 		this.encoding = encoding;
