@@ -22,10 +22,10 @@ public class DocumentSerializer {
 		this.xmlDeclaration = xmlDeclaration;
 	}
 	public DocumentSerializer(String encoding) {
-		this(encoding,false);
+		this(encoding,true);
 	}
 	public DocumentSerializer() {
-		this("UTF-8",false);
+		this("UTF-8",true);
 	}
 	
 	public void setEntities(Map<String,String> entities) {
@@ -115,6 +115,7 @@ public class DocumentSerializer {
 			writer.append('&').append(node.getNodeName()).append(';');
 			break;
 		case Node.ENTITY_NODE:
+			System.out.println("should not encounter these");
 			break;
 		}
 	}
@@ -123,7 +124,7 @@ public class DocumentSerializer {
 		if (xmlDeclaration) {
 			writer.write("<?xml version=\"1.0\" encoding=\"");
 			writer.write(encoding);
-			writer.write("\" ?>\n");
+			writer.write("\" ?>\n\n");
 		}
 		writeDocType(document, writer);
 		writer.write("\n");
