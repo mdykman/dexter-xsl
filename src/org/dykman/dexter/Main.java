@@ -311,7 +311,7 @@ public class Main {
 			throw new RuntimeException(e);
 		}
 	}
-
+/*
 	private static void collectEntities(Node n, Map<String,String> m, Dexter dexter) {
 		if (n.getNodeType() == Node.ENTITY_REFERENCE_NODE) {
 			// System.out.print("entity reference ");
@@ -324,7 +324,7 @@ public class Main {
 			collectEntities(nl.item(i), m, dexter);
 		}
 	}
-
+*/
 	private static void putToDisk(String name, Document doc, Dexter dexter)
 			throws Exception {
 		File f;
@@ -339,10 +339,8 @@ public class Main {
 		else
 			outputFile.add(f);
 
-		Map<String, String> mm = new HashMap<String, String>();
-		collectEntities(doc, mm, dexter);
 		Writer writer = new FileWriter(f);
-		write(doc, writer, encoding, mm);
+		write(doc, writer, encoding, dexter.collectEntities(doc));
 		writer.close();
 	}
 

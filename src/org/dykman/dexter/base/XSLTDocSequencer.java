@@ -1047,7 +1047,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		} 
 		sb.append(name);
 //		sb.append(".xsl");
-System.out.println("putting name on the stack: " + sb.toString());
+//System.out.println("putting name on the stack: " + sb.toString());
 		nameStack.push(sb.toString());
 	}
 

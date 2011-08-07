@@ -50,8 +50,8 @@ public class Dexter
 	protected Document inputDocument;
 	protected DocumentBuilder builder;
 	public static final String DEXTER_VERSION = "dexter-0.9-beta";
-	public static final String DEXTER_SHORT_COPYRIGHT = "(c) 2007-2010 Michael Dykman, Lauren Enterprises"; 
-	public static final String DEXTER_COPYRIGHT = "copyright (c) 2007-2010 Michael Dykman, Lauren Enterprises"; 
+	public static final String DEXTER_SHORT_COPYRIGHT = "(c) 2007-2011 Michael Dykman, Lauren Enterprises"; 
+	public static final String DEXTER_COPYRIGHT = "copyright (c) 2007-2011 Michael Dykman, Lauren Enterprises"; 
 	public static final String DEXTER_TAINT = "DEXTER_TAINT";
 
 	private String propertyPath = null;
@@ -259,7 +259,12 @@ public class Dexter
 	public static boolean isXpathFunction(String label) {
 		return XPathFunctionList.contains(label);
 	}
-	
+
+	public Map<String,String> collectEntities(Node n) {
+		Map<String, String> result = new HashMap<String, String>();
+		collectEntities(n, result);
+		return result;
+	}
 	public void collectEntities(Node n, Map<String,String> m) {
 		if (n.getNodeType() == Node.ENTITY_REFERENCE_NODE) {
 			// System.out.print("entity reference ");
@@ -282,6 +287,7 @@ public class Dexter
 		
 		DocumentFragment fragment = templateLibrary.createDocumentFragment();
 		Node nn;
+		@SuppressWarnings("unchecked")
 		Set<String> templatesLoaded = (Set<String>) stylesheet.getUserData("external-stylesheets");
 		if(templatesLoaded == null) {
 			templatesLoaded = new HashSet<String>();
@@ -732,11 +738,12 @@ public class Dexter
 	{
 		TransformSpecifier td = null;
 		String k = descriptors.get(label);
+		@SuppressWarnings("unchecked")
 		Class<TransformDescriptor> cl = 
 			(Class<TransformDescriptor>) Class.forName(k);
 		String []bb = parseNs(label);
 		String namespace = bb[0];
-		String localname = bb[1];
+//		String localname = bb[1];
 
 		if (blocks.containsKey(label)) {
 			String end = blocks.get(label);
@@ -802,6 +809,7 @@ public class Dexter
 			String alabel = it.next();
 			if (el.hasAttribute(alabel))
 			{
+				@SuppressWarnings("unused")
 				TransformSpecifier td = createSpecifier(el, alabel);
 			}
 		}
@@ -907,16 +915,15 @@ public class Dexter
 		
 	}
 	public  Descriptor marshallNode(Node node) {
-//System.out.print("nodeDescriptor created!!!");	   		
 	   	Descriptor descriptor = new NodeDescriptor(node);
-	   	List<NodeSpecifier> list = (List<NodeSpecifier>) node
+	   	@SuppressWarnings("unchecked")
+		List<NodeSpecifier> list = (List<NodeSpecifier>) node
 	   	      .getUserData(DexterityConstants.DEXTER_SPECIFIERS);
 	   	if (list != null) {
 	   		Iterator<NodeSpecifier> it = list.iterator();
-	   		TransformDescriptor td;
 	   		while (it.hasNext()) {
 	   			NodeSpecifier specifier = it.next();
-	   			descriptor = td = specifier.enclose(descriptor);
+	   			descriptor = specifier.enclose(descriptor);
 	   		}
 	   	}
 	   	return descriptor;
@@ -927,7 +934,6 @@ public class Dexter
 	
 		if((node.getNodeType() != Node.ELEMENT_NODE) || (node.getUserData(DEXTER_TAINT) != null)) {
 			parent = marshallNode(node);
-			Descriptor c;
 			NodeList children = node.getChildNodes();
 			int nc = children.getLength();
 			for (int i = 0; i < nc; ++i)
@@ -935,15 +941,11 @@ public class Dexter
 				Node child = children.item(i);
 				if(child != null &&	child.getParentNode() != null)
 				{
-					c = marshall(child);
-					parent.appendChild(c);
+					parent.appendChild(marshall(child));
 				}
 			
 			}
 		} else {
-//System.out.println("passthrough descriptor created " + node.getNodeName() + " " + node.getNodeType());
-//			Dexter.dump(node,"PassthroughDescriptor");
-
 			parent = new PassthroughDescriptor(node);
 		}
 		return parent;
