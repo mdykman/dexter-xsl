@@ -1,0 +1,10 @@
+<tests >
+		<div dx:ghost="" >
+			<b>bolded</b>
+		</div>
+		<div dx:ghost="">
+			<div dx:ghost="">
+				<b>bold content</b>
+			</div>
+		</div>
+</tests>
