@@ -4,10 +4,15 @@
  Most of Dexters operators are XML-agnostic; that is to say they are useful regardless of the scheme of XML being manipulated.  Those are the attributes in the 'dx' namespace.  There are a few HTML-specific operators which are in the 'dd' namespace.
 
 Many dexter operators require XPath 1.0 in their arguments with additional, optional prefixes.
+
+ ===dx: xml-agnostic===
   
  * [Substitution] _dx:text,dx:cpy_
  * [Attributes] _dx:attr,dx:attrs,dx:cattr,dx:cattrs_,
  * [Iteration] _dx:each_
  * [Conditionals] _dx:if,dx:case/dx:default_
- * [Miscellany] _dx:ghost,dx:ignore_
+ * [Miscellany] _dx:ghost,dx:ignore,dx:uniq,dx:cdata,dx:comment,dx:noop_
  * [Advanced] _dx:sub,dx:template,dx:call_
+
+===dd: html-specific===
+ * dd:form
