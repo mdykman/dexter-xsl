@@ -10,7 +10,7 @@ The '!' prefix may be used to retain a default value from the target document.
 It does not matter if the attribute is present in the source document or not.
 
  == dx:attr ==
- dx:attr="[attribute-name]:{prefix}?XPath"
+ `dx:attr="[attribute-name]:{prefix}?XPath"`
 
 *attr* handles the simplest case, substituting a single value into a single target attribute.
 
@@ -44,8 +44,8 @@ If the value of `data/profile/icon` had been empty, the result would have been a
 
 If the '!' prefix had been used thus dx:attr="src:!data/profile/icon" and the value`data/profile/icon` had been empty, the result would have been  `src="notfound.jpg".
 
- -- dx:attrs --
- dx:attr="SEP[attribute-name]:{prefix}?XPath(SEP)[attribute-name]:{prefix}?XPath"
+ == dx:attrs==
+ `dx:attr="SEP[attribute-name]:{prefix}?XPath(SEP)[attribute-name]:{prefix}?XPath"`
 
 *attrs* operates similarly to *attr* except that it may set multiple attributes.  The first character in it's argument string it taken as a separator character and used as such throughout.
 {{{
