@@ -76,6 +76,7 @@ data.xml
      <person>Ted</person>
      <person preferred="true">Alice</person>
   </customer>
+<xml>
 }}}
 
 {{{
