@@ -1,0 +1,33 @@
+= User Manual =
+
+== Dexter Operators ==
+ Most of Dexters operators are XML-agnostic; that is to say they are useful regardless of the scheme of XML being manipulated.  THose are the attributes in the 'dx' namespace.  There are a few HTML-specific operators in the 'dd' namespace.
+
+=== dx:text ===
+
+  simple text substitution
+
+*text* replaces all child nodes of the current source element with the text content of the data node specified by the path.
+
+A optional prefix '!' may be used to retain the value in the source document as a default:
+{{{
+ data.xml
+
+<xml>
+  <person>
+     <firstname>John</firstname>
+  </person>
+</xml>
+}}}
+{{{
+ dexter source 
+<div class="person" dx:text="person/firstname">unknown</div> 
+<div class="person" dx:text="!person/middlename">unknown</div> 
+<div class="person" dx:text="person/lastname">unknown</div> 
+}}}
+  this renders as
+{{{
+<div class="person">John</div> 
+<div class="person">unknown</div> 
+<div class="person"></div> 
+}}}
