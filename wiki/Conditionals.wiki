@@ -1,0 +1,50 @@
+There are three Dexter operators for addressing conditional layout flow.  
+
+  * dx:if
+  * dx:case/dx:default
+
+The argument strings for dx:if and dx:case are identical expecting pure XPath for both dx:if and dx:case. No Dexter-specific prefixes are allowed here.
+
+== dx:if ==
+ `dx:if="XPath"`
+*if* is simple.  If the XPath expression evaluations to true, the eleent and it's children are rendered.  Otherwise, neither the element nor it's children will be rendered.  There is no dx:else, for chaining if/elseif logic, refer to *case/default*
+
+{{{
+data.xml
+
+<xml>
+  <customer>
+     <person preferred="true">Bob</person>
+     <person>Carol</person>
+     <person>Ted</person>
+     <person preferred="true">Alice</person>
+  </customer>
+<xml>
+}}}
+
+{{{
+dexter source
+
+   <div id="person" dx:each="xml/customer/person">
+       <span dx:text="$person">name here</span>
+       <span dx:if="$person/[@preffered='true']">is special</span>
+   </div> 
+}}}
+
+{{{
+renders as:
+   <div id="person">
+       <span>John</span>
+       <span>is special</span>
+   </div> 
+   <div id="person">
+       <span>Carol</span>
+   </div> 
+   <div id="person">
+       <span>Ted</span>
+   </div> 
+   <div id="person">
+       <span>Alice</span>
+       <span>is special</span>
+   </div> 
+}}}
