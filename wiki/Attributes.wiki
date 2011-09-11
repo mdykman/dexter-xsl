@@ -1,0 +1,19 @@
+There are 4 Dexter operators used to substitute data into target attributes:
+
+ * dx:attr
+ * dx:attrs
+ * dx:cattr
+ * dx:cattrs
+
+The '!' prefix may be used to retain a default value from the target document.
+
+It does not matter if the attribute is present in the source document or not.
+
+ = dx:attr =
+ dx:attr="[attribute-name]:{prefix}?XPath"
+
+*attr* handles the simplest case, substituting a single value into a single target attribute.
+
+{{{
+data.xml
+}}}
