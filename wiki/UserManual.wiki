@@ -3,9 +3,12 @@
 == Dexter Operators ==
  Most of Dexters operators are XML-agnostic; that is to say they are useful regardless of the scheme of XML being manipulated.  THose are the attributes in the 'dx' namespace.  There are a few HTML-specific operators in the 'dd' namespace.
 
+Many dexter operators require XPath 1.0 in their arguments with additional, optional prefixes.
+
 === dx:text ===
 
-  simple text substitution
+  text substitution
+ `dx:text="{prefix}?XPath"`
 
 *text* replaces all child nodes of the current source element with the text content of the data node specified by the path.
 
@@ -30,4 +33,48 @@ A optional prefix '!' may be used to retain the value in the source document as 
 <div class="person">John</div> 
 <div class="person">unknown</div> 
 <div class="person"></div> 
+}}}
+
+=== dx:cpy ===
+
+  node substitution
+ `dx:text="{prefix}?XPath"`
+
+*cpy* replaces all child nodes of the current source element with the child nodes of the data node specified by the path.
+
+A optional prefix '!' may be used to retain the value in the source document as a default:
+{{{
+data.xml
+
+<xml>
+  <style>
+    <s1>
+      <a href="http://code.google.com/p/dexter-xsl">Dexter</a>
+    </s1>
+  <style>
+</xml>
+}}}
+
+
+{{{
+ dexter source 
+<div dx:cpy="style/s1">unknown
+</div> 
+<div dx:cpy="!style/s2">
+   No link was found.  Try  <a href="www.google.com">here</a>
+</div> 
+<div dx:cpy="style/s3">unknown
+</div> 
+}}}
+
+  this renders as
+{{{
+<div>
+      <a href="http://code.google.com/p/dexter-xsl">Dexter</a>
+    
+</div> 
+<div>
+   No link was found.  Try  <a href="www.google.com">here</a>
+</div>
+<div></div> 
 }}}
