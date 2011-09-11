@@ -1,9 +1,12 @@
 = User Manual =
 
 == Dexter Operators ==
- Most of Dexters operators are XML-agnostic; that is to say they are useful regardless of the scheme of XML being manipulated.  THose are the attributes in the 'dx' namespace.  There are a few HTML-specific operators in the 'dd' namespace.
+ Most of Dexters operators are XML-agnostic; that is to say they are useful regardless of the scheme of XML being manipulated.  Those are the attributes in the 'dx' namespace.  There are a few HTML-specific operators which are in the 'dd' namespace.
 
 Many dexter operators require XPath 1.0 in their arguments with additional, optional prefixes.
+  
+ * [Substitution] _dx:text,dx:copy_
+ * [Iteration] _dx:each_
 
 === dx:text ===
 
@@ -38,7 +41,7 @@ A optional prefix '!' may be used to retain the value in the source document as 
 === dx:cpy ===
 
   node substitution
- `dx:text="{prefix}?XPath"`
+ `dx:cpy="{prefix}?XPath"`
 
 *cpy* replaces all child nodes of the current source element with the child nodes of the data node specified by the path.
 
@@ -78,3 +81,11 @@ data.xml
 </div>
 <div></div> 
 }}}
+
+=== dx:each ===
+
+
+  iteration/looping
+ `dx:each="{prefix}?XPath"`
+
+*each* causes the current element and all of it's children to be repeated 
