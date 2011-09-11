@@ -1,0 +1,32 @@
+ == dx:ghost ==
+ `dx:ghost=""`
+
+*ghost* causes the element it is embedded in to not be rendered while still preforming other embedded operations and processing it's children.
+
+{{{
+dexter source
+
+<div>
+  My name is <span dx:ghost="" dx:text="data/name">name</span>.
+</div>
+}}}
+{{{
+ renders as
+<div>
+  My name is John.
+</div>
+
+}}}
+
+ == dx:ignore ==
+ `dx:ignore=""`
+
+*ignore* causes the element it is embedded in to be excluded, along with it's children from the resulting XSL stylesheet.  It is convenient to use when one wishes to keep the design document intact after logic has been applied.
+
+{{{
+<ul>
+   <li dx:each="data/values" dx:text=".">one</li>
+   <li dx:ignore="">two</li>
+   <li dx:ignore="">three</li>
+</ul>
+}}}
