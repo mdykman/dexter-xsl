@@ -6,4 +6,5 @@
 Many dexter operators require XPath 1.0 in their arguments with additional, optional prefixes.
   
  * [Substitution] _dx:text,dx:copy_
+ * [Attributes] _dx:attr,dx:attrs,dx:cattr,dx:cattrs_,
  * [Iteration] _dx:each_
