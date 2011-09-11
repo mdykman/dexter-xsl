@@ -14,6 +14,7 @@ A optional prefix '#' may be used to cause the operator to repeat only the child
 
 If the element has an 'id' attribute, it will be used to create an auto-variable.
 
+Note that *each* establishes the context for XPath expressions within it's scope.
 === example 1 ===
 
 {{{
