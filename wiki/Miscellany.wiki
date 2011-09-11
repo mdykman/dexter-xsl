@@ -31,3 +31,8 @@ dexter source
    <li dx:ignore="">three</li>
 </ul>
 }}}
+
+ == dx:noop ==
+ `dx:noop=""`
+
+*noop* , as it's name suggests, does absolutely nothing.
