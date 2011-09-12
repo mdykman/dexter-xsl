@@ -10,50 +10,65 @@ import org.dykman.dexter.descriptor.Descriptor;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-public class MapAttributeDescriptor extends AbstractAttributeDescriptor
-{
-	public MapAttributeDescriptor(Descriptor descriptor)
-	{
+public class MapAttributeDescriptor extends AbstractAttributeDescriptor {
+	public MapAttributeDescriptor(Descriptor descriptor) {
 		super(descriptor);
 	}
-	
-	@Override
-	public void attributes()
-	{
-		String [] tests = getTests();
-		NamedNodeMap  attr = element.getAttributes();
-		for(int i = 0; i < tests.length; ++i)
-		{
-			String [] nv = tests[i].split(DexterityConstants.ATTR_SEP,2);
+
+	public void __attributes() {
+		String[] tests = getTests();
+		NamedNodeMap attr = element.getAttributes();
+		for (int i = 0; i < tests.length; ++i) {
+			String[] nv = tests[i].split(DexterityConstants.ATTR_SEP, 2);
 			Node a = attr.getNamedItem(nv[0]);
 			String value = null;
-			if(a != null)
-			{
+			if (a != null) {
 				value = a.getNodeValue();
 				attr.removeNamedItem(nv[0]);
 			}
 			String nref = (nv.length > 1) ? nv[1] : "";
-			
-			
-			if(nref.startsWith("!"))
-			{
+
+			if (nref.startsWith("!")) {
 				nref = nref.substring(1);
-				if(nref.startsWith("!"))
-				{
-//					force = true;
+				if (nref.startsWith("!")) {
+					// force = true;
 					nref = nref.substring(1);
 				}
-			}
-			else
-			{
+			} else {
 				value = null;
 			}
 
-			sequencer.mapAttribute(
-					nv[0], valueTemplateParams(nref),  value);
+			sequencer.mapAttribute(nv[0], valueTemplateParams(nref), value);
 		}
-		
+
 		super.attributes();
 	}
-	
+
+	@Override
+	public void attributes() {
+		String test = value;
+		NamedNodeMap attr = element.getAttributes();
+		String[] nv = test.split(DexterityConstants.ATTR_SEP, 2);
+		Node a = attr.getNamedItem(nv[0]);
+		String value = null;
+		if (a != null) {
+			value = a.getNodeValue();
+			attr.removeNamedItem(nv[0]);
+		}
+		String nref = (nv.length > 1) ? nv[1] : "";
+
+		if (nref.startsWith("!")) {
+			nref = nref.substring(1);
+			if (nref.startsWith("!")) {
+				// force = true;
+				nref = nref.substring(1);
+			}
+		} else {
+			value = null;
+		}
+
+		sequencer.mapAttribute(nv[0], valueTemplateParams(nref), value);
+		super.attributes();
+	}
+
 }

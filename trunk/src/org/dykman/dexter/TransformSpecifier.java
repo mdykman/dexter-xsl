@@ -19,6 +19,7 @@ public class TransformSpecifier extends AbstractNodeSpecifier
 	protected Dexter dexter;
 	protected PropertyResolver properties = null;
 
+	@SuppressWarnings("unchecked")
 	public TransformSpecifier(String fqn)
 		throws Exception
 	{
@@ -30,15 +31,18 @@ public class TransformSpecifier extends AbstractNodeSpecifier
 	}
 	
 
+	@SuppressWarnings("rawtypes")
 	public Class getDescriptorClass()
 	{
 		return klass;
 	}
-	public void setDescriptorClass(Class klass)
+	@SuppressWarnings("unchecked")
+	public void setDescriptorClass(@SuppressWarnings("rawtypes") Class klass)
 	{
 		this.klass = klass;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public TransformDescriptor enclose(Descriptor descriptor)
 	{
 		try

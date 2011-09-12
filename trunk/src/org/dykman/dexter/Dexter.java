@@ -8,9 +8,11 @@ package org.dykman.dexter;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -303,7 +305,6 @@ public class Dexter
 		stylesheet.getOwnerDocument().adoptNode(fragment);
 
 		stylesheet.appendChild(fragment);
-//System.out.print(loaded ? "success"  :" fail");		
 		return loaded;
 	}
 	
@@ -385,10 +386,6 @@ public class Dexter
 		return entityResolver.getProperty(key);
 	}
 
-/**
- * create a property resolver for each defined module
- * @param properties
- */
 	private void initializeProperties(Properties properties)
 	{
 		try
@@ -970,17 +967,7 @@ public class Dexter
 			ex.printStackTrace(out);
 		}
 	}
-/*
-	public String getHashName(String name) {
-		int n = name.lastIndexOf('.');
-		if(idHash != null && n != -1){
-			return new StringBuilder().append(name.substring(0,n)).append(':')
-				.append(idHash).append(name.substring(n)).toString();
-			
-		}
-		return name;
-	}
-*/
+
 	public void setIndent(String indent)
     {
     	this.indent = indent;
@@ -1062,7 +1049,27 @@ public class Dexter
 		}
 		
 	}
-	
+	public void putToDisk(File f, Document doc)
+			throws Exception {
+		collectEntities(doc);
+		Writer writer = new FileWriter(f);
+		write(doc, writer, "UTF-8", collectEntities(doc));
+		writer.close();
+	}
+
+	protected static void write(Document document, Writer writer,
+			String encoding, Map<String, String> entities) throws IOException {
+		try {
+			DocumentSerializer serializer = new DocumentSerializer(encoding,true);
+			serializer.setEntities(entities);
+			serializer.serialize(document, writer);
+		} catch (Exception e) {
+			throw new DexterException("error while rendering document: "
+					+ e.getMessage(), e);
+		}
+	}
+
+
 	public static void dump(Node n) {
 		dump(n,0);
 	}

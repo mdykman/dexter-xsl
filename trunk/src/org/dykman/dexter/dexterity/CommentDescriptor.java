@@ -3,7 +3,7 @@ package org.dykman.dexter.dexterity;
 import org.dykman.dexter.base.PathEval;
 import org.dykman.dexter.descriptor.Descriptor;
 import org.dykman.dexter.descriptor.PathDescriptor;
-import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 public class CommentDescriptor extends PathDescriptor
 {
@@ -26,14 +26,15 @@ public class CommentDescriptor extends PathDescriptor
 			value = value.substring(1);
 			useDefault = true;
 		}
-		sequencer.copyNodes(PathEval.parseSingle(value), 
-				useDefault ? element.getTextContent() : null, true);
-		// WHY would I do this?
-	/*
+		Node def = useDefault ? getChildren(element) : null;
+
+		if(value.length() > 0) {
+			sequencer.copyNodes(PathEval.parseSingle(value),def, true);
+		}	
 		else {
 			super.children();
 		}
-		*/
+		
 
 	}
 
