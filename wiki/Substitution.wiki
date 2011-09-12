@@ -40,7 +40,11 @@ A optional prefix '!' may be used to retain the value in the source document as 
 
 *cpy* replaces all child nodes of the current source element with the child nodes of the data node specified by the path.
 
-A optional prefix '!' may be used to retain the value in the source document as a default:
+A optional prefix '!' may be used to retain the value in the source document as a default.
+
+A optional prefix '#' may be used children of the selected data nodes to be copied.
+
+ === example 1 ===
 {{{
 data.xml
 
@@ -75,4 +79,39 @@ data.xml
    No link was found.  Try  <a href="www.google.com">here</a>
 </div>
 <div></div> 
+}}}
+
+ === example 2 ===
+{{{
+data.xml
+<xml>
+   <profiles>
+      <profile>
+        <username>bob</username>
+        <bio>
+<div>
+some mixed html here
+</div>
+        </bio>
+      </profile>
+   </profiles>
+</xml>
+}}}
+{{{
+ dexter source 
+<div dx:each="xml/profiles/profile">
+   username: <span dx:text="username">user</span><br/>
+   bio: <p dx:cpy="#bio">bio data</bio>
+</div> 
+}}}
+
+  this renders as
+{{{
+<div dx:each="xml/profiles/profile">
+   username: <span>bob</span><br/>
+   bio: <p><div>
+some mixed html here
+</div></p>
+</div> 
+
 }}}
