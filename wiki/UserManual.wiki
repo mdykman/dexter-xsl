@@ -15,4 +15,4 @@ Many dexter operators require XPath 1.0 in their arguments with additional, opti
  * [Advanced] _dx:sub,dx:template,dx:call_
 
 ===dd: html-specific===
- * dd:form
+ * [Forms] _dd:form,dd:option,dd:options_
