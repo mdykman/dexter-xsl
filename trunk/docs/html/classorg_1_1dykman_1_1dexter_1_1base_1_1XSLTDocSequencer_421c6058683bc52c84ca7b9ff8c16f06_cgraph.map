@@ -1,8 +1,0 @@
-<area shape="rect" href="$classorg_1_1dykman_1_1dexter_1_1base_1_1XSLTDocSequencer.html#560b4a553b0b7867576661b904d2ce80" title="org.dykman.dexter.base.XSLTDocSequencer.callTemplateEvaluator" alt="" coords="508,5,1012,32">
-<area shape="rect" href="$classorg_1_1dykman_1_1dexter_1_1base_1_1BaseTransformSequencer.html#efea3a8dd0847834a7e07f5cedfb2ea1" title="org.dykman.dexter.base.BaseTransformSequencer.translateXSLPath" alt="" coords="1061,56,1573,83">
-<area shape="rect" href="$classorg_1_1dykman_1_1dexter_1_1base_1_1XSLTDocSequencer.html#7aa7c83c0e15ded9a22770c7931faa18" title="org.dykman.dexter.base.XSLTDocSequencer.getInnerExpresion" alt="" coords="523,107,997,133">
-<area shape="rect" href="$classorg_1_1dykman_1_1dexter_1_1base_1_1XSLTDocSequencer.html#0757c06b99bfaafb0d8391087ceaeceb" title="org.dykman.dexter.base.XSLTDocSequencer.textContainer" alt="" coords="539,157,981,184">
-<area shape="rect" href="$classorg_1_1dykman_1_1dexter_1_1Dexter.html#3ae64faa9563b902170100c16153216c" title="org.dykman.dexter.Dexter.loadTemplate" alt="" coords="1161,5,1473,32">
-<area shape="rect" href="$classorg_1_1dykman_1_1dexter_1_1Dexter.html#99f76f85fb7c3e1b5a2cc10e9c882b21" title="org.dykman.dexter.Dexter.loadTemplateRecurse" alt="" coords="1655,5,2023,32">
-<area shape="rect" href="$interfaceorg_1_1dykman_1_1dexter_1_1base_1_1PathFunction.html#f21e7d1f725e0daf064300c0bd3c733a" title="org.dykman.dexter.base.PathFunction.apply" alt="" coords="1671,56,2007,83">
-<area shape="rect" href="$classorg_1_1dykman_1_1dexter_1_1descriptor_1_1CrossPathResolver.html#cd0d7b7c32ee7a27260913c163cb35c7" title="org.dykman.dexter.descriptor.CrossPathResolver.translate" alt="" coords="1621,107,2056,133">
