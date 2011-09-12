@@ -5,7 +5,7 @@ import java.util.List;
 import org.dykman.dexter.base.PathEval;
 import org.dykman.dexter.descriptor.Descriptor;
 import org.dykman.dexter.descriptor.PathDescriptor;
-import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 public class CDataDescriptor extends PathDescriptor
 {
@@ -31,10 +31,10 @@ public class CDataDescriptor extends PathDescriptor
 		if(value.length() == 0) {
 			super.children();
 		} else {
+			Node def = useDefault ? getChildren(element) : null;
 			List<PathEval> pp = PathEval.parse(value);
 			if(pp.size() == 1) {
-				sequencer.copyNodes(pp.get(0), 
-					useDefault ? element.getTextContent() : null, true);
+				sequencer.copyNodes(pp.get(0), def , true);
 			} 
 			else {
 				throw new DexteritySyntaxException("CDATA descriptor may only take a single xpath expression");

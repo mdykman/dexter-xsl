@@ -11,6 +11,10 @@ import java.util.List;
 import org.dykman.dexter.base.PathEval;
 import org.dykman.dexter.base.TransformSequencer;
 import org.dykman.dexter.dexterity.DexterityConstants;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 public abstract class PathDescriptor extends NodeTransformDescriptor
@@ -56,6 +60,16 @@ public abstract class PathDescriptor extends NodeTransformDescriptor
 		String result =  mapPath(root, path); 
 		setMeta(DexterityConstants.PATH,	result);
 		return result;
+	}
+	
+	public DocumentFragment getChildren(Node node) {
+		Document doc = node.getOwnerDocument();
+		DocumentFragment df = doc.createDocumentFragment();
+		NodeList nl = node.getChildNodes();
+		for(int i = 0; i < nl.getLength(); ++i) {
+			df.appendChild(nl.item(1).cloneNode(true));
+		}
+		return df;
 	}
 
 	public String getIteratorContext() {

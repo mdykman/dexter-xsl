@@ -6,87 +6,70 @@
 
 package org.dykman.dexter.descriptor;
 
-
 import org.dykman.dexter.base.TransformSequencer;
 
-
-public abstract class TransformDescriptor extends AbstractDescriptor
-{
+public abstract class TransformDescriptor extends AbstractDescriptor {
 	protected TransformSequencer sequencer = null;
 	protected Descriptor inner;
-//	protected Dexter dexter;
 
 	protected boolean applyToChildren = false;
 
-	public TransformDescriptor(Descriptor descriptor)
-	{
+	public TransformDescriptor(Descriptor descriptor) {
 		this.inner = descriptor;
 	}
-	public void onScan()
-	{
-	}
-	public void beforeNode()
-	{
-	}
-	public void afterNode()
-	{
+
+	public void onScan() {
 	}
 
-	public Descriptor[] getChildDescriptors()
-	{
+	public void beforeNode() {
+	}
+
+	public void afterNode() {
+	}
+
+	public Descriptor[] getChildDescriptors() {
 		return inner.getChildDescriptors();
 	}
 
-	public void attributes()
-	{
+	public void attributes() {
 		inner.attributes();
 	}
+
 	@Override
-	public void appendChild(Descriptor child)
-	{
+	public void appendChild(Descriptor child) {
 		inner.appendChild(child);
 	}
-	
 
-
-	public void start()
-	{
-		if(!applyToChildren)
-		{
+	public void start() {
+		if (!applyToChildren) {
 			beforeNode();
 		}
 		inner.start();
 	}
-	public void children()
-	{
-		if(applyToChildren)
-		{
+
+	public void children() {
+		if (applyToChildren) {
 			beforeNode();
 		}
-		
+
 		inner.children();
-		if(applyToChildren)
-		{
+		if (applyToChildren) {
 			afterNode();
 		}
 
 	}
-	public void end()
-	{
+
+	public void end() {
 		inner.end();
-		if(!applyToChildren)
-		{
+		if (!applyToChildren) {
 			afterNode();
 		}
 	}
-	
-	
-	
-	public void setTransformSequencer(TransformSequencer sequencer)
-	{
+
+	public void setTransformSequencer(TransformSequencer sequencer) {
 		if (inner != null)
 			inner.setTransformSequencer(sequencer);
-		this.sequencer=sequencer;
+		this.sequencer = sequencer;
 	}
 
 }

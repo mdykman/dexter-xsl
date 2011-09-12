@@ -143,7 +143,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		var.setAttribute("select",select);
 		currentNode.appendChild(var);
 	}
-	public void copyNodes(PathEval pe, String def, boolean children)
+	public void copyNodes(PathEval pe, Node def, boolean children)
 	{
 		String av = pe.path;
 		if(children) av = pe.path + "/node()";
@@ -165,7 +165,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 		if (def != null) {
 			Element otherwise = currentDocument.createElement(XSLOTHERWISE);
-			otherwise.appendChild(currentDocument.createTextNode(def));
+			otherwise.appendChild(def);
 			map.appendChild(otherwise);
 		}
 		currentNode.appendChild(map);
@@ -173,10 +173,10 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	
 	public void mapNode(
 			List<PathEval> path, 
-			String def) {
+			Node def) {
 			
 			Element v = valueTemplate(path, def,XSLVALUEOF);
-			if(v != null) currentNode.appendChild(v);
+			if(v != null) currentNode.appendChild(getChildren(def));
 		}
 
 	public void mapAttribute(
@@ -187,7 +187,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		name = translateName(name);
 		element.setAttribute("name", name);
 
-		Element v = valueTemplate(path, def,XSLVALUEOF);
+		Element v = valueTemplate(path, currentDocument.createTextNode(def),XSLVALUEOF);
 		if(v != null) element.appendChild(v);
 
 		currentNode.appendChild(element);
@@ -212,10 +212,29 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			} 
 		return path;
 		}
-		
-
+	
 	Set<String> lookupTable = new HashSet<String>();
 	
+	public Node getChildren(Node n) {
+		Node result = null;
+		if(n.getNodeType() == Node.DOCUMENT_NODE) {
+			result = ((Document)n).getDocumentElement();
+		} else if(n.getNodeType() == Node.ELEMENT_NODE) {
+			DocumentFragment df = currentDocument.createDocumentFragment();
+			NodeList nl = n.getChildNodes();
+			for(int i = 0; i < nl.getLength(); ++i) {
+				Node n1 = nl.item(i);
+				Node n2 = n1.cloneNode(true);
+				currentDocument.adoptNode(n2);
+				df.appendChild(n2);
+			}
+			result = df;
+		} else {
+			result = n;
+		}
+		
+		return result;
+	}
 	protected Element callTemplateEvaluator(
 			PathEval pp, 
 			String evalTag) {
@@ -314,12 +333,12 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	}
 
 	protected Element valueTemplateSingle(
-			PathEval path, String def,
+			PathEval path, Node def,
 			String evalTag)
 	{
 
 		Element result = null;;
-		if(def != null && def.length() > 0) {
+		if(def != null) {
 			result = currentDocument.createElement(XSLIF);
 //			StringBuilder attrTest = new StringBuilder();
 			String p = getInnerExpresion(path.path);
@@ -337,7 +356,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 	protected Element valueTemplate(
 			List<PathEval> path, 
-			String def,
+			Node def,
 		String evalTag)
 	{
 		StringBuilder attrTest = new StringBuilder();
@@ -359,7 +378,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		Element choose;
 		if(!pureLiteral(path)) {
 			Element when;
-			if(def != null && def.length() > 0) {
+			if(def != null) {
 				choose = currentDocument.createElement(XSLCHOOSE);
 				when = currentDocument.createElement(XSLWHEN);
 				choose.appendChild(when);
@@ -379,9 +398,9 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 				}
 			}
 	
-			if(def != null && def.length() > 0) {
+			if(def != null) {
 				Element otherwise = currentDocument.createElement(XSLOTHERWISE);
-				otherwise.appendChild(textContainer(def));
+				otherwise.appendChild(def);
 				choose.appendChild(otherwise);
 			}
 			
@@ -565,7 +584,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 		Element element = currentDocument.createElement(XSLIMPORT);
 		StringBuilder sb = new StringBuilder();
-		boolean canFindThis = (new File(fn).exists());
+//		boolean canFindThis = (new File(fn).exists());
 		String hash = dexter.getIdHash();
 //System.out.println("  SUBDOC:: based on " + fn);
 
@@ -621,7 +640,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		template.appendChild(currentDocument.createTextNode("\n"));
 
 		template.appendChild(createExternalTemplateCall(select,tn));
-		output = childElement(currentStylesheet,XSLTEMPLATE);;
+		output = childElement(currentStylesheet,XSLTEMPLATE);
 		currentStylesheet.insertBefore(template, output);
 		currentStylesheet.insertBefore(currentDocument.createTextNode("\n"), output);
 		currentStylesheet.insertBefore(currentDocument.createTextNode("\n"), template);
@@ -1025,7 +1044,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	{
 		currentDocument = document;
 		docStack.push(document);
-		String ext = null;
+//		String ext = null;
 		StringBuilder sb = new StringBuilder();
 /*
 		String hash = dexter.getIdHash();

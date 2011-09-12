@@ -42,11 +42,11 @@ public interface TransformSequencer
 
 	public void mapNode(
 			List<PathEval> path, 
-			String def);
+			Node def);
 
 	public void copyNodes(
 			PathEval path, 
-			String def, 
+			Node def, 
 			boolean children);
 	
      

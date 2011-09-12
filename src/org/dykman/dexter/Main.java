@@ -6,12 +6,10 @@ import gnu.getopt.LongOpt;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Writer;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -31,8 +29,6 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.dykman.dexter.base.DexterEntityResolver;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 
 public class Main {
@@ -44,13 +40,6 @@ public class Main {
 	private static String outputDirectory = null;
 	private static File userProperties = null;
 	private static boolean checkValidity = true;
-	private static Set<File> outputFile = new HashSet<File>();
-//	private static TransformerFactory transformerFactory = TransformerFactory
-//			.newInstance();
-	static {
-		// transformerFactory.
-	}
-//	private static boolean preserveEntities = true;
 
 	private static boolean propComments = true;
 	private static String inputXSL = null;
@@ -58,7 +47,6 @@ public class Main {
 	private static String idHash = null;
 
 	public static void main(String[] args) {
-
 		int argp = 0;
 		LongOpt[] opts = new LongOpt[16];
 		opts[0] = new LongOpt("mime-type", LongOpt.REQUIRED_ARGUMENT, null, 't');
@@ -189,18 +177,12 @@ public class Main {
            
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			
-//			dbf.setEntityResolver(new DexterEntityResolver(encoding));			
 			dbf.setValidating(false);
 			dbf.setExpandEntityReferences(false);
-//			Schema schema = dbf.getSchema();
-			// WHY AGAIN??
 			dbf.setCoalescing(true);
 			dbf.setIgnoringComments(false);
 			DocumentBuilder builder = dbf.newDocumentBuilder();
-//System.out.println("builder = " + builder.getClass().getName());
 			builder.setEntityResolver(new DexterEntityResolver(encoding));
-//			HtmlDocumentBuilder builder= new HtmlDocumentBuilder();
-//System.out.println("VALIDATING = " + builder.isValidating());
 
 
 			if (inputXSL != null) {
@@ -240,12 +222,8 @@ public class Main {
 					Iterator<String> k = docs.keySet().iterator();
 					while (k.hasNext()) {
 						String name = k.next();
-//						if (!name.endsWith(".dispose.xsl")) {
-							Document dd = docs.get(name);
-							// System.out.println("SAVING");
-							// dexter.dump(dd);
-							putToDisk(name, dd, dexter);
-//						}
+						Document dd = docs.get(name);
+						dexter.putToDisk(new File(name), dd);
 					}
 					if (checkValidity) {
 						k = docs.keySet().iterator();
@@ -266,9 +244,6 @@ public class Main {
 								@Override
 								public Source resolve(String arg0, String arg1)
 										throws TransformerException {
-//									System.out.println("resoving " + arg0
-//											+ "::" + arg1);
-									// TODO Auto-generated method stub
 									return null;
 								}
 							});
@@ -311,38 +286,7 @@ public class Main {
 			throw new RuntimeException(e);
 		}
 	}
-/*
-	private static void collectEntities(Node n, Map<String,String> m, Dexter dexter) {
-		if (n.getNodeType() == Node.ENTITY_REFERENCE_NODE) {
-			// System.out.print("entity reference ");
-			// System.out.println(n.getNodeName() + " " +
-			// dexter.getEntity(n.getNodeName()));
-			m.put(n.getNodeName(), dexter.getEntity(n.getNodeName()));
-		}
-		NodeList nl = n.getChildNodes();
-		for (int i = 0; i < nl.getLength(); ++i) {
-			collectEntities(nl.item(i), m, dexter);
-		}
-	}
-*/
-	private static void putToDisk(String name, Document doc, Dexter dexter)
-			throws Exception {
-		File f;
 
-		if (outputDirectory == null)
-			f = new File(name);
-		else
-			f = new File(outputDirectory, name);
-
-		if (outputFile.contains(f))
-			throw new DexterException("duplicate output names: " + f.getPath());
-		else
-			outputFile.add(f);
-
-		Writer writer = new FileWriter(f);
-		write(doc, writer, encoding, dexter.collectEntities(doc));
-		writer.close();
-	}
 
 	protected static void write(Document document, Writer writer,
 			String encoding, Map<String, String> entities) throws IOException {
@@ -351,37 +295,6 @@ public class Main {
 			DocumentSerializer serializer = new DocumentSerializer(encoding);
 			serializer.setEntities(entities);
 			serializer.serialize(document, writer);
-/*
-			// document
-
-			// document.getDocumentElement().setAttributeNS(
-			// "http://www.w3.org/1999/XSL/Transform", "xsl", "value");
-			// document.createElementNS(
-			// "http://www.w3.org/1999/XSL/Transform","xml");
-			OutputFormat of = new OutputFormat("XML", "UTF-8", true);
-			// of.setDoctype("xsl", "http://www.w3.org/1999/XSL/Transform");
-			of.setOmitDocumentType(false);
-			// of.setOmitDocumentType(false);
-			// of.
-
-			XMLSerializer serializer = new XMLSerializer(writer, of);
-			serializer.startPreserving();
-			serializer.startDocument();
-			// serializer.
-			for (Map.Entry<String, String> entry : entities.entrySet()) {
-				serializer.unparsedEntityDecl("one", "two", "three", "four");
-				// System.out.println("    " + entry.getKey() + "::" +
-				// entry.getValue());
-				// serializer.internalEntityDecl(entry.getKey(),
-				// entry.getValue0());
-			}
-			// serializer.startDTD("Entity", "b", "c");
-			// serializer.endDTD();
-			serializer.serialize(document.getDocumentElement());
-
-			serializer.endDocument();
-	writer.write("\n");
-	*/
 		} catch (Exception e) {
 			throw new DexterException("error while rendering document: "
 					+ e.getMessage(), e);
