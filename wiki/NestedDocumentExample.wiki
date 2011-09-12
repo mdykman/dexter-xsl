@@ -1,4 +1,3 @@
-#labels Featured
 #demonstrate nested documents
 
 *data.xml*
