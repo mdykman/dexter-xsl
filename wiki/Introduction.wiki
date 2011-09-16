@@ -1,5 +1,4 @@
 #labels Featured
-
 Dexter is a tool for creating XSLT-1.0 from  well-formed XML example documents.  It uses a collection of attributes to indicate required operations.
 
  == Installation ==
@@ -33,8 +32,8 @@ The default JAXP parser built into Java is flawed and does some very odd things 
 
  == Scripts ==
 To invoke Dexter at the command lines, your script needs to call the call like so:
-
+{{{
 java  -cp dexter.jar:xercesImpl.jar:xml-apis.jar" org.dykman.dexter.Main [options] filename ...
-
+}}}
 
 [UserManual User Manual]
