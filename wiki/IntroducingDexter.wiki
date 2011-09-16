@@ -12,3 +12,5 @@ Simplicity and conciseness are the primary design goals of dexter.
 Most Dexter operators are xml-agnostic for performing data substitution, conditional evaluation and loops.
 
 Dexter was designed to be extendable so there is also a small family of html-specific operators.
+
+Please refer to the [UserManual User Manual] 
