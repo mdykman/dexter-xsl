@@ -2,7 +2,7 @@
 Dexter is a tool for creating XSLT-1.0 from  well-formed XML example documents.  It uses a collection of attributes to indicate required operations.
 
  == Installation ==
-It is recommended that you copy build/dexter.jar, lib/xerxesImpl.jar and lib/xml-apis.jar into a seperate directory along with a script to luanch it.  Under and OS/X, that script is dexter.sh.  No batch file is supplied for windows, but it should be a trivial job to create one.
+It is recommended that you copy build/dexter.jar, lib/xerxesImpl.jar and lib/xml-apis.jar into a seperate directory along with a script to luanch it.  Under linux and OS/X, that script is dexter.sh.  No batch file is supplied for windows, but it should be a trivial job to create one.
 
 See SCRIPTS below.
 
