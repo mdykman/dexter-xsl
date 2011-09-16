@@ -1,4 +1,3 @@
-#labels Featured
 #demonstrating dd:form.
 
 *data.xml*
