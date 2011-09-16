@@ -13,4 +13,4 @@ Most Dexter operators are xml-agnostic for performing data substitution, conditi
 
 Dexter was designed to be extendable so there is also a small family of html-specific operators.
 
-Please refer to the [UserManual User Manual] 
+Please refer to the [UserManual User Manual] for usage details.
