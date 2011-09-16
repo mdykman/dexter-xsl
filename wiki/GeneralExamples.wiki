@@ -35,7 +35,7 @@
 
         <div id="group-2" dx:env="data/record">
                         a record
-                <div dx:each="*" dx:text="new record {.!name} = {.}">
+                <div dx:each="*" dx:text="new record {name(.)} = {.}">
                 </div>
 
 
