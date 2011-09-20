@@ -1,7 +1,7 @@
  = A Walk Through =
 
  == The Design Document ==
-In the life of every browser-based webapp, there is the static HTML file which defines the look and feel of the site.  Let's take a simple example, pushing all the styling to CSS. An example of a sipmle 'Friends' page.
+In the life of every browser-based webapp, there is the static HTML file which defines the look and feel of the site.  Let's take a simple example, pushing all the styling to CSS. An example of a simple 'Friends' page.
 {{{
 <html>
 <head>
@@ -49,7 +49,7 @@ Assuming a simple xml data structure:
 </result>
 }}}
 
-We notate our requirements in the document with attributes in the 'dx' namespace.
+We notate our requirements in the document with attributes in the 'dx' namespace. The only variable data in this document is the friends list, so the `div` which contains that is the focus of our notation. 
 {{{
 <html xmlns:dx="http://code.google.com/p/dexter-xsl/source/browse/trunk/schema/dexterity-1.0.xsd">
 <head>
@@ -86,10 +86,22 @@ My Friend List
 
 This is an example of a complete dexter source file.
 
-The only variable data in this document is the frinds list, so the `div` which contains that is the focus of our notation. `dx:each` accepts an XPath expression to define a data set and will produce a copy of the `div` for each element in the data set.  
+`dx:each` accepts an XPath expression to define a data set and will produce a copy of the `div` for each element in the data set. It also sets to context path, which is why `dx:text` has a single dot, meaning the value of the current `friend` node. 
 
 The `div`s adjacent to the `dx:each`  receive a `dx:ignore`  notation which allows us to leave the document intact for static viewing, while making sure those elements are excluded from the code generation process.
 
 The addition of the `xmlns` tag on the html element is not strictly required for dexter, it is there for the convenience of other XML-oriented tools which might otherwise complain about the presence of the `dx:` attributes. 
 
- == compiling ==
+You may refer to the [UserManual User Manual] for details on the `dx` operators.
+
+ == Compiling ==
+
+Asuming Dexter has been installed correctly, turning you marked up HTML file (the Dexter source), into XSL, is trivial.  On OS/X and linux at the command line:
+`$ dexter.sh design.html`
+
+On windows:
+`$ dexter.bat design.html`
+
+This will produce design.html.xsl.
+
+If you are having trouble compiling, consult the [UserManual User Manual] for installation instructions or post to the group for guidance.
