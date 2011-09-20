@@ -96,11 +96,10 @@ You may refer to the [UserManual User Manual] for details on the `dx` operators.
 
  == Compiling ==
 
-Asuming Dexter has been installed correctly, turning you marked up HTML file (the Dexter source), into XSL, is trivial.  On OS/X and linux at the command line:
-`$ dexter.sh design.html`
+Asuming Dexter has been installed correctly, turning you marked up HTML file (the Dexter source), into XSL, is trivial.  
 
-On windows:
-`$ dexter.bat design.html`
+ * On OS/X and linux at the command line: `$ dexter.sh design.html`
+ * On windows: `c:\> dexter.bat design.html`
 
 This will produce design.html.xsl.
 
