@@ -1,7 +1,5 @@
 #labels Featured
-To get an idea of what Dexter is for and what the purpose of the embedded attributes is, let's look at an examples of using Dexter with no Dexter annotations in the input document.
-
-The first example of using dexter will feature no special attributes at all.  We are going to take an arbitrary XML document, and compile it through dexter.
+To get an idea of what Dexter is for and what the purpose of the embedded attributes is, let's look at an example of using Dexter with no Dexter attributes in the input document. We are going to take an arbitrary XML document, and run it through through dexter to generate an XSL file.
 {{{
 [michael@fedora14 test-ident]$ cat source.xml
 <tests>
@@ -49,4 +47,4 @@ This produces the output file `source.xml.xsl`.  Transforming any XML input with
 
 Through the two-step process of compiling with dexter and using the resulting XSL with any XSLT-1.0 compliant processor, any XML file which is not annotated with dexter attributes becomes it's own source.
 
-With the addition of dexter attributes, the generated XSL stylesheet can manipulate the output to reflect the data.  Please consult the  [UserManual User Manual] for details on dexter's attributes. 
+With the addition of dexter attributes, the generated XSL stylesheet can manipulate the output to reflect the data.  Please consult the  [UserManual User Manual] for details on dexter's attributes.
