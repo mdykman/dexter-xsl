@@ -11,7 +11,10 @@ It does not matter if the attribute is present in the source document or not.
 
  == dx:attr ==
  single attribute substitution
+
  `dx:attr="[attribute-name]:{prefix}?XPath"`
+or
+ `dx:attr="[attribute-name]:{prefix}?(<literal text>{XPath}) ..."`
 
 *attr* handles the simplest case, substituting a single value into a single target attribute.
 
@@ -30,7 +33,7 @@ data.xml
 dexter source
 <div>
    <span dx:text="data/profile/name">Name</span> 
-   <img src="notfound.jpg" dx:attr="src:data/profile/icon" />
+   <img src="notfound.jpg" dx:attr="!src:data/profile/icon" />
 </div>
 }}}
 {{{
@@ -41,10 +44,18 @@ renders as
 </div>
 }}}
 
-If the value of `data/profile/icon` had been empty, the result would have been an empty `src` attribute.
+Had the value `data/profile/icon` had been empty, the result would have been `src="notfound.jpg"` because of the '!' prefix.  Without it, the attribute would be empty.
 
-If the '!' prefix had been used thus dx:attr="src:!data/profile/icon" and the value `data/profile/icon` had been empty, the result would have been `src="notfound.jpg"`.
+ === Attribute Value Termplate ===
 
+All attributes in this family accept [http://www.w3.org/TR/xslt#dt-attribute-value-template]  attribute value template-type format strings], meaning we can use braces to mix one or more XPath expressions.
+
+
+{{{
+   <a href dx:attr="href:http://www.google.com?q={data/profile/name}"
+      dx:text="Who is this {data/profile/name} person?">Name</a> 
+
+}}}
  == dx:attrs==
  multiple attribute substitution
  `dx:attr="SEP[attribute-name]:{prefix}?XPath(SEP[attribute-name]:{prefix}?XPath)*"`
