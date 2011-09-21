@@ -1,0 +1,47 @@
+The first example of using dexter will feature no special attrbiuteas at all.  We are going to take an arbitrary XML document, and compile it through dexter.
+{{{
+[michael@fedora14 test-ident]$ cat source.xml
+<tests>
+	<div id="group-2" >
+			a record
+		<div  >
+		something here
+		</div>
+
+	
+		<div >
+			<span >one </span>
+			<span >two </span>
+			<span >three </span>
+			<span >four </span>
+		</div>
+	</div>
+</tests>
+
+[michael@fedora14 test-ident]$ dexter.sh source.xml 
+}}}
+
+This produces the output file `source.xml.xsl`.  Transforming any XML input with this style sheet produces a replica of the original input file.
+
+{{{
+[michael@fedora14 test-ident]$ xsltproc source.xml.xsl data.xml 
+<tests>
+	<div id="group-2">
+			a record
+		<div>
+		something here
+		</div>
+
+	
+		<div>
+			<span>one </span>
+			<span>two </span>
+			<span>three </span>
+			<span>four </span>
+		</div>
+	</div>
+</tests>
+
+}}} 
+
+Through the two-step process of compiling with dexter and using the resulting XSL with any XSLT-1.0 compliant processor, any XML file which is not annotated with dexter attributes becomes it's own source.
