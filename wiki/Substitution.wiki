@@ -33,6 +33,17 @@ A optional prefix '!' may be used to retain the value in the source document as 
 <div class="person"></div> 
 }}}
 
+ === Attribute Value Template ===
+
+As with the `dx:attr` familty, `dx:text` also supports the [http://www.w3.org/TR/xslt#dt-attribute-value-template attribute value template notation] meaning that one or more XPath expressions can be mixed with literal text.
+
+{{{
+<div class="person" 
+dx:text="His name is {person/firstname} {person/middlename} {person/lastname}">unknown</div> 
+}}}
+
+A failure to find a non-empty result for any of the supplied XPath  expressions (unless the default operater is supplied) may cause the entire entry to render as an empty string.  I am currently rethinking the logic of that.
+
 == dx:cpy ==
 
   node substitution
