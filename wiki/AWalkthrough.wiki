@@ -94,6 +94,8 @@ The `div`s adjacent to the `dx:each`  receive a `dx:ignore`  notation which allo
 
 The addition of the `xmlns` tag on the html element is not strictly required for dexter, it is there for the convenience of other XML-oriented tools which might otherwise complain about the presence of the `dx:` attributes. Under no circumstance will that namespace declaration appear in either your stylesheet or your output document.
 
+Simliarly, dexter's attributes are erased from the generated files.
+
 You may refer to the [UserManual User Manual] for details on the `dx` operators.
 
  == Generating XSL ==
