@@ -1,4 +1,4 @@
- = A Walk Through =
+ = A Walkthrough =
 
  == The Design Document ==
 In the life of every browser-based webapp, there is the static HTML file which defines the look and feel of the site.  Let's take a simple example, pushing all the styling to CSS. An example of a simple 'Friends' page.
