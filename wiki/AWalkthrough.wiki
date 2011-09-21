@@ -40,6 +40,7 @@ In this form, you can load it into a browser, modify the document or the CSS and
  == Notation ==
 Assuming a simple xml data structure:
 {{{
+data.xml
 <result>
   <friends>
      <friend>curly</friend>
@@ -90,17 +91,37 @@ This is an example of a complete dexter source file.
 
 The `div`s adjacent to the `dx:each`  receive a `dx:ignore`  notation which allows us to leave the document intact for static viewing, while making sure those elements are excluded from the code generation process.
 
-The addition of the `xmlns` tag on the html element is not strictly required for dexter, it is there for the convenience of other XML-oriented tools which might otherwise complain about the presence of the `dx:` attributes. 
+The addition of the `xmlns` tag on the html element is not strictly required for dexter, it is there for the convenience of other XML-oriented tools which might otherwise complain about the presence of the `dx:` attributes. Under no circumstance will that namespace declaration appear in either your stylesheet or your output document.
 
 You may refer to the [UserManual User Manual] for details on the `dx` operators.
 
- == Compiling ==
+ == Generating XSL ==
 
-Asuming Dexter has been installed correctly, turning you marked up HTML file (the Dexter source), into XSL, is trivial.  
+Assuming Dexter has been installed correctly, turning your well-formed HTML file into XSL, is trivial:
 
  * On OS/X and linux at the command line: `$ dexter.sh design.html`
  * On windows: `c:\> dexter.bat design.html`
 
-This will produce design.html.xsl.
+This will produce `design.html.xsl`.
 
 If you are having trouble compiling, consult the [UserManual User Manual] for installation instructions or post to the group for guidance.
+
+ == Viewing the Result ==
+
+Again, the command line provides the most direct tool, xsltproc.
+
+The following command renders our result out in full:
+{{{
+ $ xsltproc design.html.xsl data.xml 
+}}}
+
+Alternatively, we could have embedded the stylesheet into the XML data:
+{{{
+data.xml
+<?xml-stylesheet type="text/xsl" href="design.html.xsl"?>
+<result>
+  <friends>
+...
+}}}
+
+Now you can load that document into any modern desktop browser to render it.
