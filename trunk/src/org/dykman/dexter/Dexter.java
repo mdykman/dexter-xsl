@@ -63,6 +63,7 @@ public class Dexter
 	private String indent = "no";
 	private String method = "html";
 	private String mediaType = "text/html";
+	private boolean autohash = false;
 
 	protected PropertyResolver baseResolver; 
 	protected PropertyResolver entityResolver; 
@@ -579,6 +580,10 @@ public class Dexter
 
 	public Map<String, Document> generateXSLT(File file)
 		throws Exception {
+		if(autohash) {
+			long l = file.lastModified();
+			setIdHash(getSourceHash(file));
+		}
 		Document doc = builder.parse(file);
 		return generateXSLT(file.getAbsolutePath(), doc);
 	}
@@ -607,7 +612,8 @@ public class Dexter
 		sequencer.setMediaType(mediaType);
 		sequencer.setMethod(method);
 		sequencer.runDescriptor(descriptor);
-		return sequencer.getDocuments();
+		Map<String, Document> docs = sequencer.getDocuments();
+		return docs;
 	}
 
 	private static Properties loadBuiltInProperties()
@@ -1095,6 +1101,14 @@ public class Dexter
 			dump(nl.item(i),n+1);
 		}
 		
+	}
+
+	public boolean isAutohash() {
+		return autohash;
+	}
+
+	public void setAutohash(boolean autohash) {
+		this.autohash = autohash;
 	}
 
 }

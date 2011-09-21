@@ -23,7 +23,7 @@ public interface TransformSequencer
 	public Element textContainer(String content);
 
 	public String randMode();
-	public void cloneNode(Node n);
+	public void cloneNode(Node n, boolean preserveWhitespace);
 	public void startSelect(String name, String match,boolean force);
 	public void endSelect();
 	public void startNode(String name, int type);

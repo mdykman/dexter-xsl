@@ -37,11 +37,12 @@
 		<copy todir="${PACKAGEDIR}" file="CHANGES.txt" />
 
 		<copy todir="${PACKAGEDIR}/lib" file="../lib/gnu-getopt.jar" />
-		<copy todir="${PACKAGEDIR}/lib" file="../lib/xercesImpl.jar" />
 		<copy todir="${PACKAGEDIR}/lib" file="../lib/xml-apis.jar" />
+		<copy todir="${PACKAGEDIR}/lib" file="../lib/xercesImpl.jar" />
+		<copy todir="${PACKAGEDIR}/lib" file="dexter.jar" />
+		<copy todir="${PACKAGEDIR}/lib" file="dexter.sh" />
+		<copy todir="${PACKAGEDIR}/lib" file="dexter.bat" />
 
-		<copy todir="${PACKAGEDIR}/build" file="dexter.jar" />
-		<copy todir="${PACKAGEDIR}/build" file="dexter.sh" />
 		<copy todir="${PACKAGEDIR}/build" file="build.xml" />
 		<copy todir="${PACKAGEDIR}/build" file="build.properties" />
 		<copy todir="${PACKAGEDIR}/build" file="LICENSE.txt" />

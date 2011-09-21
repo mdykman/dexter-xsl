@@ -15,7 +15,7 @@ public class PassthroughDescriptor extends AbstractDescriptor
 
 	public void children() {
 //	System.out.println("pass " + node.getNodeType());
-		sequencer.cloneNode(node);
+		sequencer.cloneNode(node,true);
 	}
 
 	public void end() { }
