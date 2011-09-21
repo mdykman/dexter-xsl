@@ -13,6 +13,8 @@ Most Dexter operators are xml-agnostic for performing data substitution, conditi
 
 Dexter was designed to be extendable so there is also a small family of html-specific operators.
 
+A good place to begin understanding how dexter can be used can be found in the [FirstExample first example].
+
 Please refer to the [UserManual User Manual] for usage details.  For a simple walk-though of the process, see [AWalkthrough A Walkthrough]  
 
 If you want to see some more random examples, try [GeneralExamples here].
