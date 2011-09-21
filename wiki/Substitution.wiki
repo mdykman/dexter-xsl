@@ -53,7 +53,7 @@ A failure to find a non-empty result for any of the supplied XPath  expressions 
 
 A optional prefix '!' may be used to retain the value in the source document as a default.
 
-A optional prefix '#' may be used children of the selected data nodes to be copied.
+A optional prefix '#' may be used to cause the children of the selected data nodes to be copied.
 
  === example 1 ===
 {{{
