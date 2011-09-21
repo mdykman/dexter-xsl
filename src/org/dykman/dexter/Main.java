@@ -42,35 +42,33 @@ public class Main {
 	private static boolean checkValidity = true;
 
 	private static boolean propComments = true;
+	private static boolean autohash = false;
 	private static String inputXSL = null;
 
 	private static String idHash = null;
 
 	public static void main(String[] args) {
 		int argp = 0;
-		LongOpt[] opts = new LongOpt[16];
-		opts[0] = new LongOpt("mime-type", LongOpt.REQUIRED_ARGUMENT, null, 't');
-		opts[1] = new LongOpt("method", LongOpt.REQUIRED_ARGUMENT, null, 'm');
-		opts[2] = new LongOpt("properties", LongOpt.REQUIRED_ARGUMENT, null,
-				'p');
-		opts[3] = new LongOpt("encoding", LongOpt.REQUIRED_ARGUMENT, null, 'e');
-		opts[4] = new LongOpt("directory", LongOpt.REQUIRED_ARGUMENT, null, 'o');
-		opts[5] = new LongOpt("help", LongOpt.NO_ARGUMENT, null, 'h');
-		opts[6] = new LongOpt("indent", LongOpt.REQUIRED_ARGUMENT, null, 'i');
-		opts[7] = new LongOpt("define", LongOpt.REQUIRED_ARGUMENT, null, 'd');
-		opts[8] = new LongOpt("version", LongOpt.NO_ARGUMENT, null, 'v');
-		opts[9] = new LongOpt("resolve-entities", LongOpt.NO_ARGUMENT, null,
-				'r');
-		opts[10] = new LongOpt("suppress-comments", LongOpt.NO_ARGUMENT, null,
-				'C');
-		opts[11] = new LongOpt("transform", LongOpt.REQUIRED_ARGUMENT, null,
-				'x');
-		opts[12] = new LongOpt("skip-validation", LongOpt.NO_ARGUMENT, null,
-				'V');
-		opts[13] = new LongOpt("no-media-type", LongOpt.NO_ARGUMENT, null, 'T');
-		opts[14] = new LongOpt("library", LongOpt.REQUIRED_ARGUMENT, null, 'L');
-		opts[15] = new LongOpt("hash", LongOpt.REQUIRED_ARGUMENT, null, 'H');
-
+		LongOpt[] opts = {
+			new LongOpt("mime-type", LongOpt.REQUIRED_ARGUMENT, null, 't'),
+			new LongOpt("method", LongOpt.REQUIRED_ARGUMENT, null, 'm'),
+			new LongOpt("properties", LongOpt.REQUIRED_ARGUMENT, null, 'p'),
+			new LongOpt("encoding", LongOpt.REQUIRED_ARGUMENT, null, 'e'),
+			new LongOpt("directory", LongOpt.REQUIRED_ARGUMENT, null, 'o'),
+			new LongOpt("help", LongOpt.NO_ARGUMENT, null, 'h'),
+			new LongOpt("indent", LongOpt.REQUIRED_ARGUMENT, null, 'i'),
+			new LongOpt("define", LongOpt.REQUIRED_ARGUMENT, null, 'd'),
+			new LongOpt("version", LongOpt.NO_ARGUMENT, null, 'v'),
+			new LongOpt("resolve-entities", LongOpt.NO_ARGUMENT, null,'r'),
+			new LongOpt("suppress-comments", LongOpt.NO_ARGUMENT, null,'C'),
+			new LongOpt("transform", LongOpt.REQUIRED_ARGUMENT, null,'x'),
+			new LongOpt("skip-validation", LongOpt.NO_ARGUMENT, null, 'V'),
+			new LongOpt("no-media-type", LongOpt.NO_ARGUMENT, null, 'T'),
+			new LongOpt("library", LongOpt.REQUIRED_ARGUMENT, null, 'L'),
+			new LongOpt("hash", LongOpt.REQUIRED_ARGUMENT, null, 'H'),
+			new LongOpt("autohash", LongOpt.NO_ARGUMENT, null, 'a')
+		};
+		
 		Getopt go = new Getopt("dexter", args,
 				"m::L::o::p::e::i::t::d::x::H::hvrCVT", opts, false);
 		int s;
@@ -79,6 +77,9 @@ public class Main {
 
 		while ((s = go.getopt()) != -1) {
 			switch (s) {
+			case 'a' :
+				autohash = true;
+				break;
 			case 'H':
 				idHash = go.getOptarg();
 
@@ -212,13 +213,19 @@ public class Main {
 				dexter.setMediaType(mediaType);
 			dexter.setMethod(method);
 			dexter.setIndent(indent.equals("yes"));
+			dexter.setAutohash(autohash);
 
 			String fn;
 			Map<String, Document> docs = null;
 			while (argp < args.length) {
 				fn = args[argp];
 				try {
-					docs = dexter.generateXSLT(new File(fn));
+					File dexin = new File(fn);
+					if(autohash) {
+						long l = dexin.lastModified();
+			
+					}
+					docs = dexter.generateXSLT(dexin);
 					Iterator<String> k = docs.keySet().iterator();
 					while (k.hasNext()) {
 						String name = k.next();

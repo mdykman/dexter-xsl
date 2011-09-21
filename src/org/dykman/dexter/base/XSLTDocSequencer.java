@@ -420,9 +420,32 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		return true;
 	}
 
-	public void cloneNode(Node node) {
+	public static void escapeEmptyText(Node n) {
+		if(n.getNodeType() == Node.TEXT_NODE) {
+			String s = n.getNodeValue();
+			if(s.length() > 0 && s.trim().length() == 0) {
+				Document d = n.getOwnerDocument();
+				Element e = d.createElement(XSLTEXT);
+				e.appendChild(d.createTextNode(s));
+				Node parent = n.getParentNode();
+				parent.replaceChild(e, n);
+			}
+		} else {
+			NodeList nl = n.getChildNodes();
+			for(int i = 0; i < nl.getLength(); ++i) {
+				Node nn = nl.item(i);
+				escapeEmptyText(nn);
+			}
+		}
+	}
+	
+	public void cloneNode(Node node, boolean preserveWhitespace) {
 //		Dexter.dump(node,"BEFORE CLONE");
 		Node res = currentDocument.importNode(node,true);
+	
+		if(preserveWhitespace) {
+			escapeEmptyText(res);
+		}
 //		System.out.println("clone node -> " + node.getNodeType());
 		currentNode.appendChild(res);
 //		Dexter.dump(node,"AFTER CLONE");

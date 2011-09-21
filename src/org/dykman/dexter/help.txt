@@ -2,7 +2,7 @@
 
 valid options are listed below.  Long and short options behave identically.
  
- -m, --method=xml|hmtl|text * specify the method in the XSLT output element.   Default: html
+ -m, --method=xml|html|text * specify the method in the XSLT output element.   Default: html
  -t, --media-type=<string>   * specify the mime-type for XSLT output. Default: text/html
  -T, --no-media-type        * do not output a media type
  -e, --encoding=<string>    * specify the encoding used throughout the production  Default: UTF-8
@@ -17,5 +17,6 @@ valid options are listed below.  Long and short options behave identically.
  -v, --version              * print version and copyright information.
  -V, --skip-validation      * skip the validation test after XSL generation
  -H, --hash                 * add hash to file names 
+ -a, --autohash             * use the file's timestamp to generate a naming hash
  -h, --help                 * print this screen and exit
 
