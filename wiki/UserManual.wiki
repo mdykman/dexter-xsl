@@ -3,7 +3,7 @@
 
  == Introduction ==
 
-For quick notes on installation and useage, see [Introduction]
+For quick notes on installation and usage, see [Introduction]
 
 == Dexter Operators ==
  Most of Dexters operators are XML-agnostic; that is to say they are useful regardless of the scheme of XML being manipulated.  Those are the attributes in the 'dx' namespace.  There are a few HTML-specific operators which are in the 'dd' namespace.
