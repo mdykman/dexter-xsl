@@ -27,7 +27,7 @@ dexter source
 
    <div id="person" dx:each="xml/customer/person">
        <span dx:text="$person">name here</span>
-       <span dx:if="$person/[@preffered='true']">is special</span>
+       <span dx:if="$person/[@preferred='true']">is special</span>
    </div> 
 }}}
 
