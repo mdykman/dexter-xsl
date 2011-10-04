@@ -47,4 +47,6 @@ This produces the output file `source.xml.xsl`.  Transforming any XML input with
 
 Through the two-step process of compiling with dexter and using the resulting XSL with any XSLT-1.0 compliant processor, any XML file which is not annotated with dexter attributes becomes it's own source.
 
-With the addition of dexter attributes, the generated XSL stylesheet can manipulate the output to reflect the data.  Please consult the  [UserManual User Manual] for details on dexter's attributes.
+With the addition of dexter attributes, the generated XSL stylesheet can manipulate the output to reflect the data. Consider that as we proceeed to the [Walkthrough second example].
+
+ Please consult the  [UserManual User Manual] for details on dexter's attributes.
