@@ -10,7 +10,19 @@ See SCRIPTS below.
  == Usage ==
 The Dexter package includes a shell script written in bash which has only been tested under linux systems.  Dexter may be used on any operating system but you may be required to write a simple wrapper script. 
 
-See SCRIPTS below.
+under a bash shell (linux, OS/X)
+{{{
+dexter.sh [options] filename
+}}}
+
+To invoke Dexter at the command line on any system:
+{{{
+java  -jar dexter.jar [options] filename ...
+}}}
+
+`gnu-get-opts.jar` should be in the same directory as `dexter.jar`.
+
+See SCRIPTS below for further notes on creating a simple wrapper for your system.
 
  == Entities ==
 Dexter uses JAXP to parse well-formed XML of any type: HTML, RSS, Soap responses,etc.  Unlike HMTL, it is an error to use undeclared entities in XML.  For most HTML fomats, this is as simple as declaring a DTD at the top of your document.
@@ -31,7 +43,7 @@ For users of HTML5, the doctype is just `<!DOCTYPE html>` which, unfortunately, 
 The default JAXP parser built into Java is flawed and does some very odd things with entities sometimes.  I recommend that you make the xerces parser (bundled) available on your class path for best results.
 
  == Scripts ==
-To invoke Dexter at the command lines, your script needs to call the call like so:
+To invoke Dexter at the command line:
 {{{
 java  -jar dexter.jar [options] filename ...
 }}}
