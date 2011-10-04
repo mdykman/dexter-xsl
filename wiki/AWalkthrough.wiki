@@ -72,11 +72,11 @@ My Friend List
 <a dx:attr="href:/profiles/{.}" dx:text="." 
     href="/profiles/john" class="frname">john</a>
  </div>
- <div>
-<a dx:ignore="" href="/profiles/george" class="frname">george</a>
+ <div dx:ignore="">
+<a href="/profiles/george" class="frname">george</a>
  </div>
- <div>
-<a dx:ignore="" href="/profiles/paul" class="frname">paul</a>
+ <div dx:ignore="">
+<a href="/profiles/paul" class="frname">paul</a>
  </div>
 </div>
  <div id="footer">
