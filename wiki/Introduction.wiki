@@ -1,4 +1,4 @@
-#labels Featured
+#labels Featured,Phase-Deploy
 Dexter is a tool for creating XSLT-1.0 from  well-formed XML example documents.  It uses a collection of attributes to indicate required operations.
 
  == Installation ==
@@ -35,5 +35,9 @@ To invoke Dexter at the command lines, your script needs to call the call like s
 {{{
 java  -jar dexter.jar [options] filename ...
 }}}
+
+ === Dependencies ==
+
+When used at the command line, Dexter's Main class uses gnu-getopt.jar to parse command line arguments.  That jar file should be in the same directory as dexter.jar.  Distributed with Dexter is the most current version of xerces, implemented as xercesImpl.jar and xmp-apis.jar.  It is recommended that you include these on your classpath as the default JAXP-provided XML parser does some unexpected things, most noticibly around entity handling.
 
 [UserManual User Manual]
