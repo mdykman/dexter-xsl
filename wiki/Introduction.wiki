@@ -33,7 +33,7 @@ The default JAXP parser built into Java is flawed and does some very odd things 
  == Scripts ==
 To invoke Dexter at the command lines, your script needs to call the call like so:
 {{{
-java  -cp "dexter.jar:xercesImpl.jar:xml-apis.jar" org.dykman.dexter.Main [options] filename ...
+java  -jar dexter.jar [options] filename ...
 }}}
 
 [UserManual User Manual]
