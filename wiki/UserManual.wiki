@@ -1,4 +1,4 @@
-#labels Featured,Phase-Support
+#labels Featured,Phase-Implementation
 = User Manual =
 
  == Introduction ==
