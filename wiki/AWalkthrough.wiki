@@ -128,3 +128,5 @@ data.xml
 }}}
 
 Now you can load that document into any modern desktop browser to render it.
+
+Consult the [UserManual User Manual] for details about Dexter's operators.
