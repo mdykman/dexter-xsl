@@ -5,6 +5,12 @@
 
 For quick notes on installation and usage, see [Introduction]
 
+== Xpath 1.0 ==
+In keeping with the XSLT 1.0 specification, dexter uses XPath 1.0 (XML Path Language, version 1.0) in many of it's operators. An in-depth discussion beyond the scope of this document, and you should refer to the [http://www.w3.org/TR/xpath/ XML Path Language (XPath) 1.0 standard] for definitive information. 
+
+A useful resource for those new to XPath or who desire a refresher in the basics is the [http://zvon.org/xxl/XPathTutorial/General/examples.html Zvon.org XPath Tutorial], which is available in several languages.
+
+
 == Dexter Operators ==
  Most of Dexters operators are XML-agnostic; that is to say they are useful regardless of the scheme of XML being manipulated.  Those are the attributes in the 'dx' namespace.  There are a few HTML-specific operators which are in the 'dd' namespace.
 
@@ -19,5 +25,6 @@ Many dexter operators require XPath 1.0 in their arguments with additional, opti
  * [Miscellany] _dx:ghost,dx:ignore,dx:uniq,dx:cdata,dx:comment,dx:noop_
  * [Advanced] _dx:sub,dx:template,dx:call_
 
-===dd: html-specific===
- * [Forms] _dd:form,dd:option,dd:options_
+ ===dd: html-specific===
+
+  * [Forms] _dd:form,dd:option,dd:options_
