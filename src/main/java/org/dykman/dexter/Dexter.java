@@ -507,7 +507,6 @@ public class Dexter
 				{
 					String key = "a." + tk[i];
 					String klassName = resolver.getProperty(key);
-					System.err.println("init: " + ns + ':' + tk[i] + " class " + klassName + " for key " + key);
 					this.descriptors.put(ns + ':' + tk[i], klassName);
 				}
 			}
@@ -741,10 +740,8 @@ public class Dexter
 	public TransformSpecifier createSpecifier(Element element, String label) throws Exception
 	{
 		
-		System.err.println("create specifier " + label);
 		TransformSpecifier td = null;
 		String k = descriptors.get(label);
-		System.err.println("  descriptor " + k);
 		@SuppressWarnings("unchecked")
 		Class<TransformDescriptor> cl = 
 			(Class<TransformDescriptor>) Class.forName(k);
@@ -814,7 +811,6 @@ public class Dexter
 		while (it.hasNext()) // for each decriptor in the list
 		{
 			String alabel = it.next();
-			System.err.println("scanning for " + alabel);
 			if (el.hasAttribute(alabel))
 			{
 				@SuppressWarnings("unused")
