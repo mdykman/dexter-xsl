@@ -1,3 +1,0 @@
-<a>
-	<div dx:each="data/person" dx:attrs="|onlick:return hello({jshash(.)});" />
-</a>
