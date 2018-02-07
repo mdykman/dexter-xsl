@@ -17,12 +17,15 @@ dependencies {
 // https://mvnrepository.com/artifact/net.sf.jtidy/jtidy
 compile group: 'net.sf.jtidy', name: 'jtidy', version: 'r938'
 // https://mvnrepository.com/artifact/xerces/xerces
-compile group: 'xerces', name: 'xerces', version: '2.4.0'
+// compile group: 'xerces', name: 'xerces', version: '2.4.0'
 // https://mvnrepository.com/artifact/gnu.getopt/java-getopt
 compile group: 'gnu.getopt', name: 'java-getopt', version: '1.0.13'
 // https://mvnrepository.com/artifact/xml-apis/xml-apis
 compile group: 'xml-apis', name: 'xml-apis', version: '2.0.2'
 //compile group: 'xml-apis', name: 'xml-apis', version: '1.4.01'
+// https://mvnrepository.com/artifact/net.sf.saxon/Saxon-HE
+compile group: 'net.sf.saxon', name: 'Saxon-HE', version: '9.8.0-8'
+
 }
 
 task fatJar(type: Jar) {
