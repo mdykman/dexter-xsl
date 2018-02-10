@@ -22,12 +22,8 @@ public class MapNodeDescriptor extends PathDescriptor
 		boolean useDefault = false;
 		if(value.startsWith("!")) {
 			value = value.substring(1);
-//			if(value.startsWith("!")) {
-//				value = value.substring(1);
-//			}
 			useDefault = true;
 		}
-
 		sequencer.mapNode(valueTemplateParams(value), 
 				useDefault ? element : null);
 	}

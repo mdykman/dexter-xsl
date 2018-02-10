@@ -107,7 +107,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 		super(dexter);
 		this.rand = new Random();
 		this.builder = dbf.newDocumentBuilder();
-//		this.builder = builder;
 		this.encoding = encoding;
 		this.filename = name;
 	}
@@ -217,6 +216,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 	
 	public Node getChildren(Node n) {
 		Node result = null;
+		if(n==null) return currentDocument.createDocumentFragment();
 		if(n.getNodeType() == Node.DOCUMENT_NODE) {
 			result = ((Document)n).getDocumentElement();
 		} else if(n.getNodeType() == Node.ELEMENT_NODE) {
@@ -720,7 +720,6 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 
 	public void startNode(String name, int type)
 	{
-//	System.out.println("type = " + type);
 		nodeTypes[nodeLevel++] = (short) type;
 		switch (type) {
 			case Node.DOCUMENT_NODE: {
