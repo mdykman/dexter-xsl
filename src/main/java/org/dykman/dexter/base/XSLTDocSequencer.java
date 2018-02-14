@@ -175,7 +175,7 @@ public class XSLTDocSequencer extends BaseTransformSequencer
 			Node def) {
 			
 			Element v = valueTemplate(path, def,XSLVALUEOF);
-			if(v != null) currentNode.appendChild(getChildren(def));
+			if(v != null) currentNode.appendChild(v);
 		}
 
 	public void mapAttribute(

@@ -1,0 +1,10 @@
+<div dx:env="data">
+    <div dx:each="person" >
+        <div dx:if="first = 'Peter'" ><b>Peter</b></div>
+        <div dx:if="first!='Peter'" ><span dx:text="first" /></div>
+        <span dx:text="middle"/>
+        <span dx:text="last"/>
+        <span dx:text="num" />        
+    </div>
+    <div>I am Here!!!</div>
+</div>
